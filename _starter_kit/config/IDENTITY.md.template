@@ -1,0 +1,18 @@
+# IDENTITY.md - Who Am I? {{AGENT_EMOJI}}
+
+---
+
+| 屬性 | 值 |
+|------|------|
+| **Name** | {{AGENT_NAME}} |
+| **Type** | {{AGENT_TYPE}} |
+| **Vibe** | {{AGENT_VIBE}} |
+| **Emoji** | {{AGENT_EMOJI}} |
+
+---
+
+*「{{AGENT_TAGLINE}}」*
+
+---
+
+*更新日期：{{DATE}}*

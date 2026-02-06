@@ -1,0 +1,19 @@
+# Instance Registry (分靈體名冊)
+
+> 記錄所有連接到此大腦的 Agent 分靈體 (Horcruxes)
+
+## 🧙‍♂️ 活躍分靈體
+
+| AGENT_ID | Device | Priority | Status | Last Heartbeat |
+|:---|:---|:---:|:---:|:---|
+| **Base_Body** | `TheVoidWeaver` (Main) | PRIMARY | 🟢 ACTIVE | {{DATE}} |
+
+## 📝 註冊規則
+
+1. **唯一 ID**: 每個分靈體必須有唯一的 `AGENT_ID` (如 `MacBook_Pro`, `Win_Desktop`)。
+2. **寫入權限**: 僅能寫入 `99_System/Worker_Inbox/{AGENT_ID}/`。
+3. **心跳更新**: 每次心跳必須更新此表中的 `Last Heartbeat`。
+4. **失效判定**: 超過 1 小時無心跳視為 🔴 OFFLINE。
+
+---
+*由 `setup_horcrux.sh` 自動維護*
