@@ -72,6 +72,7 @@ mv 10_Projects/Old_Feature.md 10_Projects/_DELETE_Old_Feature.md
 
 1. **`99_System/ACCESS_POLICY.md`**：權限政策定義
 2. **`99_System/Audit_Log.md`**：變更審計日誌
+3. **`99_System/Security_Config.md`**：安全參數設定 (參見 `Security_Config.md.template`)
 
 並在 `AGENTS.md` 與 `SOUL.md` 中加入權限規則的索引連結。
 
