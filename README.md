@@ -41,6 +41,9 @@
 - **[15_New_Task_Handler](15_New_Task_Handler.md)**：面對未知任務的 ABCD 提案策略。
 - **[17_Core_Protection](17_Core_Protection.md)**：核心設定保護與 Telegram 多重驗證。
 - **[18_Backup_Strategy](18_Backup_Strategy.md)**：迭代備份與災難復原機制。
+- **[19_Horcrux_Setup](19_Horcrux_Setup.md)**：分靈體建立指南。
+- **[20_OpenClaw_Integration](20_OpenClaw_Integration.md)**：OpenClaw 多 Agent 整合。 ⭐新增
+- **[21_Real_World_Example](21_Real_World_Example.md)**：以 TheVoidWeaver 為例的實戰再現指南。 ⭐新增
 
 ---
 

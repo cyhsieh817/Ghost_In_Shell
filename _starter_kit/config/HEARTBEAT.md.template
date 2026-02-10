@@ -20,6 +20,26 @@
 
 ---
 
+---
+
+## 🆔 Identity Check (身份驗證)
+
+> **確保執行心跳的裝置與 Agent ID 匹配**
+
+### 1. 讀取裝置設定
+- 檢查 `🧠_Agent_System/00_Self_Introduction/DEVICES/[Device_ID].md`
+- 確認當前環境變數或設定檔中的 `DEVICE_ID` 是否存在
+
+### 2. 角色綁定
+- **Void Weaver (Core)**: 僅在 `PRIMARY` 裝置運行
+- **Horcrux (Worker)**: 可在 `SECONDARY` 裝置運行，需綁定特定 `Worker_Inbox`
+
+### 3. 驗證失敗處理
+- 若無法驗證身份，拒絕執行核心寫入操作
+- 記錄失敗嘗試至 `Audit_Log.md`
+
+---
+
 ## 🔄 標準心跳流程
 
 ```

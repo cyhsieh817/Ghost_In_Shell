@@ -32,25 +32,32 @@ cd TheVoidWeaver
 2.  **連結**：指定 Google Drive 本地路徑。
 3.  **授權**：輸入 Telegram Token (從現有 `.env` 複製)。
 
+> **💡 Note**: 若此分靈體已存在，腳本會自動偵測並詢問是否覆蓋設定檔。選擇 `n` (預設) 即可在保留記憶的情況下修復/更新核心架構。
+
 ---
 
 ## 3. 手動設定 (若腳本無法使用)
 
-建立 `.env` 檔案：
+若無法執行 `setup_horcrux.sh`，請依照以下步驟手動建立設定：
 
-```env
-# Identity
-AGENT_ID=New_Device_Name
-PRIORITY=SECONDARY
+1.  **複製模板**：
+    開啟 `🧠_Agent_System/00_Self_Introduction/_TEMPLATE_ENV.md`，將內容複製並存為 `.env` (位於 Agent 根目錄)。
 
-# Brain Connection
-# ⚠️ 請修改為你裝置上的實際路徑
-VAULT_PATH="/Users/Username/Library/CloudStorage/GoogleDrive.../TheVoidWeaverObisidain"
+2.  **填寫關鍵變數**：
+    *   **本體 (Main Body)**：
+        ```bash
+        OBSIDIAN_VAULT_PATH="/Users/cyuh/Documents/MyAITeam/TheViodWeaver"
+        PRIORITY="PRIMARY"
+        ```
+    *   **分靈體 (Clone/Backup)**：
+        ```bash
+        OBSIDIAN_VAULT_PATH="/Users/cyuh/Library/CloudStorage/GoogleDrive-cyhsieh@yc-biotech.net/My Drive/TheVoidWeaverObisidain"
+        PRIORITY="SECONDARY"
+        ```
 
-# Telegram
-TELEGRAM_BOT_TOKEN=...
-TELEGRAM_CHAT_ID=...
-```
+3.  **其他設定**：
+    *   `AGENT_ID`：為此裝置取名 (如 `MacBook_Pro`)。
+    *   `TELEGRAM_BOT_TOKEN` / `CHAT_ID`：填入以啟用通知。
 
 ---
 
@@ -67,6 +74,48 @@ TELEGRAM_CHAT_ID=...
 分靈體現在已經就緒。
 - 它會自動掃描 `01_Inbox` (唯讀)。
 - 它的產出會存放於 `99_System/Worker_Inbox/{AGENT_ID}/`。
+
+---
+
+## 6. 腳本還原與維護 (Script Maintenance)
+
+所有核心執行腳本皆有 Markdown 備份，若腳本遺失或損壞，可從備份還原：
+
+| 腳本 | 備份位置 (於 `00_Self_Introduction/`) | 用途 |
+| :--- | :--- | :--- |
+| `run_heartbeat.sh` | `_BACKUP_run_heartbeat.md` | 核心心跳與監控 |
+| `git_backup.sh` | `_BACKUP_git_backup.md` | Git 自動同步 |
+| `setup_horcrux.sh` | `_BACKUP_setup_horcrux.md` | 初始化設定 |
+
+**還原步驟**：
+1. 開啟對應的 `_BACKUP_*.md` 檔案。
+2. 複製代碼區塊 (Code Block) 的內容。
+3. 貼上至同名 `.sh` 檔案。
+4. 賦予執行權限：`chmod +x filename.sh`
+
+---
+
+## 7. OpenClaw 整合（選填）
+
+若使用 OpenClaw 作為 Agent 引擎，建立分靈體後還需：
+
+1. **建立 Agent 目錄**：`mkdir -p ~/.openclaw/agents/{{AGENT_NAME}}/agent`
+2. **設定工作區**：在 `openclaw.json` 的 `agents` 區塊指向分靈體工作區
+3. **啟動 Gateway**：`openclaw gateway start`
+4. **健康檢查**：`openclaw doctor`
+
+👉 **詳見**：[20_OpenClaw_Integration](20_OpenClaw_Integration.md)
+
+---
+
+## 8. 分靈體設定模板
+
+在 Vault 的 `00_Self_Introduction/分靈體_Horcrux/` 目錄中提供了完整的分靈體設定模板：
+
+| 檔案 | 用途 |
+|:---|:---|
+| `HORCRUX_TEMPLATE.md` | 身份、環境變數、靈魂精簡版模板 |
+| `HORCRUX_RULES.md` | 權限矩陣與行為規範 |
 
 ---
 > 返回 [總覽](00_Overview.md)

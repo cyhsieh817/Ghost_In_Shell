@@ -93,7 +93,10 @@
 - **[15_New_Task_Handler](15_New_Task_Handler.md)**：未知任務處理與 ABCD 提案
 - **[16_Post_Task_Suggestions](16_Post_Task_Suggestions.md)**：任務完成後建議機制
 - **[17_Core_Protection](17_Core_Protection.md)**：核心保護與 Telegram 驗證
-- **[18_Backup_Strategy](18_Backup_Strategy.md)**：迭代備份機制 ⭐新增
+- **[18_Backup_Strategy](18_Backup_Strategy.md)**：迭代備份機制
+- **[19_Horcrux_Setup](19_Horcrux_Setup.md)**：分靈體建立指南
+- **[20_OpenClaw_Integration](20_OpenClaw_Integration.md)**：OpenClaw 多 Agent 整合 ⭐新增
+- **[21_Real_World_Example](21_Real_World_Example.md)**：實戰再現指南 — TheVoidWeaver ⭐新增
 
 ---
 

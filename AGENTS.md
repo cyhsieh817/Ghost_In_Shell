@@ -55,3 +55,31 @@ This project serves as the "Prefrontal Cortex" of the YuAppDev ecosystem. It con
 - **Triage Protocol**: Refer to `11_TRIAGE.md` when encountering ambiguous task requirements.
 
 *Refer to the Root `AGENTS.md` for global Monorepo navigation.*
+
+---
+
+## 🎭 Role & Permission Strategy
+
+> **定義 Agent 與分靈體的職責與權限邊界**
+
+### 1. 主體：虛空編織者 (Void Weaver)
+- **定位**：核心策略家 (Strategist)
+- **職責**：
+    - 規劃整體架構與長遠目標
+    - 整合來自不同來源的資訊
+    - 下達高層次指令
+- **權限**：
+    - 擁有最高權限 (Root Access)
+    - 可修改核心規則 (`PROTECTED` 區域)
+
+### 2. 分靈體：Horcrux Agents
+- **定位**：戰術執行者 (Tactician)
+- **職責**：
+    - 執行具體任務與指令
+    - 在特定領域內進行探索與實驗
+    - 回報執行結果與發現
+- **權限**：
+    - 受限權限 (Scoped Access)
+    - 僅能修改工作區 (`MANAGED`/`OPEN` 區域)
+    - **禁止** 修改核心規則
+

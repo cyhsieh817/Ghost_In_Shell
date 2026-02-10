@@ -14,7 +14,33 @@ def get_input(prompt, default=None):
             user_input = input(f"{prompt}: ").strip()
             if user_input:
                 return user_input
+def clean_path(path_str):
+    """Strip quotes and expanding user paths."""
+    if not path_str:
+        return ""
+    # Strip quotes (both single and double) that terminals add for drag & drop
+    clean = path_str.strip().strip('"').strip("'")
+    return os.path.abspath(os.path.expanduser(clean))
 
+def get_valid_path(prompt, default=None):
+    """Get a valid path from user, offering to create if missing."""
+    while True:
+        raw = get_input(prompt, default)
+        path = clean_path(raw)
+        
+        if os.path.exists(path):
+            return path
+        
+        print(f"⚠️  Directory not found: {path}")
+        if get_input("   Create it?", "y").lower() == 'y':
+            try:
+                os.makedirs(path)
+                print(f"✅ Created: {path}")
+                return path
+            except Exception as e:
+                print(f"❌ Error creating directory: {e}")
+        else:
+            print("   Please enter a valid path.")
 def replace_placeholders(content, replacements):
     """Replace all placeholders in the content with values from replacements dict."""
     for key, value in replacements.items():
@@ -51,21 +77,29 @@ def main():
 
     # 2. Paths
     print("\n📂 2. Target Paths")
-    current_dir = os.getcwd()
-    target_vault_path = get_input("Target Vault Path (Where to create 🧠_Agent_System)", current_dir)
-    target_vault_path = os.path.abspath(os.path.expanduser(target_vault_path))
-
-    # Determine default config path (usually inside the agent system or a dedicated config folder)
-    # Based on README, it says "Into your Agent config directory". 
-    # Often this is 🧠_Agent_System/99_System or just the root of the profile.
-    # We'll ask the user, default to 🧠_Agent_System/99_System/Config
-    default_config_rel = os.path.join("🧠_Agent_System", "99_System", "Config")
-    target_config_path_input = get_input("Target Config Directory (Relative to Vault or Absolute)", default_config_rel)
+    print("👉 Tip: You can drag and drop folders here!")
     
-    if os.path.isabs(target_config_path_input):
-        target_config_path = target_config_path_input
+    current_dir = os.getcwd()
+    target_vault_path = get_valid_path("Target Vault Path (Parent of 🧠_Agent_System)", current_dir)
+
+    # Determine default config path
+    default_config_rel = os.path.join("🧠_Agent_System", "99_System", "Config")
+    target_config_path_input = get_input("Target Config Directory (Relative to Vault)", default_config_rel)
+    
+    # Handle config path - clean it just in case, though it's usually relative
+    cleaned_config_input = target_config_path_input.strip().strip('"').strip("'")
+    
+    if os.path.isabs(cleaned_config_input):
+        target_config_path = cleaned_config_input
     else:
-        target_config_path = os.path.join(target_vault_path, target_config_path_input)
+        target_config_path = os.path.join(target_vault_path, cleaned_config_input)
+    
+    # Ensure config path exists or create it
+    if not os.path.exists(target_config_path):
+         try:
+             os.makedirs(target_config_path)
+         except OSError:
+             pass # Will be handled/checked later or let it fail naturally
 
     # Replacements Dictionary
     replacements = {
@@ -112,8 +146,20 @@ def main():
     for template_file in template_files:
         src_path = os.path.join(config_dir, template_file)
         # Remove .template extension
-        dest_filename = template_file[:-9]
+        if template_file.endswith(".template"):
+            dest_filename = template_file[:-9]
+        else:
+            dest_filename = template_file
+            
         dest_path = os.path.join(target_config_path, dest_filename)
+        
+        # Check if file exists
+        if os.path.exists(dest_path):
+            print(f"⚠️  Config file already exists: {dest_filename}")
+            choice = get_input(f"   Overwrite {dest_filename}?", "n").lower()
+            if choice != 'y':
+                print(f"   Skipping {dest_filename}...")
+                continue
         
         try:
             with open(src_path, 'r', encoding='utf-8') as f:
@@ -124,7 +170,7 @@ def main():
             with open(dest_path, 'w', encoding='utf-8') as f:
                 f.write(new_content)
             
-            print(f"✅ Created {dest_filename}")
+            print(f"✅ Created/Updated {dest_filename}")
         except Exception as e:
             print(f"❌ Failed to process {template_file}: {e}")
 

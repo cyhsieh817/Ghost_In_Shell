@@ -14,6 +14,9 @@
 
 ### 0. 系統層 (`00_` & `99_`)
 - **`00_Self_Introduction/`**：核心身份 (Identity, Soul, User)。
+  - 本體設定檔直接放在根目錄
+  - `分靈體_Horcrux/`：分靈體的模板與規則（詳見 [19_Horcrux_Setup](19_Horcrux_Setup.md)）
+  - `DEVICES/`：裝置識別與註冊
 - **`01_Inbox/`**：AI 收件匣，未分類的任務先丟這。
 - **`99_System/`**：運作日誌、模板、設定檔。
 
@@ -28,6 +31,22 @@
     - `25_Agent_Collaboration/`：多 Agent 之間的溝通協議。
     - `26_Security/`：API Key 管理、白名單。
     - `27_Communication/`：Telegram/Line 設定。
+
+#### 角色與權限策略
+此處定義了不同 Agent 角色（主體與分靈體）的職責與權限。
+
+| 角色 | 名稱 | 職責 | 權限概述 |
+|:---|:---|:---|:---|
+| **主體** | 虛空編織者 | 複雜任務、整合資訊、統籌協調、核心系統配置管理 | 對整個 Vault 擁有完整讀寫刪權限，可修改核心配置檔案。 |
+| **分靈體** | 各子 Agent | 執行特定任務，通常在沙盒中工作 | 預設對所有公開資料只讀；寫入操作僅限於其專屬 `Worker_Inbox` 沙盒；對 `📂_User_Workspace/03_Agent_Outbox/` 有新增/修改權限，但最終歸檔需主體或人類確認。無法修改核心配置檔案。 |
+
+**情緒隔離原則**：前鋒的冒險，不應動搖主力的心神。
+
+**重要配對與保護**：
+- 每個分靈體應與 `/Users/cyuh/Library/CloudStorage/GoogleDrive-cyhsieh@yc-biotech.net/My Drive/TheVoidWeaverObisidain/🧠_Agent_System/00_Self_Introduction/DEVICES` 中定義的裝置身份或 Agent ID 進行唯一配對。
+- 分靈體的身份資訊及其 `Worker_Inbox` 的對應關係不應被隨意修改。
+- 核心配置文件 (如 `IDENTITY.md`, `SOUL.md`, `AGENTS.md`, `CORE_LOCK.md`) 需透過額外驗證（如 Telegram 雙因素驗證）才能修改，確保其不可篡改性。
+
 
 ### 3. Resources (`30_Resources/`) - 知識庫
 - **特色**：參考資料、技能書、模板。
