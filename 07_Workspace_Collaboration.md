@@ -18,8 +18,8 @@ graph LR
 
 | 區域 | 路徑 | 角色 |
 |------|------|------|
-| **🧠 Agent 區** | `🧠_Agent_System/` | Agent 主場（草稿、記憶、日誌） |
-| **📂 人類區** | `📂_User_Workspace/` | 人類主場（正式成果） |
+| **🧠 Agent 區** | `_Agent_System/` | Agent 主場（草稿、記憶、日誌） |
+| **📂 人類區** | `_User_Workspace/` | 人類主場（正式成果） |
 
 ---
 
@@ -30,7 +30,7 @@ graph LR
 ```
 1. Agent 完成任務
    ↓
-2. 成果放入 `🧠_Agent_System/03_Agent_Outbox/`
+2. 成果放入 `_Agent_System/03_Agent_Outbox/`
    ↓
 3. 通知人類：「成果已放入 Outbox，請確認」
    ↓
@@ -44,8 +44,8 @@ graph LR
 ```markdown
 📤 [成果遞交]
 檔案：專案進度報告_2026Q1.md
-位置：🧠_Agent_System/03_Agent_Outbox/
-目標：📂_User_Workspace/10_Reports/
+位置：_Agent_System/03_Agent_Outbox/
+目標：_User_Workspace/10_Reports/
 
 請確認後移至 ConfirmBox/
 ```
@@ -65,7 +65,7 @@ graph LR
 ## 範例目錄結構
 
 ```
-🧠_Agent_System/
+_Agent_System/
 ├── 01_Inbox/                  # Agent 自動處理
 │   ├── 未分類筆記_001.md
 │   └── 待整理資料.txt
@@ -84,7 +84,7 @@ graph LR
 
 ## 實作模板
 
-👉 [AGENTS.md.template](_starter_kit/config/AGENTS.md.template) - 包含完整協作規則
+👉 [AGENTS.md.template](AGENTS.md.template) - 包含完整協作規則
 
 ---
 

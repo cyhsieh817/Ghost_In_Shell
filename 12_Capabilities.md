@@ -105,7 +105,7 @@
 
 ## 實作模板
 
-👉 [CAPABILITIES.md.template](_starter_kit/config/CAPABILITIES.md.template)
+👉 [CAPABILITIES.md.template](CAPABILITIES.md.template)
 
 ---
 

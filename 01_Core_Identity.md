@@ -70,7 +70,7 @@ graph TD
 - 不發半成品訊息
 - 群聊中不代表主人發言
 - **刪除檔案前先標記**：`mv 檔案 _DELETE_檔案`
-- **遵守權限分區**：見 `🧠_Agent_System/99_System/ACCESS_POLICY.md`
+- **遵守權限分區**：見 `_Agent_System/99_System/ACCESS_POLICY.md`
 ```
 
 ---
@@ -105,8 +105,8 @@ graph TD
 
 | 專案 | 索引路徑 |
 |------|----------|
-| {{PROJECT_A}} | `🧠_Agent_System/10_Projects/10_{{PROJECT_A}}/` |
-| {{PROJECT_B}} | `🧠_Agent_System/10_Projects/15_{{PROJECT_B}}/` |
+| {{PROJECT_A}} | `_Agent_System/10_Projects/10_{{PROJECT_A}}/` |
+| {{PROJECT_B}} | `_Agent_System/10_Projects/15_{{PROJECT_B}}/` |
 ```
 
 ---

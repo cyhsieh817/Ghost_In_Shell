@@ -111,7 +111,7 @@ Draft → Review → Refine → Review → Refine → Final
 
 ## 實作模板
 
-👉 [ITERATION.md.template](_starter_kit/config/ITERATION.md.template)
+👉 [ITERATION.md.template](ITERATION.md.template)
 
 ---
 
