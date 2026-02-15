@@ -17,7 +17,7 @@
 ## 📂 檔案結構
 
 ```
-🧠_Agent_System/
+_Agent_System/
 └── 99_System/
     ├── REGISTRY.md           # 分靈體名冊
     ├── ACTIVE_LOCKS/         # 核心操作鎖 (僅限 LOCKED 任務)
@@ -32,7 +32,7 @@
 ## 🔄 同步協議
 
 ### 1. 讀取 (READ)
-所有分靈體都有權**讀取**整個 `🧠_Agent_System` 與 `📂_User_Workspace`。
+所有分靈體都有權**讀取**整個 `_Agent_System` 與 `_User_Workspace`。
 這確保了知識共享。
 
 ### 2. 寫入 (WRITE) - 平行作業

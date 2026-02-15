@@ -41,17 +41,17 @@ cd TheVoidWeaver
 若無法執行 `setup_horcrux.sh`，請依照以下步驟手動建立設定：
 
 1.  **複製模板**：
-    開啟 `🧠_Agent_System/00_Self_Introduction/_TEMPLATE_ENV.md`，將內容複製並存為 `.env` (位於 Agent 根目錄)。
+    開啟 `_Agent_System/00_Self_Introduction/_TEMPLATE_ENV.md`，將內容複製並存為 `.env` (位於 Agent 根目錄)。
 
 2.  **填寫關鍵變數**：
     *   **本體 (Main Body)**：
         ```bash
-        OBSIDIAN_VAULT_PATH="/Users/cyuh/Documents/MyAITeam/TheViodWeaver"
+        OBSIDIAN_VAULT_PATH="{{VAULT_PATH}}"
         PRIORITY="PRIMARY"
         ```
     *   **分靈體 (Clone/Backup)**：
         ```bash
-        OBSIDIAN_VAULT_PATH="/Users/cyuh/Library/CloudStorage/GoogleDrive-cyhsieh@yc-biotech.net/My Drive/TheVoidWeaverObisidain"
+        OBSIDIAN_VAULT_PATH="{{VAULT_PATH}}"
         PRIORITY="SECONDARY"
         ```
 
@@ -64,7 +64,7 @@ cd TheVoidWeaver
 ## 4. 驗證連結
 
 1.  執行一次心跳：`./run_heartbeat.sh`
-2.  檢查大腦中的名冊：`🧠_Agent_System/99_System/REGISTRY.md`
+2.  檢查大腦中的名冊：`_Agent_System/99_System/REGISTRY.md`
 3.  確認你的 `AGENT_ID` 已顯示在列表中，狀態為 🟢 ACTIVE。
 
 ---

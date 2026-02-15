@@ -33,9 +33,9 @@ graph LR
 
 | 角色 | 路徑 | 說明 |
 |:---|:---|:---|
-| **本體 Runtime** | `/Users/cyuh/Documents/MyAITeam/TheViodWeaver` | Agent 的執行環境，包含核心設定 + 執行腳本 |
-| **共享大腦** | `/Users/cyuh/Library/CloudStorage/GoogleDrive-cyhsieh@yc-biotech.net/My Drive/TheVoidWeaverObisidain` | Google Drive Vault，所有 Agent 的共享知識庫 |
-| **OpenClaw 設定** | `/Users/cyuh/.openclaw` | AI 引擎設定、模型、通訊管道 |
+| **本體 Runtime** | `{{AGENT_WORKSPACE}}` | Agent 的執行環境，包含核心設定 + 執行腳本 |
+| **共享大腦** | `{{VAULT_PATH}}` | Google Drive Vault，所有 Agent 的共享知識庫 |
+| **OpenClaw 設定** | `{{OPENCLAW_CONFIG}}` | AI 引擎設定、模型、通訊管道 |
 
 ---
 
@@ -113,7 +113,7 @@ chmod +x setup_horcrux.sh
 
 ```
 TheVoidWeaverObisidain/
-├── 🧠_Agent_System/
+├── _Agent_System/
 │   ├── 00_Self_Introduction/       # 核心身份（本體設定的備份）
 │   │   ├── IDENTITY.md
 │   │   ├── SOUL.md
@@ -140,7 +140,7 @@ TheVoidWeaverObisidain/
 │       ├── ACTIVE_LOCKS/           # 操作鎖
 │       └── REGISTRY.md             # 分靈體名冊
 │
-└── 📂_User_Workspace/
+└── _User_Workspace/
     ├── 01_Inbox/                   # 人類輸入
     ├── 02_Tasks_TODO/              # 待辦任務
     ├── 03_Agent_Outbox/            # Agent 產出
@@ -153,11 +153,11 @@ TheVoidWeaverObisidain/
 
 ```bash
 # 本體 → Vault 備份
-cp IDENTITY.md  "$VAULT_PATH/🧠_Agent_System/00_Self_Introduction/"
-cp SOUL.md      "$VAULT_PATH/🧠_Agent_System/00_Self_Introduction/"
-cp USER.md      "$VAULT_PATH/🧠_Agent_System/00_Self_Introduction/"
-cp MEMORY.md    "$VAULT_PATH/🧠_Agent_System/00_Self_Introduction/"
-cp AGENTS.md    "$VAULT_PATH/🧠_Agent_System/00_Self_Introduction/"
+cp IDENTITY.md  "$VAULT_PATH/_Agent_System/00_Self_Introduction/"
+cp SOUL.md      "$VAULT_PATH/_Agent_System/00_Self_Introduction/"
+cp USER.md      "$VAULT_PATH/_Agent_System/00_Self_Introduction/"
+cp MEMORY.md    "$VAULT_PATH/_Agent_System/00_Self_Introduction/"
+cp AGENTS.md    "$VAULT_PATH/_Agent_System/00_Self_Introduction/"
 # ... 其他核心檔案
 ```
 
@@ -240,10 +240,10 @@ mkdir -p ~/.openclaw/agents/coder/sessions
 ./run_heartbeat.sh
 
 # 檢查名冊
-cat "$VAULT_PATH/🧠_Agent_System/99_System/REGISTRY.md"
+cat "$VAULT_PATH/_Agent_System/99_System/REGISTRY.md"
 
 # 確認 Worker_Inbox 已建立
-ls "$VAULT_PATH/🧠_Agent_System/99_System/Worker_Inbox/"
+ls "$VAULT_PATH/_Agent_System/99_System/Worker_Inbox/"
 ```
 
 ---

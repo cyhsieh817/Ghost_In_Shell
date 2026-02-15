@@ -93,7 +93,7 @@ flowchart TD
 
 ## 實作模板
 
-👉 [NEW_TASK_HANDLER.md.template](_starter_kit/config/NEW_TASK_HANDLER.md.template)
+👉 [NEW_TASK_HANDLER.md.template](NEW_TASK_HANDLER.md.template)
 
 ---
 

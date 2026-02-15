@@ -1,40 +1,41 @@
-# 🧠_Agent_System 目錄結構
+# TheViodWeaver - AI Agent Core 🧠
 
-> 此為 Agent 專屬工作區的標準目錄結構
+> **Agent 的靈魂與核心配置庫**
+> 這裡是 ViodWeaver (Antigravity) 的 "Source Code"，定義了它的人格、記憶結構與運作邏輯。
 
----
+## 📂 核心檔案導覽
 
-## 目錄說明
+### 核心定義 (Root)
+| 檔案 | 用途 | 說明 |
+|------|------|------|
+| **`IDENTITY.md`** | **我是誰** | 核心身份定義、名稱、版本。 |
+| **`SOUL.md`** | **靈魂** | 人格特質、價值觀、語言風格。 |
+| **`USER.md`** | **使用者** | 對 User (CYuH) 的理解與偏好設定。 |
+| **`MEMORY.md`** | **記憶地圖** | 檔案系統結構與載入策略 (**Dual-File Standard**)。 |
+| **`AGENTS.md`** | **運作規則** | 啟動流程、Loop 架構、迭代規範。 |
+| **`TRIAGE.md`** | **任務分類** | 任務風險評估與分類矩陣 (AUTO/CONFIRM/ASK)。 |
+| **`HEARTBEAT.md`** | **心跳機制** | 定期自我檢查與維護的 SOP。 |
+| **`CORE_LOCK.md`** | **安全鎖** | 防止核心被意外修改的機制。 |
 
+### 系統目錄
 | 目錄 | 用途 |
-|:---|:---|
-| `00_Self_Introduction/` | 核心身份（IDENTITY, SOUL, USER, DEVICES） |
-| `01_Inbox/` | 未處理輸入，Agent 可自動分類 |
-| `02_Tasks_TODO/` | 人類指派的待辦，執行前需詢問 |
-| `03_Agent_Outbox/` | Agent 成果輸出區 |
-| `03_Agent_Outbox/ConfirmBox/` | 待人類確認的成果 |
-| `10_Projects/` | 進行中專案 |
-| `20_Areas/` | 持續責任領域 |
-| `30_Resources/` | 知識庫與資源 |
-| `30_Resources/35_Skills/` | Agent 技能定義 |
-| `40_Archive/` | 歸檔區（Agent 通常不主動讀取） |
-| `99_System/` | 系統運作（日誌、設定、鎖） |
-| `99_System/ACTIVE_LOCKS/` | 多 Agent 同步鎖 |
+|------|------|
+| **`scripts/`** | 系統腳本 (`run_heartbeat.sh`, `git_backup.sh` 等) |
+| **`config/`** | 設定檔 (`security_config.json`, `mcporter.json`) |
+| **`logs/`** | (Legacy) 舊日誌歸檔。新日誌已導向 Vault `991_Logs/` |
+
+## 🔗 系統架構
+
+本核心庫 (`TheViodWeaver`) 會同步至 Obsidian Vault 的 `_Agent_System/00_Self_Introduction/`，作為 Agent 的「自我意識」來源。
+
+- **本體 (Source)**: `{{AGENT_WORKSPACE}}`
+- **分靈體 (Runtime)**: `Obsidian/_Agent_System/00_Self_Introduction`
+
+## 🛠️ 維護指令
+
+- **執行心跳**: `./scripts/run_heartbeat.sh`
+- **同步核心**: 執行 `scripts/sync_core.sh` (若有的話)
+- **更新靈魂**: 修改 `SOUL.md` 後需重新 reload context。
 
 ---
-
-## 權限分區
-
-| 區域 | 權限 |
-|:---:|:---|
-| 🔴 | `00_Self_Introduction/` - 只讀 |
-| 🟡 | `10_Projects/`, `20_Areas/`, `30_Resources/` - 可增改，刪除需標記 |
-| 🟢 | `01_Inbox/`, `40_Archive/`, 日誌檔 - 自由操作 |
-
----
-
-## 使用方式
-
-1. 將整個 `🧠_Agent_System/` 資料夾複製到你的 Vault 根目錄
-2. 依需求建立子資料夾（如 `10_Projects/10_MyProject/`）
-3. 在各資料夾中建立 `README.md` 描述用途
+*Created by CYuH & Antigravity*

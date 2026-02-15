@@ -42,7 +42,7 @@
   - 人類手動處理
   - 或安裝 {建議工具}
   
-已移至：📂_User_Workspace/02_Tasks_TODO/
+已移至：_User_Workspace/02_Tasks_TODO/
 ```
 
 ---
@@ -179,7 +179,7 @@ ConfirmBox: W 項（已歸檔）
 |:---|:---|
 | [15_New_Task_Handler](15_New_Task_Handler.md) | 🟠 PROPOSE 詳細處理流程 |
 | [12_Capabilities](12_Capabilities.md) | 能力清單定義 |
-| [_starter_kit/config/TRIAGE.md.template](_starter_kit/config/TRIAGE.md.template) | 實作模板 |
+| [TRIAGE.md.template](TRIAGE.md.template) | 實作模板 |
 
 ---
 

@@ -103,7 +103,7 @@ sequenceDiagram
 
 ## 實作模板
 
-👉 [CORE_LOCK.md.template](_starter_kit/config/CORE_LOCK.md.template)
+👉 [CORE_LOCK.md.template](CORE_LOCK.md.template)
 
 ---
 

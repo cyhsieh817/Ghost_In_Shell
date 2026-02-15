@@ -1,89 +1,41 @@
-# 🚀 AI Agent Starter Kit
+# TheViodWeaver - AI Agent Core 🧠
 
-> **一鍵套用完整 Agent 架構**
+> **Agent 的靈魂與核心配置庫**
+> 這裡是 ViodWeaver (Antigravity) 的 "Source Code"，定義了它的人格、記憶結構與運作邏輯。
 
----
+## 📂 核心檔案導覽
 
-## 快速開始
+### 核心定義 (Root)
+| 檔案 | 用途 | 說明 |
+|------|------|------|
+| **`IDENTITY.md`** | **我是誰** | 核心身份定義、名稱、版本。 |
+| **`SOUL.md`** | **靈魂** | 人格特質、價值觀、語言風格。 |
+| **`USER.md`** | **使用者** | 對 User (CYuH) 的理解與偏好設定。 |
+| **`MEMORY.md`** | **記憶地圖** | 檔案系統結構與載入策略 (**Dual-File Standard**)。 |
+| **`AGENTS.md`** | **運作規則** | 啟動流程、Loop 架構、迭代規範。 |
+| **`TRIAGE.md`** | **任務分類** | 任務風險評估與分類矩陣 (AUTO/CONFIRM/ASK)。 |
+| **`HEARTBEAT.md`** | **心跳機制** | 定期自我檢查與維護的 SOP。 |
+| **`CORE_LOCK.md`** | **安全鎖** | 防止核心被意外修改的機制。 |
 
-### 步驟 1：複製目錄結構
+### 系統目錄
+| 目錄 | 用途 |
+|------|------|
+| **`scripts/`** | 系統腳本 (`run_heartbeat.sh`, `git_backup.sh` 等) |
+| **`config/`** | 設定檔 (`security_config.json`, `mcporter.json`) |
+| **`logs/`** | (Legacy) 舊日誌歸檔。新日誌已導向 Vault `991_Logs/` |
 
-將 `structure/🧠_Agent_System/` 整個資料夾複製到你的工作區根目錄。
+## 🔗 系統架構
 
-### 步驟 2：複製設定檔模板
+本核心庫 (`TheViodWeaver`) 會同步至 Obsidian Vault 的 `_Agent_System/00_Self_Introduction/`，作為 Agent 的「自我意識」來源。
 
-將 `config/` 中的所有 `.template` 檔案複製到你的 Agent 設定目錄，並移除 `.template` 副檔名。
+- **本體 (Source)**: `{{AGENT_WORKSPACE}}`
+- **分靈體 (Runtime)**: `Obsidian/_Agent_System/00_Self_Introduction`
 
-### 步驟 3：替換佔位符
+## 🛠️ 維護指令
 
-在所有檔案中搜尋 `{{` 並替換以下佔位符：
-
-| 佔位符 | 說明 | 範例 |
-|:---|:---|:---|
-| `{{AGENT_NAME}}` | Agent 名稱 | 虛空編織者 |
-| `{{AGENT_EMOJI}}` | 專屬 Emoji | ✨🕸️🌌 |
-| `{{AGENT_TYPE}}` | 角色類型 | AI 寫作精靈 |
-| `{{AGENT_VIBE}}` | 風格調性 | 神秘、深邃 |
-| `{{AGENT_TAGLINE}}` | 專屬台詞 | 在虛空的編織中，文字誕生 |
-| `{{VAULT_PATH}}` | Obsidian Vault 路徑 | /path/to/vault |
-| `{{AGENT_CONFIG_DIR}}` | 設定檔目錄 | /path/to/config |
-| `{{USER_NAME}}` | 使用者稱呼 | 主人 |
-| `{{PRIMARY_LANGUAGE}}` | 主要語言 | 台灣繁體中文 |
-
-### 步驟 4：設定啟動規則
-
-在你的 AI 工具設定中（如 `.cursorrules`、OpenClaw config），加入以下指令：
-
-```
-啟動時讀取：
-1. MEMORY.md（記憶第一站）
-2. 按需載入對應模組
-```
+- **執行心跳**: `./scripts/run_heartbeat.sh`
+- **同步核心**: 執行 `scripts/sync_core.sh` (若有的話)
+- **更新靈魂**: 修改 `SOUL.md` 後需重新 reload context。
 
 ---
-
-## 檔案清單
-
-### config/ - 設定檔模板
-
-| 檔案 | 用途 |
-|:---|:---|
-| `AGENTS.md.template` | 工作空間規則 |
-| `MEMORY.md.template` | 記憶入口 |
-| `IDENTITY.md.template` | 身份名片 |
-| `SOUL.md.template` | 思維與邊界 |
-| `USER.md.template` | 使用者畫像 |
-| `TRIAGE.md.template` | 任務分類系統 |
-| `ITERATION.md.template` | 迭代規範 |
-| `CAPABILITIES.md.template` | 能力清單 |
-| `NEW_TASK_HANDLER.md.template` | 未知任務處理 |
-| `HEARTBEAT.md.template` | 心跳機制 |
-| `CORE_LOCK.md.template` | 核心保護機制 ⭐新增 |
-
-### structure/ - 目錄結構
-
-```
-🧠_Agent_System/
-├── 00_Self_Introduction/  # 核心身份
-│   └── DEVICES/           # 多裝置識別
-├── 01_Inbox/              # 未處理輸入
-├── 02_Tasks_TODO/         # 待執行任務
-├── 03_Agent_Outbox/       # 成果輸出
-│   └── ConfirmBox/        # 待確認區
-├── 10_Projects/           # 進行中專案
-├── 20_Areas/              # 持續責任領域
-├── 30_Resources/          # 知識庫
-│   └── 35_Skills/         # Agent 技能
-├── 40_Archive/            # 歸檔區
-└── 99_System/             # 系統運作
-    └── ACTIVE_LOCKS/      # 多 Agent 鎖
-```
-
----
-
-## 驗證清單
-
-- [ ] 所有佔位符已替換
-- [ ] 目錄結構已建立
-- [ ] 啟動規則已設定
-- [ ] 新 Agent 讀取 MEMORY.md 能正確導航
+*Created by CYuH & Antigravity*

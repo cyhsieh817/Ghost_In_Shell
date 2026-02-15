@@ -183,10 +183,20 @@ OPENCLAW_WEB_SEARCH_API_KEY=your_search_key
 在 `openclaw.json` 的 `agents.defaults.workspace` 中設定：
 
 ```json
-"workspace": "/Users/cyuh/Documents/MyAITeam/TheViodWeaver"
+"workspace": "{{AGENT_WORKSPACE}}"
 ```
 
 這告訴 OpenClaw：「Agent 的靈魂在這裡」。Agent 啟動時會從此目錄讀取 `MEMORY.md`、`AGENTS.md` 等核心檔案。
+
+**實際配置範例：**
+```json
+{
+  "workspace": "{{AGENT_WORKSPACE}}",
+  "compaction": {
+    "mode": "safeguard"
+  },
+  "maxConcurrent": 4
+}
 
 ### 心跳整合
 

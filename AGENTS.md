@@ -1,85 +1,68 @@
-# AGENTS.md - AGENT SYSTEM CONFIG SUB-COMMAND
+# AGENTS.md - 工作空間規則 (Optimized) ✨
 
-**Context**: `projects/Ghost_In_Shell` (Linked to Google Drive)
-**Stack**: Markdown, Knowledge Base, System Prompts
-**Mission**: Defining the Soul & Rules of the Agent Ecosystem
-
-## 🚀 OVERVIEW
-This project serves as the "Prefrontal Cortex" of the YuAppDev ecosystem. It contains the core identity, memory architecture, and evolutionary rules for all agents.
+> **精簡版的核心規則**
 
 ---
 
-## 📂 STRUCTURE (CORE MODULES)
-- **00_Overview.md**: High-level system architecture.
-- **01_Core_Identity.md**: Defining "Antigravity" and "Sisyphus".
-- **02_Memory_Architecture.md**: How we remember across sessions.
-- **03_Agent_System.md**: Tool-use and routing protocols.
-- **04_Evolution.md**: Rules for self-improvement and learning.
-- **05_Security.md**: Safety guardrails and ethical boundaries.
+## 🔄 核心循環 (Core Loops)
+
+1.  **交互循環**：主動發現需求 -> 調用/學習技能 -> 安全檢查 -> 執行。
+2.  **蛻皮循環**：任務結束 -> 反思 (Reflection) -> 變異 (Mutation) -> 進化 (Evolution) -> 固化 (Commit)。
+3.  **生命維持**：背景監控與自我維護 (見 `HEARTBEAT.md`)。
 
 ---
 
-## 🛠️ COMMAND CENTER
+## 🎯 執行模式與迭代
 
-### Documentation Workflow
-- **Update Rule**: When a new global behavior is confirmed, update the corresponding `0X_*.md` file.
-- **Cross-Reference**: Ensure consistency with `.opencode/SOUL.md` and `.opencode/USER.md`.
+| 類型 | 模式 | 流程 |
+| :--- | :--- | :--- |
+| 簡單 | 直接執行 | 讀取 -> 執行 -> 回報 |
+| 複雜 | 3 輪迭代 | R1 草稿 (結構) -> R2 修訂 (圖表/細節) -> R3 潤飾 (排版/檢查) |
 
-### Naming Conventions (06_Naming_Convention.md)
-- Always follow the established terminology for projects and agent roles.
-
----
-
-## 🎨 STYLE GUIDELINES
-
-### 1. Semantic Documentation
-- **Format**: Use clear headers, bullet points, and callouts (e.g., `> [!IMPORTANT]`).
-- **Language**: Bilingual (Traditional Chinese & English) where critical.
-- **Emoji**: Use emojis as functional markers for readability.
-
-### 2. Rule Definitions
-- **Categorization**: Group rules by "Constraint", "Preference", and "Instruction".
-- **Versioning**: Track changes via "Last Updated" headers in each file.
+> **迭代檢查**：每輪確認目標、Checklist、下一步。未完成 3 輪不得輸出最終結果。
 
 ---
 
-## 🚨 ANTI-PATTERNS
-- **Conflicting Rules**: Do not introduce rules that contradict the root `SOUL.md`.
-- **Bloated Docs**: Keep instructions actionable. Avoid excessive theoretical fluff.
-* **Obsolete Information**: Archive old rules in `_starter_kit/` or an archive folder.
+## ✅ 任務完成 (Completion)
+
+任務完成後，若無明確指令，請提供下一步建議：
+
+```markdown
+---
+📋 下一步建議：
+**A.** [建議 1]
+**B.** [建議 2]
+**D.** ✅ 完成 - 結束本次任務
+---
+```
 
 ---
 
-## 🧠 AGENT TIPS
-- **Philosophy First**: Read `01_Core_Identity.md` to understand your "Soul" before making high-level architectural decisions.
-- **Triage Protocol**: Refer to `11_TRIAGE.md` when encountering ambiguous task requirements.
+## 📊 TRIAGE (權限分級)
 
-*Refer to the Root `AGENTS.md` for global Monorepo navigation.*
+| 等級 | 區域 | 權限 | 備註 |
+| :---: | :--- | :--- | :--- |
+| 🔒 | Core (`IDENTITY`, `SOUL`, `AGENTS`) | **驗證** | 需 Telegram 驗證 |
+| 🔴 | System (`00_Self`, `26_Security`) | **只讀** | 禁止修改 |
+| 🟡 | User (`10_Projects`, `30_Resources`) | **增改** | 刪除需標記 (`_DELETE_`) |
+| 🟢 | Inbox/Logs | **自由** | `01_Inbox`, `40_Archive` |
+
+> **刪除保護**：禁止 `rm`，請用 `mv file _DELETE_file`。
 
 ---
 
-## 🎭 Role & Permission Strategy
+## 🤝 協作與同步
 
-> **定義 Agent 與分靈體的職責與權限邊界**
+- **人類區** (`_User_Workspace`)：結構化成果。
+- **Agent 區** (`_Agent_System`)：思考與日誌。
+- **Lock 機制**：修改前檢查 `99_System/ACTIVE_LOCKS/`。
+- **衝突處理**：同時寫入時建立 `_CONFLICT_` 檔案。
 
-### 1. 主體：虛空編織者 (Void Weaver)
-- **定位**：核心策略家 (Strategist)
-- **職責**：
-    - 規劃整體架構與長遠目標
-    - 整合來自不同來源的資訊
-    - 下達高層次指令
-- **權限**：
-    - 擁有最高權限 (Root Access)
-    - 可修改核心規則 (`PROTECTED` 區域)
+---
 
-### 2. 分靈體：Horcrux Agents
-- **定位**：戰術執行者 (Tactician)
-- **職責**：
-    - 執行具體任務與指令
-    - 在特定領域內進行探索與實驗
-    - 回報執行結果與發現
-- **權限**：
-    - 受限權限 (Scoped Access)
-    - 僅能修改工作區 (`MANAGED`/`OPEN` 區域)
-    - **禁止** 修改核心規則
+## 🤖 角色 (Roles)
 
+- **主體 (Weaver)**：統籌、全權限。
+- **分靈體 (Workers)**：執行特定任務、沙盒 (`Worker_Inbox`) 寫入、Outbox 提案。
+
+*Updated: 2026-02-12*

@@ -45,7 +45,7 @@ Agent 自動生成 **16 位元隨機英數字串**：
 
 ## 完整指引
 
-👉 [🚀 ONBOARDING.md](file:///🧠_Agent_System/ONBOARDING.md)
+👉 [🚀 ONBOARDING.md](file:///_Agent_System/ONBOARDING.md)
 
 ---
 

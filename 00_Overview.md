@@ -8,13 +8,13 @@
 
 ### 推薦方式：使用 Starter Kit
 
-**最快的方式**是直接使用 [`_starter_kit/`](_starter_kit/README.md)：
+**最快的方式**是直接使用 [`_starter_kit/`](_User_Workspace/15_Projects/151_Github_projects/Ghost_In_Shell/_starter_kit/README.md)：
 
-1. **複製目錄結構**：將 `_starter_kit/structure/🧠_Agent_System/` 複製到你的 Vault
+1. **複製目錄結構**：將 `_starter_kit/structure/_Agent_System/` 複製到你的 Vault
 2. **複製設定檔**：將 `_starter_kit/config/` 中的 `.template` 檔案複製到設定目錄，移除副檔名
 3. **替換佔位符**：搜尋 `{{` 並替換
 
-👉 **詳細說明**：[_starter_kit/README.md](_starter_kit/README.md)
+👉 **詳細說明**：[_starter_kit/README.md](_User_Workspace/15_Projects/151_Github_projects/Ghost_In_Shell/_starter_kit/README.md)
 
 ---
 
@@ -65,7 +65,7 @@
     - `USER.md` (服務誰？)
 
 3.  **AI 友善的 PARA**：
-    專為 AI 設計的 `🧠_Agent_System` 資料夾結構，前綴編號確保順序，明確定義檔案權責。
+    專為 AI 設計的 `_Agent_System` 資料夾結構，前綴編號確保順序，明確定義檔案權責。
 
 ---
 
@@ -97,6 +97,7 @@
 - **[19_Horcrux_Setup](19_Horcrux_Setup.md)**：分靈體建立指南
 - **[20_OpenClaw_Integration](20_OpenClaw_Integration.md)**：OpenClaw 多 Agent 整合 ⭐新增
 - **[21_Real_World_Example](21_Real_World_Example.md)**：實戰再現指南 — TheVoidWeaver ⭐新增
+- **[22_mem0_Integration](22_mem0_Integration.md)**：本地向量記憶系統 ⭐新增
 
 ---
 
