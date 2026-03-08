@@ -1,41 +1,222 @@
-# TheViodWeaver - AI Agent Core 🧠
+# Ghost In Shell 🐚
 
-> **Agent 的靈魂與核心配置庫**
-> 這裡是 ViodWeaver (Antigravity) 的 "Source Code"，定義了它的人格、記憶結構與運作邏輯。
+> **Give your AI agent a soul, not just a prompt.**
 
-## 📂 核心檔案導覽
-
-### 核心定義 (Root)
-| 檔案 | 用途 | 說明 |
-|------|------|------|
-| **`IDENTITY.md`** | **我是誰** | 核心身份定義、名稱、版本。 |
-| **`SOUL.md`** | **靈魂** | 人格特質、價值觀、語言風格。 |
-| **`USER.md`** | **使用者** | 對 User (CYuH) 的理解與偏好設定。 |
-| **`MEMORY.md`** | **記憶地圖** | 檔案系統結構與載入策略 (**Dual-File Standard**)。 |
-| **`AGENTS.md`** | **運作規則** | 啟動流程、Loop 架構、迭代規範。 |
-| **`TRIAGE.md`** | **任務分類** | 任務風險評估與分類矩陣 (AUTO/CONFIRM/ASK)。 |
-| **`HEARTBEAT.md`** | **心跳機制** | 定期自我檢查與維護的 SOP。 |
-| **`CORE_LOCK.md`** | **安全鎖** | 防止核心被意外修改的機制。 |
-
-### 系統目錄
-| 目錄 | 用途 |
-|------|------|
-| **`scripts/`** | 系統腳本 (`run_heartbeat.sh`, `git_backup.sh` 等) |
-| **`config/`** | 設定檔 (`security_config.json`, `mcporter.json`) |
-| **`logs/`** | (Legacy) 舊日誌歸檔。新日誌已導向 Vault `991_Logs/` |
-
-## 🔗 系統架構
-
-本核心庫 (`TheViodWeaver`) 會同步至 Obsidian Vault 的 `_Agent_System/00_Self_Introduction/`，作為 Agent 的「自我意識」來源。
-
-- **本體 (Source)**: `{{AGENT_WORKSPACE}}`
-- **分靈體 (Runtime)**: `Obsidian/_Agent_System/00_Self_Introduction`
-
-## 🛠️ 維護指令
-
-- **執行心跳**: `./scripts/run_heartbeat.sh`
-- **同步核心**: 執行 `scripts/sync_core.sh` (若有的話)
-- **更新靈魂**: 修改 `SOUL.md` 後需重新 reload context。
+Ghost In Shell is an open-source framework for building AI agents with persistent identity, layered memory, and autonomous task management. It turns stateless LLM sessions into evolving digital entities that remember, learn, and grow.
 
 ---
-*Created by CYuH & Antigravity*
+
+## The Problem
+
+Every time you start a new AI session, your agent:
+- 🔥 **Burns tokens** re-reading entire knowledge bases
+- 🧠 **Forgets** everything from previous sessions
+- 🎭 **Loses personality** — different tone every conversation
+- 📂 **Scatters files** without consistent organization
+- 🔓 **Has no boundaries** — does whatever you ask, even dangerous things
+
+## The Solution
+
+```
+┌──────────────────────────────────────────────┐
+│              Ghost In Shell                   │
+├──────────────┬──────────────┬────────────────┤
+│   Identity   │    Memory    │   Governance   │
+│   ─────────  │   ────────   │   ──────────   │
+│   IDENTITY   │  L0: Index   │   TRIAGE       │
+│   SOUL       │  L1: Facts   │   Permissions  │
+│   USER       │  L1: Episode │   Core Lock    │
+│              │  L0.5:Scratch│   Naming Rules │
+├──────────────┴──────────────┴────────────────┤
+│              Workspace (PARA)                 │
+│   _Agent_System/  (agent's domain)           │
+│   _User_Workspace/ (human's domain)          │
+├──────────────────────────────────────────────┤
+│            Optional Extensions                │
+│   Multi-Agent · Cross-Machine · Vector Memory │
+│   Evolution Protocol · Claude Code Native     │
+└──────────────────────────────────────────────┘
+```
+
+---
+
+## Quick Start
+
+### Option A: Interactive CLI (Recommended)
+
+```bash
+cd starter_kit
+python3 create_agent.py
+```
+
+5-step wizard → complete agent config in ~3 minutes, zero placeholder residue.
+
+### Option B: Manual Setup
+
+1. Copy `examples/minimal/` to your project root
+2. Edit `IDENTITY.md`, `SOUL.md`, `USER.md`
+3. Configure `memory/fact.yml`
+4. Point your AI tool's config to load these files
+
+→ [Full Quick Start Guide](docs/01_Quick_Start.md)
+
+---
+
+## Documentation
+
+### Foundation (Start Here)
+
+| # | Document | What You'll Learn |
+|---|----------|-------------------|
+| 01 | [Quick Start](docs/01_Quick_Start.md) | 5-minute setup, first session |
+| 02 | [Core Identity](docs/02_Core_Identity.md) | The Trinity — IDENTITY + SOUL + USER |
+| 03 | [Memory Architecture](docs/03_Memory_Architecture.md) | Hot/cold layered memory system (v3) |
+| 04 | [Workspace Structure](docs/04_Workspace_Structure.md) | PARA-based dual workspace |
+
+### Operations
+
+| # | Document | What You'll Learn |
+|---|----------|-------------------|
+| 05 | [Task Management](docs/05_Task_Management.md) | TRIAGE + iteration + task proposals |
+| 06 | [Security Model](docs/06_Security_Model.md) | Permission zones + deletion protection |
+| 07 | [Evolution Protocol](docs/07_Evolution_Protocol.md) | Self-improvement loops + heartbeat |
+| 08 | [Naming Convention](docs/08_Naming_Convention.md) | File & folder naming rules |
+
+### Advanced
+
+| # | Document | What You'll Learn |
+|---|----------|-------------------|
+| 09 | [Multi-Agent Sync](docs/09_Multi_Agent_Sync.md) | Horcrux architecture, shared vault |
+| 10 | [Cross-Machine Sync](docs/10_Cross_Machine_Sync.md) | Bootstrap script, symlinks, any device |
+| 11 | [Claude Code Integration](docs/11_Claude_Code_Integration.md) | CLAUDE.md + @import native patterns |
+| 12 | [Real World Example](docs/12_Real_World_Example.md) | Full deployment walkthrough |
+
+---
+
+## Core Concepts
+
+### 1. Identity Trinity
+
+| File | Purpose | Analogy |
+|------|---------|---------|
+| `IDENTITY.md` | Name, type, capabilities | Business card |
+| `SOUL.md` | Values, tone, boundaries, language | Personality & ethics |
+| `USER.md` | Who it serves, preferences, sensitive areas | Client brief |
+
+### 2. Layered Memory (v3 — Hot/Cold Separation)
+
+```
+Always loaded (low token cost):
+  L0   MEMORY.md        ← Index & navigation (~100 lines)
+  L1   fact.yml (hot)    ← Active preferences & tools (~130 lines)
+
+Load on demand:
+  L1   fact_archive.yml  ← Evaluated but inactive items
+  L1   fact_decisions.yml ← Historical decisions
+  L1   episodic.jsonl    ← Lessons learned, milestones
+  L0.5 scratchpad.md     ← Current task working notes
+  L2   consolidations.jsonl ← Cross-episode pattern recognition
+```
+
+**Result**: 76% token reduction vs loading everything.
+
+### 3. TRIAGE — Task Classification
+
+| Level | Action | Example |
+|:-----:|--------|---------|
+| 🟢 AUTO | Execute immediately | File organization, logging |
+| 🟡 CONFIRM | Execute, then notify | Creating files, knowledge updates |
+| 🟠 PROPOSE | Propose plan, wait for approval | Unknown task types |
+| 🔴 ASK | Ask before executing | Deletion, external communications |
+| 🔒 LOCKED | Requires 2FA verification | Modifying core identity files |
+
+### 4. Dual Workspace
+
+```
+Vault/
+├── _Agent_System/      ← Agent's domain
+│   ├── 10_Projects/    ← Active projects
+│   ├── 20_Areas/       ← Ongoing responsibilities
+│   ├── 30_Resources/   ← Knowledge base
+│   ├── 40_Archive/     ← Completed work
+│   └── 99_System/      ← Config, logs, policies
+│
+└── _User_Workspace/    ← Human's domain
+    ├── 01_Inbox/       ← New items to process
+    ├── 02_Tasks/       ← Active tasks
+    └── 03_Outbox/      ← Agent deliverables for review
+```
+
+---
+
+## Examples
+
+| Example | Description | Files |
+|---------|-------------|-------|
+| [`minimal/`](examples/minimal/) | Bare essentials — identity + memory + rules | 6 files |
+| [`team/`](examples/team/) | Multi-agent with shared vault & worker inboxes | Full setup |
+
+---
+
+## Who Is This For?
+
+- **Solo developers** wanting persistent AI memory across sessions
+- **Teams** building multi-agent workflows with consistent behavior
+- **Power users** of Claude Code, Cursor, or AI coding tools
+- **Anyone** tired of re-explaining preferences every session
+
+## Compatibility
+
+Ghost In Shell is **LLM-agnostic**. The framework works with:
+
+| Platform | Integration Method |
+|----------|-------------------|
+| Claude Code | Native `CLAUDE.md` + `@import` |
+| Cursor | `.cursorrules` or project rules |
+| OpenClaw | `openclaw.json` multi-agent config |
+| Any LLM | Markdown files as system context |
+
+---
+
+## Philosophy
+
+1. **Index, don't inject** — Point to knowledge, don't paste it all
+2. **Separate identity from instructions** — Who you are ≠ what you do
+3. **Memory should have layers** — Not everything belongs in context
+4. **Autonomy needs boundaries** — Freedom without guardrails is chaos
+5. **Agents should evolve** — Static prompts create static tools
+
+---
+
+## Project Structure
+
+```
+Ghost_In_Shell/
+├── README.md              ← You are here
+├── docs/                  ← 12 design documents
+│   ├── 01_Quick_Start.md
+│   ├── ...
+│   └── 12_Real_World_Example.md
+├── starter_kit/           ← Interactive CLI + templates
+│   ├── create_agent.py
+│   ├── config/            ← 19 .template files
+│   └── structure/         ← Directory skeleton
+├── examples/
+│   ├── minimal/           ← ⭐ Start here
+│   └── team/              ← Multi-agent setup
+└── LICENSE
+```
+
+---
+
+## Contributing
+
+PRs welcome. Please read the docs first to understand the architecture.
+
+## License
+
+MIT
+
+---
+
+*Built by humans and their agents, for humans and their agents.* 🐚
