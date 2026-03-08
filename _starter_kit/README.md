@@ -1,41 +1,149 @@
-# TheViodWeaver - AI Agent Core 🧠
+# Ghost In Shell — Starter Kit 🐚
 
-> **Agent 的靈魂與核心配置庫**
-> 這裡是 ViodWeaver (Antigravity) 的 "Source Code"，定義了它的人格、記憶結構與運作邏輯。
-
-## 📂 核心檔案導覽
-
-### 核心定義 (Root)
-| 檔案 | 用途 | 說明 |
-|------|------|------|
-| **`IDENTITY.md`** | **我是誰** | 核心身份定義、名稱、版本。 |
-| **`SOUL.md`** | **靈魂** | 人格特質、價值觀、語言風格。 |
-| **`USER.md`** | **使用者** | 對 User (CYuH) 的理解與偏好設定。 |
-| **`MEMORY.md`** | **記憶地圖** | 檔案系統結構與載入策略 (**Dual-File Standard**)。 |
-| **`AGENTS.md`** | **運作規則** | 啟動流程、Loop 架構、迭代規範。 |
-| **`TRIAGE.md`** | **任務分類** | 任務風險評估與分類矩陣 (AUTO/CONFIRM/ASK)。 |
-| **`HEARTBEAT.md`** | **心跳機制** | 定期自我檢查與維護的 SOP。 |
-| **`CORE_LOCK.md`** | **安全鎖** | 防止核心被意外修改的機制。 |
-
-### 系統目錄
-| 目錄 | 用途 |
-|------|------|
-| **`scripts/`** | 系統腳本 (`run_heartbeat.sh`, `git_backup.sh` 等) |
-| **`config/`** | 設定檔 (`security_config.json`, `mcporter.json`) |
-| **`logs/`** | (Legacy) 舊日誌歸檔。新日誌已導向 Vault `991_Logs/` |
-
-## 🔗 系統架構
-
-本核心庫 (`TheViodWeaver`) 會同步至 Obsidian Vault 的 `_Agent_System/00_Self_Introduction/`，作為 Agent 的「自我意識」來源。
-
-- **本體 (Source)**: `{{AGENT_WORKSPACE}}`
-- **分靈體 (Runtime)**: `Obsidian/_Agent_System/00_Self_Introduction`
-
-## 🛠️ 維護指令
-
-- **執行心跳**: `./scripts/run_heartbeat.sh`
-- **同步核心**: 執行 `scripts/sync_core.sh` (若有的話)
-- **更新靈魂**: 修改 `SOUL.md` 後需重新 reload context。
+> **Interactive CLI: deploy a complete AI agent system in ~3 minutes.**
+> Zero placeholder residue. Hot/cold memory. CLAUDE.md native.
 
 ---
-*Created by CYuH & Antigravity*
+
+## Usage
+
+```bash
+cd _starter_kit
+python3 create_agent.py
+```
+
+No arguments needed — the wizard guides you through everything.
+
+---
+
+## 4-Step Interactive Flow
+
+```
+╔══════════════════════════════════════════════════╗
+║   🐚  Ghost In Shell — Agent Creator  v3.0      ║
+╚══════════════════════════════════════════════════╝
+
+1 / 4  🤖  Agent Identity
+  → Name, emoji, type, personality, tagline
+
+2 / 4  👤  User Profile
+  → Your name, language, timezone, org, tech stack
+  → Communication style, sensitive areas
+
+3 / 4  📂  Paths
+  → Workspace root, vault location
+  💡 Drag folders into the terminal!
+
+4 / 4  ⚙️  Optional Settings
+  → System rules (defaults provided)
+```
+
+---
+
+## What Gets Generated
+
+The script creates a complete agent workspace:
+
+```
+your_workspace/
+├── CLAUDE.md              ← Entry point with @import (auto-loads identity + memory)
+├── IDENTITY.md            ← Agent business card
+├── SOUL.md                ← Personality, values, boundaries
+├── USER.md                ← User profile & preferences
+├── MEMORY.md              ← Memory index (L0 router)
+└── memory/
+    ├── fact.yml            ← Hot facts (L1 — loaded every session)
+    ├── fact_archive.yml    ← Cold storage (L1 — load on demand)
+    ├── fact_decisions.yml  ← Decision history (L1 — load on demand)
+    ├── episodic.jsonl      ← Lessons & milestones (append-only)
+    └── scratchpad.md       ← Current task notes
+
+your_vault/
+└── _Agent_System/
+    ├── 10_Projects/
+    ├── 20_Areas/
+    ├── 30_Resources/
+    ├── 40_Archive/
+    └── 99_System/
+        ├── 990_POLICY/
+        │   ├── ACCESS_POLICY.md     ← Permission zones (🔴/🟡/🟢)
+        │   └── AUTONOMY_POLICY.md   ← What agent can do without asking
+        ├── 991_Logs/
+        ├── 992_Config/
+        ├── 993_Worker_Inbox/
+        ├── TRIAGE.md                ← Task classification matrix
+        └── CAPABILITIES.md          ← Agent capability declaration
+```
+
+**Total: 14 files generated, zero placeholder residue.**
+
+---
+
+## Templates (v3)
+
+| Template | Purpose | Output Location |
+|----------|---------|-----------------|
+| `CLAUDE.md` | Entry point with @import | workspace root |
+| `IDENTITY.md` | Agent identity card | workspace root |
+| `SOUL.md` | Personality & rules | workspace root |
+| `USER.md` | User profile | workspace root |
+| `MEMORY.md` | Memory index (L0) | workspace root |
+| `fact.yml` | Hot facts (L1) | memory/ |
+| `fact_archive.yml` | Cold archive (L1) | memory/ |
+| `fact_decisions.yml` | Decision history (L1) | memory/ |
+| `episodic.jsonl` | Episode log | memory/ |
+| `scratchpad.md` | Task scratch | memory/ |
+| `ACCESS_POLICY.md` | Permission zones | vault/_Agent_System/99_System/990_POLICY/ |
+| `AUTONOMY_POLICY.md` | Autonomy rules | vault/_Agent_System/99_System/990_POLICY/ |
+| `TRIAGE.md` | Task classification | vault/_Agent_System/99_System/ |
+| `CAPABILITIES.md` | Ability declaration | vault/_Agent_System/99_System/ |
+
+---
+
+## Zero Residue Guarantee
+
+After generation, the script scans every output file for unresolved `{{PLACEHOLDER}}` tags:
+
+```
+✅  CLAUDE.md → workspace/
+✅  SOUL.md → workspace/
+✅  fact.yml → workspace/memory/
+...
+Perfect! All placeholders resolved. Zero residue.
+```
+
+### Placeholder Alias Mapping
+
+| Template Key | Collected As |
+|-------------|-------------|
+| `{{DATE}}` | Auto (today's date) |
+| `{{EMOJI}}` | = `AGENT_EMOJI` |
+| `{{LANGUAGE}}` | = `PRIMARY_LANGUAGE` |
+| `{{TIMEZONE}}` | = `USER_TIMEZONE` |
+| `{{PREF_1}}` | = `COMMUNICATION_STYLE` |
+| `{{TECH_1}}` | = `TECH_STACK` |
+| `{{SENSITIVE_1}}` | = `SENSITIVE_AREAS` |
+
+---
+
+## Requirements
+
+- Python 3.8+
+- No external packages (stdlib only)
+
+---
+
+## What Changed in v3
+
+| v2 | v3 |
+|----|-----|
+| 19 templates | 14 templates (focused) |
+| No CLAUDE.md | CLAUDE.md with @import (native) |
+| Single fact.yml | Hot/cold split (fact.yml + archive + decisions) |
+| Chinese UI | English UI (open-source ready) |
+| Config dir output | Smart routing (files go to correct locations) |
+| structure/ copy | Programmatic directory creation |
+
+---
+
+*Ghost In Shell Starter Kit v3.0 🐚*

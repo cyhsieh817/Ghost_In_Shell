@@ -1,0 +1,53 @@
+# fact.yml — Hot Layer (L1)
+# Loaded every session via CLAUDE.md @import.
+# Only active, frequently-needed facts. Keep under 150 lines.
+# Cold storage: fact_archive.yml (evaluated tools), fact_decisions.yml (history)
+# Last updated: {{DATE}}
+
+---
+
+user:
+  name: "{{USER_NAME}}"
+  call_as: "{{CALL_AS}}"
+  language: "{{PRIMARY_LANGUAGE}}"
+  timezone: "{{USER_TIMEZONE}}"
+
+  roles:
+    - { org: "{{ORG_1}}", title: "{{TITLE_1}}" }
+
+  preferences:
+    communication: ["{{COMMUNICATION_STYLE}}"]
+    tech_stack: ["{{TECH_STACK}}"]
+
+  sensitive_areas: ["{{SENSITIVE_AREAS}}"]
+
+---
+
+system:
+  identity: "{{AGENT_NAME}}"
+  emoji: "{{AGENT_EMOJI}}"
+
+  paths:
+    workspace: "{{WORKSPACE_PATH}}"
+    vault: "{{VAULT_PATH}}"
+    memory: "{{WORKSPACE_PATH}}/memory"
+
+---
+
+rules:
+  - "{{RULE_1}}"
+  - "{{RULE_2}}"
+  - "{{RULE_3}}"
+  - "Read files before editing — never blind-edit"
+  - "Mark deletions with _DELETE_ prefix — never rm"
+
+---
+
+tools:
+  last_updated: "{{DATE}}"
+  # Add your active tools here. Example:
+  # tool_name:
+  #   status: "installed"
+  #   purpose: "What it does"
+  #   key_commands:
+  #     command_name: "the command"

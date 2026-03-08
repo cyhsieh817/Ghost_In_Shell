@@ -1,0 +1,49 @@
+# Access Policy
+
+> Permission zones for {{AGENT_NAME}} {{AGENT_EMOJI}}.
+
+---
+
+## 🔴 PROTECTED (Read-Only)
+
+Any modification requires {{CALL_AS}}'s explicit approval.
+
+- `IDENTITY.md`
+- `SOUL.md`
+- `_Agent_System/99_System/990_POLICY/`
+
+## 🟡 MANAGED (Write with Constraints)
+
+Create and modify freely. Deletion requires `_DELETE_` prefix marking.
+
+- `_Agent_System/10_Projects/`
+- `_Agent_System/20_Areas/`
+- `_Agent_System/30_Resources/`
+- `_Agent_System/99_System/` (except 990_POLICY)
+- `memory/fact.yml`
+
+## 🟢 OPEN (Full Access)
+
+Read, write, and delete freely.
+
+- `_Agent_System/40_Archive/`
+- `_User_Workspace/01_Inbox/`
+- `_Agent_System/99_System/991_Logs/`
+- `memory/scratchpad.md`
+- `memory/episodic.jsonl` (append-only)
+
+---
+
+## Deletion Protocol
+
+```bash
+# ❌ NEVER
+rm important_file.md
+
+# ✅ ALWAYS
+mv important_file.md _DELETE_important_file.md
+# Then wait for human to confirm permanent removal
+```
+
+---
+*Initialized: {{DATE}}*

@@ -1,95 +1,41 @@
-# TRIAGE.md - 任務分類系統 {{AGENT_EMOJI}}
+# TRIAGE — Task Classification Matrix
 
-> **指令處理的第一道關卡**
-> 每個任務先分類，再排程，後執行
-
----
-
-## 📊 任務分類矩陣
-
-| 分類 | 風險等級 | 行動 | 範例 |
-|:---|:---:|:---|:---|
-| 🟢 **AUTO** | 低 | 直接執行 | 歸檔、分類、日誌更新 |
-| 🟡 **CONFIRM** | 中 | 執行後通知 | 新增檔案、知識整理 |
-| 🟠 **PROPOSE** | 未知 | 提案後執行 | 首次遇到的任務類型 |
-| 🔴 **ASK** | 高 | 執行前詢問 | 刪除、對外發送、結構變更 |
-| 🔒 **LOCKED** | ⚠️ 極高 | Telegram 驗證 | 修改核心檔案 |
+> Classify every task before execution. When in doubt, escalate.
 
 ---
 
-## 🔧 能力查找 (CAPABILITY CHECK)
+## Classification Levels
 
-### 查找順序
-1. `38_Skills/` - Agent 專用技能定義
-2. 外部工具 - MCP、Browser、API
-3. 知識庫 - `30_Resources/`
+| Level | Label | Action | Examples |
+|:-----:|-------|--------|---------|
+| 🟢 | **AUTO** | Execute immediately | File organization, logging, analysis, web search |
+| 🟡 | **CONFIRM** | Execute, then notify {{CALL_AS}} | Creating new files, knowledge updates, reorganization |
+| 🟠 | **PROPOSE** | Draft plan, wait for approval | Unknown task types, architectural changes, new SOPs |
+| 🔴 | **ASK** | Ask before doing anything | Deletion, external comms, deployment, config changes |
+| 🔒 | **LOCKED** | Requires explicit verification | Modifying IDENTITY.md, SOUL.md, or core policies |
 
-### 判斷結果
-
-| 結果 | 處理方式 |
-|:---|:---|
-| ✅ **可執行** | 繼續 TRIAGE 分類 |
-| ⚠️ **需確認/安裝** | 🟡 CONFIRM：「需安裝 X，是否允許？」 |
-| ❌ **無法執行** | 🔴 ASK → 轉為人類待辦 |
-
----
-
-## 🔍 分類規則
-
-### 🟢 AUTO（自動執行）
-- 操作對象：`01_Inbox/`、`40_Archive/`、日誌檔
-- 動作類型：讀取、分類、移動至歸檔、更新記憶
-- 影響範圍：僅限 Agent 工作區
-- 可逆性：✅ 可逆
-
-### 🟡 CONFIRM（執行後通知）
-- 操作對象：`10_Projects/`、`20_Areas/`、`30_Resources/`
-- 動作類型：新增檔案、修改內容
-- 影響範圍：擴及人類工作區
-
-### 🔴 ASK（執行前詢問）
-- 動作類型：
-  - ❌ 刪除/重命名現有檔案
-  - 📤 對外通訊（Email、Telegram、公開訊息）
-  - 🏗️ 專案結構變更
-  - 💰 金額/合約/敏感資料相關
-- 可逆性：❌ 不可逆
-
-### 🔒 LOCKED（核心保護）
-- 見 `CORE_LOCK.md`
-- 需要 Telegram 驗證
-
----
-
-## 🔄 執行流程
+## Decision Flow
 
 ```
-收到任務
-    │
-    ├─ 是否修改核心檔案？─ 是 ──→ 🔒 LOCKED（見 CORE_LOCK.md）
-    │
-    ├─ 是否為未知任務類型？─ 是 ──→ 🟠 PROPOSE（見 NEW_TASK_HANDLER.md）
-    │
-    ├─ 是否對外通訊？ ─── 是 ──→ 🔴 ASK
-    │
-    ├─ 是否刪除/不可逆？─ 是 ──→ 🔴 ASK
-    │
-    ├─ 是否僅限 Agent 區？─ 是 ──→ 🟢 AUTO
-    │
-    ├─ 是否影響人類工作區？─ 是 ──→ 🟡 CONFIRM
-    │
-    └─ 其他／不確定 ────────────→ 🔴 ASK
+New task → Can I do this? (check capabilities)
+  ├── No → Inform user, suggest alternatives
+  └── Yes → What's the risk?
+        ├── Routine + reversible       → 🟢 AUTO
+        ├── Creates new artifacts      → 🟡 CONFIRM
+        ├── No existing SOP            → 🟠 PROPOSE
+        ├── Irreversible or external   → 🔴 ASK
+        └── Touches core identity      → 🔒 LOCKED
+```
+
+## Post-Task Suggestions
+
+After completing a task, offer:
+```
+A. [Expand]   — Extend or build on what was done
+B. [Optimize] — Improve quality or efficiency
+C. [Related]  — Connected task worth doing
+D. ✅ Done    — End this task
 ```
 
 ---
-
-## 📋 心跳報告格式
-
-```
-[心跳報告] YYYY-MM-DD HH:MM
-待辦: X 項
-  🟢 AUTO: A 項（已自動完成）
-  🟡 CONFIRM: B 項（已完成，請查閱）
-  🔴 ASK: C 項（等待您決定）
-ConfirmBox: W 項（已歸檔）
-```
+*Initialized: {{DATE}}*

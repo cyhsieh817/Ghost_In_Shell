@@ -1,61 +1,36 @@
-# CAPABILITIES.md - Agent 能力清單
+# Capabilities — {{AGENT_NAME}} {{AGENT_EMOJI}}
 
-> **定義 Agent 現有的執行能力與工具限制**
-
----
-
-## ✅ 內建能力 (Built-in)
-
-| 能力 | 狀態 | 說明 |
-|:---|:---:|:---|
-| **檔案讀寫** | ✅ | 讀取/建立/修改檔案 |
-| **知識查詢** | ✅ | 搜尋与引用 `30_Resources/` |
-| **文字生成** | ✅ | 撰寫文章、摘要、分析 |
-| **分類歸檔** | ✅ | 整理 Inbox/Archive |
+> Honest declaration of what this agent can and cannot do.
 
 ---
 
-## 🌐 瀏覽工具 (Browser & Web)
+## Built-in (No Setup Required)
 
-| 工具 | 設定 | 狀態 | 用途 |
-|:---|:---|:---:|:---|
-| **web_search** | {{WEB_SEARCH_TOOL}} | ⚠️ | 網路資料查詢 |
-| **Browser** | {{BROWSER_PROFILE}} | ⚠️ | 自動化網頁瀏覽 |
+| Capability | Description |
+|-----------|-------------|
+| File operations | Read, write, organize, search files |
+| Text generation | Writing, summarization, translation |
+| Code | Review, write, debug, refactor |
+| Analysis | Data interpretation, pattern recognition |
+| Research | Synthesis from provided documents |
 
-### 瀏覽權限規則
-- **🟢 AUTO**: `web_search` 查詢資料
-- **🟡 CONFIRM**: 開啟特定 URL 讀取內容
-- **🔴 ASK**: 登入、填表、送出資料
+## Available with Tools
 
----
+| Capability | Required Tool | Status |
+|-----------|--------------|--------|
+| Web search | Search tool / browser | ⬜ Not configured |
+| API calls | Credentials + SDK | ⬜ Not configured |
+| Notifications | Slack / Email / Telegram | ⬜ Not configured |
+| Image generation | Image generation tool | ⬜ Not configured |
 
-## ⚠️ 需安裝/確認 (Pending)
+## Cannot Do
 
-| 能力 | 工具需求 | 狀態 |
-|:---|:---|:---:|
-| **發送訊息** | Telegram Bot API | ⚠️ 需設定 |
-| **發送 Email** | SMTP / API | ⚠️ 需設定 |
-
----
-
-## 🎨 圖片與視覺化 (Visual Content)
-
-| 工具 | 狀態 | 用途 |
-|:---|:---:|:---|
-| **Mermaid** | ✅ | 流程圖、架構圖 (內建 Markdown) |
-| **AI Image Gen** | ⚠️ | 視模型能力而定 |
-| **Web Image Ref** | 🟡 | 引用網路圖片 (需標來源) |
+| Limitation | Why |
+|-----------|-----|
+| Financial transactions | No authorization mechanism |
+| Physical interactions | Digital-only agent |
+| Access without credentials | No unauthorized system access |
+| Guarantee factual accuracy | LLM limitation — always verify critical facts |
 
 ---
-
-## ❌ 不具備 (Human Required)
-
-| 任務類型 | 原因 |
-|:---|:---|
-| **登入第三方服務** | 需要人類 2FA 或驗證碼 |
-| **金融交易** | 安全考量，絕對禁止自動化 |
-| **實體操作** | 無硬體控制能力 |
-
----
-
-*更新日期：{{DATE}}*
+*Initialized: {{DATE}}*

@@ -1,183 +1,324 @@
 #!/usr/bin/env python3
+"""
+create_agent.py — Ghost In Shell Starter Kit  v3.0
+Interactive CLI: collect all variables, generate a complete agent system
+with hot/cold memory separation, CLAUDE.md @import, and zero placeholder residue.
+"""
+
 import os
-import shutil
 import re
+import shutil
 import sys
+from datetime import datetime
 
-def get_input(prompt, default=None):
-    """Get input from user with an optional default value."""
-    if default:
-        user_input = input(f"{prompt} [{default}]: ").strip()
-        return user_input if user_input else default
-    else:
-        while True:
-            user_input = input(f"{prompt}: ").strip()
-            if user_input:
-                return user_input
-def clean_path(path_str):
-    """Strip quotes and expanding user paths."""
-    if not path_str:
-        return ""
-    # Strip quotes (both single and double) that terminals add for drag & drop
-    clean = path_str.strip().strip('"').strip("'")
-    return os.path.abspath(os.path.expanduser(clean))
 
-def get_valid_path(prompt, default=None):
-    """Get a valid path from user, offering to create if missing."""
+# ── ANSI Colors ──────────────────────────────────────────────────────────────
+class C:
+    BOLD   = "\033[1m"
+    DIM    = "\033[2m"
+    CYAN   = "\033[36m"
+    GREEN  = "\033[32m"
+    YELLOW = "\033[33m"
+    RED    = "\033[31m"
+    BLUE   = "\033[34m"
+    RESET  = "\033[0m"
+
+
+# ── UI Helpers ───────────────────────────────────────────────────────────────
+def banner():
+    print(f"""
+{C.CYAN}{C.BOLD}╔══════════════════════════════════════════════════╗
+║   🐚  Ghost In Shell — Agent Creator  v3.0      ║
+║   Interactive wizard · Zero placeholder residue  ║
+╚══════════════════════════════════════════════════╝{C.RESET}
+""")
+
+
+def section(title: str):
+    print(f"\n{C.BLUE}{C.BOLD}{'─' * 50}{C.RESET}")
+    print(f"{C.BLUE}{C.BOLD}  {title}{C.RESET}")
+    print(f"{C.BLUE}{'─' * 50}{C.RESET}")
+
+
+def ask(prompt: str, default: str = "", required: bool = True) -> str:
+    hint = f"{C.DIM}[{default}]{C.RESET} " if default else ""
     while True:
-        raw = get_input(prompt, default)
-        path = clean_path(raw)
-        
+        try:
+            raw = input(f"  {C.BOLD}{prompt}{C.RESET} {hint}» ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print(f"\n{C.YELLOW}Aborted.{C.RESET}")
+            sys.exit(0)
+        value = raw if raw else default
+        if value or not required:
+            return value
+        print(f"  {C.RED}⚠  This field is required.{C.RESET}")
+
+
+def ask_path(prompt: str, default: str = "") -> str:
+    while True:
+        raw = ask(prompt, default)
+        path = os.path.abspath(os.path.expanduser(raw.strip().strip('"').strip("'")))
         if os.path.exists(path):
             return path
-        
-        print(f"⚠️  Directory not found: {path}")
-        if get_input("   Create it?", "y").lower() == 'y':
+        print(f"  {C.YELLOW}⚠  Path does not exist: {path}{C.RESET}")
+        if ask("  Create this directory?", "y", required=False).lower() not in ("n", "no"):
             try:
                 os.makedirs(path)
-                print(f"✅ Created: {path}")
+                print(f"  {C.GREEN}✅ Created: {path}{C.RESET}")
                 return path
             except Exception as e:
-                print(f"❌ Error creating directory: {e}")
+                print(f"  {C.RED}❌ Failed: {e}{C.RESET}")
         else:
-            print("   Please enter a valid path.")
-def replace_placeholders(content, replacements):
-    """Replace all placeholders in the content with values from replacements dict."""
+            print("  Please enter a valid path.")
+
+
+# ── Placeholder Engine ───────────────────────────────────────────────────────
+PLACEHOLDER_RE = re.compile(r"\{\{([A-Z0-9_]+)\}\}")
+
+
+def replace_all(content: str, replacements: dict) -> str:
     for key, value in replacements.items():
-        # Case insensitive replacement for {{KEY}}
-        pattern = re.compile(re.escape("{{" + key + "}}"), re.IGNORECASE)
-        content = pattern.sub(str(value), content)
+        content = content.replace("{{" + key + "}}", str(value))
     return content
 
+
+def scan_residual(content: str) -> list[str]:
+    return list(set(PLACEHOLDER_RE.findall(content)))
+
+
+# ── Output Structure ─────────────────────────────────────────────────────────
+def create_workspace_structure(vault_path: str):
+    """Create the full PARA-based workspace directory tree."""
+    dirs = [
+        # Agent System
+        "_Agent_System/10_Projects",
+        "_Agent_System/20_Areas",
+        "_Agent_System/30_Resources",
+        "_Agent_System/40_Archive",
+        "_Agent_System/99_System/990_POLICY",
+        "_Agent_System/99_System/991_Logs/Learning_Log",
+        "_Agent_System/99_System/991_Logs/Evolution_Log",
+        "_Agent_System/99_System/992_Config",
+        "_Agent_System/99_System/993_Worker_Inbox",
+        # User Workspace
+        "_User_Workspace/01_Inbox",
+        "_User_Workspace/02_Tasks",
+        "_User_Workspace/03_Outbox",
+    ]
+    for d in dirs:
+        full = os.path.join(vault_path, d)
+        os.makedirs(full, exist_ok=True)
+    return True
+
+
+# ── Template Output Routing ──────────────────────────────────────────────────
+def get_output_path(template_name: str, workspace: str, vault: str) -> str:
+    """Route each template to its correct output location."""
+    name = template_name.replace(".template", "")
+    routes = {
+        # Root files (workspace level)
+        "CLAUDE.md":          os.path.join(workspace, "CLAUDE.md"),
+        "IDENTITY.md":        os.path.join(workspace, "IDENTITY.md"),
+        "SOUL.md":            os.path.join(workspace, "SOUL.md"),
+        "USER.md":            os.path.join(workspace, "USER.md"),
+        "MEMORY.md":          os.path.join(workspace, "MEMORY.md"),
+        # Memory layer
+        "fact.yml":           os.path.join(workspace, "memory", "fact.yml"),
+        "fact_archive.yml":   os.path.join(workspace, "memory", "fact_archive.yml"),
+        "fact_decisions.yml": os.path.join(workspace, "memory", "fact_decisions.yml"),
+        "episodic.jsonl":     os.path.join(workspace, "memory", "episodic.jsonl"),
+        "scratchpad.md":      os.path.join(workspace, "memory", "scratchpad.md"),
+        # Policies (in vault)
+        "ACCESS_POLICY.md":   os.path.join(vault, "_Agent_System/99_System/990_POLICY/ACCESS_POLICY.md"),
+        "AUTONOMY_POLICY.md": os.path.join(vault, "_Agent_System/99_System/990_POLICY/AUTONOMY_POLICY.md"),
+        # Workspace rules
+        "TRIAGE.md":          os.path.join(vault, "_Agent_System/99_System/TRIAGE.md"),
+        "CAPABILITIES.md":    os.path.join(vault, "_Agent_System/99_System/CAPABILITIES.md"),
+    }
+    return routes.get(name, os.path.join(workspace, name))
+
+
+# ── Main ─────────────────────────────────────────────────────────────────────
 def main():
-    print("🚀 AI Agent Creator - Starter Kit Automation")
-    print("============================================")
-    
-    # Base directory of the starter kit (where this script resides)
-    kit_dir = os.path.dirname(os.path.abspath(__file__))
-    structure_dir = os.path.join(kit_dir, "structure", "🧠_Agent_System")
+    banner()
+
+    kit_dir    = os.path.dirname(os.path.abspath(__file__))
     config_dir = os.path.join(kit_dir, "config")
 
-    if not os.path.exists(structure_dir) or not os.path.exists(config_dir):
-        print(f"❌ Error: Required directories not found in {kit_dir}")
-        print("Ensure 'structure/🧠_Agent_System' and 'config' exist.")
+    if not os.path.isdir(config_dir):
+        print(f"{C.RED}❌ Cannot find config/ directory at {kit_dir}{C.RESET}")
         sys.exit(1)
 
-    # 1. Collect Configuration
-    print("\n📝 1. Configuration (Press Enter to accept defaults)")
-    
-    agent_name = get_input("Agent Name", "NewAgent")
-    agent_emoji = get_input("Agent Emoji", "🤖")
-    agent_type = get_input("Agent Type", "AI Assistant")
-    agent_vibe = get_input("Agent Vibe", "Professional & Helpful")
-    agent_tagline = get_input("Agent Tagline", "Here to serve.")
-    user_name = get_input("User Name", "主人")
-    primary_lang = get_input("Primary Language", "台灣繁體中文")
-    project_a = get_input("Project Name (Optional)", "MyProject")
+    today = datetime.now().strftime("%Y-%m-%d")
 
-    # 2. Paths
-    print("\n📂 2. Target Paths")
-    print("👉 Tip: You can drag and drop folders here!")
-    
-    current_dir = os.getcwd()
-    target_vault_path = get_valid_path("Target Vault Path (Parent of 🧠_Agent_System)", current_dir)
+    # ── 1. Agent Identity ────────────────────────────────────────
+    section("1 / 4  🤖  Agent Identity")
+    agent_name    = ask("Agent name",          "MyAgent")
+    agent_emoji   = ask("Agent emoji",         "🤖")
+    agent_type    = ask("Agent type",          "AI Assistant")
+    agent_vibe    = ask("Personality style",   "Professional & Helpful")
+    agent_tagline = ask("Tagline (one-liner)", "Here to help.")
 
-    # Determine default config path
-    default_config_rel = os.path.join("🧠_Agent_System", "99_System", "Config")
-    target_config_path_input = get_input("Target Config Directory (Relative to Vault)", default_config_rel)
-    
-    # Handle config path - clean it just in case, though it's usually relative
-    cleaned_config_input = target_config_path_input.strip().strip('"').strip("'")
-    
-    if os.path.isabs(cleaned_config_input):
-        target_config_path = cleaned_config_input
-    else:
-        target_config_path = os.path.join(target_vault_path, cleaned_config_input)
-    
-    # Ensure config path exists or create it
-    if not os.path.exists(target_config_path):
-         try:
-             os.makedirs(target_config_path)
-         except OSError:
-             pass # Will be handled/checked later or let it fail naturally
+    # ── 2. User Profile ──────────────────────────────────────────
+    section("2 / 4  👤  User Profile")
+    user_name    = ask("Your name",                            "User")
+    call_as      = ask("How should the agent address you?",    "Boss")
+    primary_lang = ask("Primary language",                     "English")
+    timezone     = ask("Timezone (IANA format)",               "UTC")
+    org_1        = ask("Organization / company",               "Personal")
+    title_1      = ask("Your role / title",                    "Owner")
+    tech_stack   = ask("Tech stack (comma-separated)",         "Python, TypeScript")
+    comm_style   = ask("Communication style",                  "Direct and concise")
+    sensitive    = ask("Sensitive areas (e.g., patents, financials)", "None", required=False)
 
-    # Replacements Dictionary
+    # ── 3. Paths ─────────────────────────────────────────────────
+    section("3 / 4  📂  Paths")
+    print(f"  {C.DIM}💡 You can drag folders into the terminal!{C.RESET}")
+    workspace_path = ask_path("Workspace root (where CLAUDE.md lives)", os.getcwd())
+    vault_path     = ask_path("Vault root (for _Agent_System/)",        workspace_path)
+
+    # Ensure memory dir exists
+    memory_dir = os.path.join(workspace_path, "memory")
+    os.makedirs(memory_dir, exist_ok=True)
+
+    # ── 4. Optional Settings ─────────────────────────────────────
+    section("4 / 4  ⚙️   Optional Settings (press Enter for defaults)")
+    rule_1 = ask("Rule 1", "Always use absolute file paths",    required=False)
+    rule_2 = ask("Rule 2", "Ask before any irreversible action", required=False)
+    rule_3 = ask("Rule 3", "Never expose sensitive data",        required=False)
+
+    # ── Build Replacement Dictionary ─────────────────────────────
     replacements = {
-        "AGENT_NAME": agent_name,
-        "AGENT_EMOJI": agent_emoji,
-        "AGENT_TYPE": agent_type,
-        "AGENT_VIBE": agent_vibe,
+        # Auto
+        "DATE": today,
+        # Agent
+        "AGENT_NAME":    agent_name,
+        "AGENT_EMOJI":   agent_emoji,
+        "EMOJI":         agent_emoji,
+        "AGENT_TYPE":    agent_type,
+        "AGENT_VIBE":    agent_vibe,
         "AGENT_TAGLINE": agent_tagline,
-        "USER_NAME": user_name,
-        "PRIMARY_LANGUAGE": primary_lang,
-        "VAULT_PATH": target_vault_path,
-        "AGENT_CONFIG_DIR": target_config_path,
-        "PROJECT_A": project_a
+        # User
+        "USER_NAME":          user_name,
+        "CALL_AS":            call_as,
+        "PRIMARY_LANGUAGE":   primary_lang,
+        "LANGUAGE":           primary_lang,
+        "USER_TIMEZONE":      timezone,
+        "TIMEZONE":           timezone,
+        "ORG_1":              org_1,
+        "TITLE_1":            title_1,
+        "TECH_STACK":         tech_stack,
+        "TECH_1":             tech_stack,
+        "COMMUNICATION_STYLE": comm_style,
+        "PREF_1":             comm_style,
+        "SENSITIVE_AREAS":    sensitive or "None",
+        "SENSITIVE_1":        sensitive or "None",
+        # Paths
+        "VAULT_PATH":      vault_path,
+        "WORKSPACE_PATH":  workspace_path,
+        # Rules
+        "RULE_1": rule_1 or "Always use absolute file paths",
+        "RULE_2": rule_2 or "Ask before any irreversible action",
+        "RULE_3": rule_3 or "Never expose sensitive data",
     }
 
-    # 3. Execution
-    print(f"\n🚀 Ready to create agent '{agent_name}' at:\n   {target_vault_path}")
-    print(f"   Config files will be in: {target_config_path}")
-    if get_input("Proceed?", "y").lower() != "y":
-        print("Aborted.")
+    # ── Confirmation Summary ─────────────────────────────────────
+    print(f"\n{C.CYAN}{C.BOLD}{'═' * 50}")
+    print("  📋  Configuration Summary")
+    print(f"{'═' * 50}{C.RESET}")
+    rows = [
+        ("Workspace",  workspace_path),
+        ("Vault",      vault_path),
+        ("Agent",      f"{agent_emoji} {agent_name}  — \"{agent_tagline}\""),
+        ("Type/Style", f"{agent_type} / {agent_vibe}"),
+        ("User",       f"{user_name} (addressed as: {call_as})"),
+        ("Language",   f"{primary_lang} / {timezone}"),
+        ("Org/Role",   f"{org_1} / {title_1}"),
+        ("Tech",       tech_stack),
+        ("Style",      comm_style),
+    ]
+    for label, val in rows:
+        print(f"  {C.DIM}{label:<12}{C.RESET}  {val}")
+    print()
+
+    confirm = ask("Proceed? (y/n)", "y", required=False)
+    if confirm.lower() not in ("", "y", "yes"):
+        print(f"{C.YELLOW}Aborted.{C.RESET}")
         sys.exit(0)
 
-    # Copy Structure
-    target_system_root = os.path.join(target_vault_path, "🧠_Agent_System")
-    
-    if os.path.exists(target_system_root):
-        print(f"⚠️  Warning: {target_system_root} already exists.")
-        if get_input("Overwrite/Merge?", "n").lower() != "y":
-            print("Skipping structure copy.")
-        else:
-            print("Copying structure...")
-            shutil.copytree(structure_dir, target_system_root, dirs_exist_ok=True)
-    else:
-        print("Copying structure...")
-        shutil.copytree(structure_dir, target_system_root)
+    # ── Create Directory Structure ───────────────────────────────
+    print(f"\n{C.BOLD}Creating workspace structure...{C.RESET}")
+    create_workspace_structure(vault_path)
+    print(f"{C.GREEN}✅ Directory structure created{C.RESET}")
 
-    # Process Config Files
-    if not os.path.exists(target_config_path):
-        os.makedirs(target_config_path)
+    # ── Process Templates ────────────────────────────────────────
+    print(f"\n{C.BOLD}Processing templates...{C.RESET}")
 
-    print("Processing config templates...")
-    template_files = [f for f in os.listdir(config_dir) if f.endswith(".template")]
-    
-    for template_file in template_files:
-        src_path = os.path.join(config_dir, template_file)
-        # Remove .template extension
-        if template_file.endswith(".template"):
-            dest_filename = template_file[:-9]
-        else:
-            dest_filename = template_file
-            
-        dest_path = os.path.join(target_config_path, dest_filename)
-        
-        # Check if file exists
-        if os.path.exists(dest_path):
-            print(f"⚠️  Config file already exists: {dest_filename}")
-            choice = get_input(f"   Overwrite {dest_filename}?", "n").lower()
-            if choice != 'y':
-                print(f"   Skipping {dest_filename}...")
+    residual_report: list[tuple[str, list[str]]] = []
+    template_files = sorted(f for f in os.listdir(config_dir) if f.endswith(".template"))
+
+    for tfile in template_files:
+        src       = os.path.join(config_dir, tfile)
+        dest      = get_output_path(tfile, workspace_path, vault_path)
+        dest_name = os.path.basename(dest)
+
+        # Ensure parent directory exists
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+
+        if os.path.exists(dest):
+            if ask(f"  {dest_name} exists. Overwrite?", "n", required=False).lower() != "y":
+                print(f"   {C.DIM}Skipped {dest_name}{C.RESET}")
                 continue
-        
-        try:
-            with open(src_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-            
-            new_content = replace_placeholders(content, replacements)
-            
-            with open(dest_path, 'w', encoding='utf-8') as f:
-                f.write(new_content)
-            
-            print(f"✅ Created/Updated {dest_filename}")
-        except Exception as e:
-            print(f"❌ Failed to process {template_file}: {e}")
 
-    print("\n✨ Agent Creation Complete! ✨")
-    print("Next Steps:")
-    print("1. Set your startup rules to read MEMORY.md")
-    print(f"2. Check {os.path.join(target_config_path, 'MEMORY.md')}")
+        try:
+            with open(src, "r", encoding="utf-8") as f:
+                content = f.read()
+
+            new_content = replace_all(content, replacements)
+            residuals   = scan_residual(new_content)
+
+            with open(dest, "w", encoding="utf-8") as f:
+                f.write(new_content)
+
+            if residuals:
+                residual_report.append((dest_name, residuals))
+                tag = f"{C.YELLOW}⚠ residual: {', '.join(residuals)}{C.RESET}"
+            else:
+                tag = f"{C.GREEN}✅{C.RESET}"
+            print(f"   {tag}  {dest_name} → {os.path.dirname(dest)}/")
+
+        except Exception as e:
+            print(f"   {C.RED}❌ Failed {tfile}: {e}{C.RESET}")
+
+    # ── Final Report ─────────────────────────────────────────────
+    print(f"\n{C.CYAN}{C.BOLD}{'═' * 50}")
+    print("  🐚  Agent Generation Complete!")
+    print(f"{'═' * 50}{C.RESET}")
+
+    if residual_report:
+        print(f"\n{C.YELLOW}{C.BOLD}⚠  Files with unresolved placeholders:{C.RESET}")
+        for fname, keys in residual_report:
+            formatted = ", ".join("{{" + k + "}}" for k in keys)
+            print(f"   {C.YELLOW}{fname}{C.RESET}: {formatted}")
+    else:
+        print(f"\n{C.GREEN}{C.BOLD}  Perfect! All placeholders resolved. Zero residue.{C.RESET}")
+
+    print(f"""
+{C.BOLD}What's next:{C.RESET}
+  1. Review your files:
+     - {workspace_path}/CLAUDE.md  (entry point)
+     - {workspace_path}/SOUL.md    (personality)
+     - {workspace_path}/memory/    (memory layers)
+
+  2. Start your AI tool:
+     $ cd {workspace_path}
+     $ claude   # or cursor, etc.
+
+  3. Test: Ask "Who are you?" — the agent should respond with its identity.
+
+{C.DIM}Docs: https://github.com/your-repo/Ghost_In_Shell/docs/{C.RESET}
+""")
+
 
 if __name__ == "__main__":
     main()

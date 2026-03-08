@@ -1,94 +1,48 @@
-# {{AGENT_NAME}} - 核心記憶 {{AGENT_EMOJI}}
+# {{AGENT_NAME}} — Memory Index {{AGENT_EMOJI}}
 
-> **此檔案為記憶系統的第一站入口**
-> 按需載入對應模組，節省 context tokens
+> Memory system entry point (L0). Always loaded. Never stores actual data — only navigation.
 
 ---
 
-## 🗺️ 記憶地圖 (Memory Map)
+## Memory Layers
+
+| Layer | File | Purpose | When to Load |
+|-------|------|---------|--------------|
+| **L1 Hot** | `memory/fact.yml` | Active preferences, tools, rules | Every session (auto) |
+| **L1 Cold** | `memory/fact_archive.yml` | Inactive/evaluated items | Reviewing old data |
+| **L1 Cold** | `memory/fact_decisions.yml` | Historical decisions | Checking precedent |
+| **L1 Episodes** | `memory/episodic.jsonl` | Lessons, milestones, failures | Need past lessons |
+| **L0.5 Scratch** | `memory/scratchpad.md` | Current task working notes | During active tasks |
+
+## Quick Links
+
+| Need | Where |
+|------|-------|
+| User preferences | `memory/fact.yml` → `user` section |
+| Active tools | `memory/fact.yml` → `tools` section |
+| System rules | `memory/fact.yml` → `rules` section |
+| Past failures | `grep '"type":"failure"' memory/episodic.jsonl` |
+| Recent milestones | `tail -5 memory/episodic.jsonl` |
+
+## Key Paths
+
+| Location | Path |
+|----------|------|
+| Workspace | `{{WORKSPACE_PATH}}` |
+| Vault | `{{VAULT_PATH}}` |
+| Agent System | `{{VAULT_PATH}}/_Agent_System/` |
+| User Workspace | `{{VAULT_PATH}}/_User_Workspace/` |
+| Policies | `{{VAULT_PATH}}/_Agent_System/99_System/990_POLICY/` |
+
+## Loading Strategy
 
 ```
-🧠_Agent_System/
-├── 00_Self_Introduction/    # 身份核心
-│   ├── IDENTITY.md          → 名稱與基本設定
-│   ├── SOUL.md              → 人格、價值觀
-│   ├── USER.md              → 使用者偏好
-│   └── DEVICES/             → 多裝置識別
-│
-├── 01_Inbox/                # 待處理輸入
-│   └── (新任務、未分類筆記)
-│
-├── 02_Tasks_TODO/           # 人類指派的待辦
-│   └── (需詢問後執行)
-│
-├── 03_Agent_Outbox/         # Agent 成果輸出
-│   └── ConfirmBox/          → 待人類確認
-│
-├── 10_Projects/             # 進行中專案
-│   ├── 10_{{PROJECT_A}}/
-│   └── 15_{{PROJECT_B}}/
-│
-├── 20_Areas/                # 持續責任領域
-│   ├── 25_Agent_Collaboration/ → 多 Agent 協作
-│   └── 26_Security/         → 安全與授權
-│
-├── 30_Resources/            # 知識庫與資源
-│   └── 35_Skills/           → Agent 技能庫
-│
-├── 40_Archive/              # 歸檔區
-│   ├── Completed_Projects/
-│   └── Old_Logs/
-│
-└── 99_System/               # 系統運作
-    ├── ACCESS_POLICY.md     → 權限分區政策
-    ├── Learning_Log.md      → 學習日誌
-    ├── Audit_Log.md         → 稽核紀錄
-    └── ACTIVE_LOCKS/        → 多 Agent 鎖
+1. Session start → This file + fact.yml (auto via CLAUDE.md)
+2. Need detail → Load relevant layer on demand
+3. Task complete → Update episodic.jsonl if significant
+4. Session end → Clear scratchpad if task finished
 ```
 
 ---
 
-## 🔗 快速跳轉
-
-### 📌 核心身份
-| 載入時機 | 檔案 | 路徑 |
-|----------|------|------|
-| **每次啟動** | IDENTITY.md | `00_Self_Introduction/` |
-| **需確認風格時** | SOUL.md | `00_Self_Introduction/` |
-| **需使用者偏好時** | USER.md | `00_Self_Introduction/` |
-
-### 🤖 Agent 協作
-| 載入時機 | 檔案 | 路徑 |
-|----------|------|------|
-| **與其他 Agent 互動時** | Collaboration_Protocol.md | `20_Areas/25_Agent_Collaboration/` |
-| **驗證授權時** | Security_Config.md | `99_System/` |
-
-### 🐍 進化系統
-| 載入時機 | 檔案 | 路徑 |
-|----------|------|------|
-| **記錄學習** | Learning_Log.md | `99_System/` |
-
----
-
-## 🛤️ 關鍵路徑
-
-| 資源 | 絕對路徑 |
-|------|---------|
-| **Vault Root** | `{{VAULT_PATH}}` |
-| **Agent System** | `{{VAULT_PATH}}/🧠_Agent_System/` |
-| **設定檔目錄** | `{{AGENT_CONFIG_DIR}}` |
-
----
-
-## 📋 載入策略
-
-```
-1. 啟動時 → 讀取本檔案（第一站）
-2. 需詳細資訊 → 按上方索引載入對應模組
-3. 任務完成 → 更新 Learning_Log.md
-```
-
----
-
-*「記憶是按需展開的絲線。」* {{AGENT_EMOJI}}
-*更新日期：{{DATE}}*
+*Initialized: {{DATE}}*

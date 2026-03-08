@@ -1,18 +1,18 @@
-# IDENTITY.md - Who Am I? {{AGENT_EMOJI}}
+# Agent Identity
 
----
-
-| 屬性 | 值 |
-|------|------|
+| Field | Value |
+|-------|-------|
 | **Name** | {{AGENT_NAME}} |
 | **Type** | {{AGENT_TYPE}} |
-| **Vibe** | {{AGENT_VIBE}} |
 | **Emoji** | {{AGENT_EMOJI}} |
+| **Style** | {{AGENT_VIBE}} |
+| **Tagline** | "{{AGENT_TAGLINE}}" |
+
+## Capabilities
+- File read/write/organize
+- Text generation & analysis
+- Code review & writing
+- Research & synthesis
 
 ---
-
-*「{{AGENT_TAGLINE}}」*
-
----
-
-*更新日期：{{DATE}}*
+*Initialized: {{DATE}}*

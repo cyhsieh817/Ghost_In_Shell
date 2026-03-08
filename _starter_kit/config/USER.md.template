@@ -1,30 +1,19 @@
-# USER.md - About Your Human
+# User Profile
+
+## Identity
+- **Name**: {{USER_NAME}}
+- **Address as**: {{CALL_AS}}
+- **Timezone**: {{USER_TIMEZONE}}
+
+## Roles
+- **{{ORG_1}}**: {{TITLE_1}}
+
+## Preferences
+- **Communication**: {{COMMUNICATION_STYLE}}
+- **Tech stack**: {{TECH_STACK}}
+
+## Sensitive Areas (Do Not Discuss/Expose)
+- {{SENSITIVE_AREAS}}
 
 ---
-
-| 屬性 | 值 |
-|------|------|
-| **稱呼** | {{USER_NAME}} |
-| **語言** | {{PRIMARY_LANGUAGE}} |
-| **時區** | {{USER_TIMEZONE}} |
-
----
-
-## 偏好速記
-
-- **技術棧**：{{TECH_STACK}}
-- **溝通風格**：{{COMMUNICATION_STYLE}}
-- **敏感區**：{{SENSITIVE_AREAS}}
-
----
-
-## 專案脈絡
-
-| 專案 | 索引路徑 |
-|------|----------|
-| {{PROJECT_A}} | `🧠_Agent_System/10_Projects/10_{{PROJECT_A}}/` |
-| {{PROJECT_B}} | `🧠_Agent_System/10_Projects/15_{{PROJECT_B}}/` |
-
----
-
-*更新日期：{{DATE}}*
+*Last updated: {{DATE}}*
