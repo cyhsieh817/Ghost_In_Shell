@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-create_agent.py — Ghost In Shell Starter Kit  v3.0
+create_agent.py — Ghost In Shell Starter Kit  v4.0
 Interactive CLI: collect all variables, generate a complete agent system
-with hot/cold memory separation, CLAUDE.md @import, and zero placeholder residue.
+with hot/cold memory separation, cognitive engine, CLAUDE.md @import, and zero placeholder residue.
 """
 
 import os
@@ -28,7 +28,7 @@ class C:
 def banner():
     print(f"""
 {C.CYAN}{C.BOLD}╔══════════════════════════════════════════════════╗
-║   🐚  Ghost In Shell — Agent Creator  v3.0      ║
+║   🐚  Ghost In Shell — Agent Creator  v4.0      ║
 ║   Interactive wizard · Zero placeholder residue  ║
 ╚══════════════════════════════════════════════════╝{C.RESET}
 """)
@@ -128,6 +128,9 @@ def get_output_path(template_name: str, workspace: str, vault: str) -> str:
         "fact_decisions.yml": os.path.join(workspace, "memory", "fact_decisions.yml"),
         "episodic.jsonl":     os.path.join(workspace, "memory", "episodic.jsonl"),
         "scratchpad.md":      os.path.join(workspace, "memory", "scratchpad.md"),
+        # v4 Cognitive layer
+        "associations.jsonl":          os.path.join(workspace, "memory", "associations.jsonl"),
+        "principles_candidates.jsonl": os.path.join(workspace, "memory", "principles_candidates.jsonl"),
         # Policies (in vault)
         "ACCESS_POLICY.md":   os.path.join(vault, "_Agent_System/99_System/990_POLICY/ACCESS_POLICY.md"),
         "AUTONOMY_POLICY.md": os.path.join(vault, "_Agent_System/99_System/990_POLICY/AUTONOMY_POLICY.md"),

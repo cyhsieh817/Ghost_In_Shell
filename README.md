@@ -27,6 +27,7 @@ Every time you start a new AI session, your agent:
 │   SOUL       │  L1: Facts   │   Permissions  │
 │   USER       │  L1: Episode │   Core Lock    │
 │              │  L0.5:Scratch│   Naming Rules │
+│              │  v4:Cognitive│                │
 ├──────────────┴──────────────┴────────────────┤
 │              Workspace (PARA)                 │
 │   _Agent_System/  (agent's domain)           │
@@ -70,7 +71,7 @@ python3 create_agent.py
 |---|----------|-------------------|
 | 01 | [Quick Start](docs/01_Quick_Start.md) | 5-minute setup, first session |
 | 02 | [Core Identity](docs/02_Core_Identity.md) | The Trinity — IDENTITY + SOUL + USER |
-| 03 | [Memory Architecture](docs/03_Memory_Architecture.md) | Hot/cold layered memory system (v3) |
+| 03 | [Memory Architecture](docs/03_Memory_Architecture.md) | Hot/cold layered memory + cognitive engine (v4) |
 | 04 | [Workspace Structure](docs/04_Workspace_Structure.md) | PARA-based dual workspace |
 
 ### Operations
@@ -103,7 +104,7 @@ python3 create_agent.py
 | `SOUL.md` | Values, tone, boundaries, language | Personality & ethics |
 | `USER.md` | Who it serves, preferences, sensitive areas | Client brief |
 
-### 2. Layered Memory (v3 — Hot/Cold Separation)
+### 2. Layered Memory (v4 — Hot/Cold + Cognitive Engine)
 
 ```
 Always loaded (low token cost):
@@ -116,9 +117,14 @@ Load on demand:
   L1   episodic.jsonl    ← Lessons learned, milestones
   L0.5 scratchpad.md     ← Current task working notes
   L2   consolidations.jsonl ← Cross-episode pattern recognition
+
+v4 Cognitive layer (background):
+  associations.jsonl          ← Memory graph (typed, weighted edges)
+  principles_candidates.jsonl ← Auto-extracted rules (human-approved)
+  .retrieval_buffer.jsonl     ← Hook-based access tracking
 ```
 
-**Result**: 76% token reduction vs loading everything.
+**Result**: 76% token reduction vs loading everything, plus memories that strengthen with use and fade when forgotten.
 
 ### 3. TRIAGE — Task Classification
 

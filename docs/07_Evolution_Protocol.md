@@ -83,6 +83,9 @@ A periodic self-check that keeps the agent healthy:
 - [ ] Is scratchpad.md stale? (task completed but not cleared)
 - [ ] Are there >20 new episodes since last consolidation?
 - [ ] Is fact.yml over 200 lines? (needs archiving)
+- [ ] Strength pipeline last run < 8 days ago?
+- [ ] Any pending principle candidates to review?
+- [ ] Retrieval buffer flushed?
 
 ### Tasks
 - [ ] Any blocked tasks?
@@ -142,6 +145,55 @@ Track how the agent has changed over time:
 | 2025-01-05 | Added JSON safety rule | 3x config corruption | Prevented future config damage |
 | 2025-01-10 | Hot/cold memory split | fact.yml reached 574 lines | 76% token reduction |
 | 2025-01-15 | Updated communication tone | User feedback | More concise responses |
+```
+
+---
+
+## v4: Cognitive Evolution
+
+The v4 memory system adds **automated evolution** through the cognitive layer:
+
+### Strength-Driven Cleanup
+
+Memories with decaying strength signal what's no longer relevant:
+
+```
+High strength (>0.8) → Core knowledge, frequently accessed
+Mid strength (0.4-0.8) → Useful but aging
+Low strength (<0.4) → Candidate for archival or deletion
+```
+
+The agent can use strength scores during heartbeat to identify stale knowledge without manual review.
+
+### Principle Extraction
+
+The system automatically proposes rules from recurring patterns:
+
+```
+3+ episodes show the same failure pattern
+    ↓
+extract-principles generates candidate
+    ↓
+Human reviews and approves (or rejects)
+    ↓
+Approved principle → promoted to fact.yml rules
+```
+
+This closes the R-M-E-C loop automatically: the agent **Reflects** (consolidation), **Mutates** (principle candidate), and waits for human **Evolve** approval before **Committing** to rules.
+
+### Association-Driven Discovery
+
+When the agent queries memories, the association graph surfaces related knowledge:
+
+```
+Agent recalls "config corruption"
+    ↓
+Association graph shows:
+  → causal link to "JSON safety rule"
+  → similar link to "deployment failure"
+  → evolves_into link to "automated validation"
+    ↓
+Agent gains broader context without manually searching
 ```
 
 ---
