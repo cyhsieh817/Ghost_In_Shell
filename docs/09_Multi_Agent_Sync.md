@@ -186,4 +186,46 @@ Each agent shares the same Vault but has its own IDENTITY.md and SOUL.md appropr
 
 ---
 
+## Mature Pattern: Role-Based Worker Inboxes
+
+The basic pattern (Chapter 9) uses **device-based** inboxes. A mature system evolves to **role-based** inboxes — each specialized agent gets its own workspace regardless of which device it runs on:
+
+```
+993_Worker_Inbox/
+├── Writer/
+│   ├── Inbox/    ← Tasks for the writing agent
+│   └── Outbox/   ← Completed articles
+│
+├── Researcher/
+│   ├── Inbox/    ← Research requests
+│   └── Outbox/   ← Research reports
+│
+├── Analyst/
+│   ├── Inbox/    ← Analysis requests
+│   └── Outbox/   ← Analysis reports
+│
+└── Coder/
+    ├── Inbox/    ← Development tasks
+    └── Outbox/   ← Code deliverables
+```
+
+### Why Role-Based > Device-Based
+
+| Aspect | Device-Based | Role-Based |
+|--------|-------------|-----------|
+| **Organization** | By where work happens | By what work is |
+| **Routing** | Manual assignment | Lane system auto-routes |
+| **History** | Scattered across devices | Centralized per role |
+| **Scaling** | New device = new inbox | New role = new inbox |
+
+### Integration with Lane Routing
+
+When [Agent Orchestration (Chapter 13)](13_Agent_Orchestration.md) dispatches a task to Lane 1 (Creation), the Writer agent knows exactly where to find its pending work and where to deliver results.
+
+### For Multi-CLI Setups
+
+See [Chapter 14: Multi-CLI Orchestration](14_Multi_CLI_Orchestration.md) for how different AI CLIs (not just different devices) coordinate through the same Vault.
+
+---
+
 *One soul, many vessels. All connected through the void.* 🐚

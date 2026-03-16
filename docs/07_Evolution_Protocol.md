@@ -250,4 +250,95 @@ tar -czf backup_YYYYMMDD.tar.gz \
 
 ---
 
+## Mature Pattern: Molt Log + Automated Pipelines
+
+### Molt Log (Milestone Archive)
+
+Instead of a generic Evolution Log, use a **Molt Log** — named after how insects shed their exoskeleton when they outgrow it. Each entry records a significant system evolution:
+
+```markdown
+# [Molt]_2025-03-16_agent_dispatch_sisyphus.md
+---
+title: Agent Dispatch System Restructured
+date: 2025-03-16
+tags: [agent, orchestration, architecture]
+source: session
+---
+
+## Summary
+[What changed and why]
+
+## Diagnosis
+[What was wrong before]
+
+## Solution
+[What was implemented]
+
+## Lessons
+[What to remember for next time]
+```
+
+**Rules**:
+- Keep only 5 most recent milestones in MEMORY.md (quick reference)
+- Overflow goes to Molt Log directory (permanent archive)
+- Each entry uses frontmatter (title, date, tags, source) for searchability
+
+### Automated Evolution Pipelines
+
+Schedule evolution tasks so they happen without human intervention:
+
+| Task | Schedule | Tool |
+|------|----------|------|
+| Memory daily review + buffer flush | Daily 23:00 | launchd / cron |
+| Weekly consolidation + strength recompute | Sunday 19:00 | launchd / cron |
+| Literature sync + enrichment | Sunday 20:00 | launchd / cron |
+| Monthly skill audit | 1st of month | Manual or cron |
+
+**macOS launchd example**:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.ghostinshell.memory-daily-review</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/path/to/memory_daily_review.sh</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key><integer>23</integer>
+        <key>Minute</key><integer>0</integer>
+    </dict>
+</dict>
+</plist>
+```
+
+**Linux cron equivalent**:
+
+```
+0 23 * * * bash /path/to/memory_daily_review.sh
+0 19 * * 0 bash /path/to/memory_weekly_consolidate.sh
+```
+
+### Self-Healing
+
+Automated pipelines should detect missed runs and self-recover:
+
+```python
+def check_health():
+    last_run = get_last_run_timestamp()
+    days_since = (now() - last_run).days
+
+    if days_since > 8:
+        print("WARNING: Pipeline overdue, running catchup...")
+        run_catchup()
+```
+
+---
+
 *Growth is not optional. It's the difference between a tool and a partner.* 🐚
