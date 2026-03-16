@@ -228,4 +228,55 @@ Track SOPs for recurring tasks:
 
 ---
 
+## Mature Pattern: Embedded Rules over Standalone Files
+
+As your agent matures, you may find that a standalone TRIAGE.md becomes redundant. Here's why:
+
+### The Evolution
+
+| Stage | Approach | Why |
+|-------|---------|-----|
+| **New agent** | TRIAGE.md (standalone file) | Agent needs explicit classification guide |
+| **Mature agent** | Rules embedded in always-loaded files | Rules are co-located with context, zero extra token cost |
+
+### How It Works
+
+Instead of a separate TRIAGE.md that must be loaded, distribute rules across files that are **already loaded every session**:
+
+```
+SOUL.md → "Never do X" (⛔ level rules)
+fact.yml → rules: ["Y needs approval"] (🔴 level rules)
+AGENTS.md → delegation_rules (🟢/🟡 boundary)
+```
+
+**Advantages**:
+- Zero additional token cost (rules ride along in files you already load)
+- Rules are co-located with their enforcement context
+- No risk of the classification file being dropped during context compression
+
+**When to keep TRIAGE.md**: When you have complex, domain-specific classification rules that don't fit naturally into identity or fact files.
+
+### Alternative: Kanban Task Flow
+
+For project-based work, a Kanban board can replace the linear TRIAGE pipeline:
+
+```markdown
+# Project Kanban
+
+## 🟠 Active
+| Project | Last Action | Next Step |
+|---------|------------|-----------|
+| Alpha | Sent proposal | Wait for response |
+
+## ⏳ Waiting
+...
+
+## ✅ Done
+...
+```
+
+Each card carries its own triage context (urgency, dependencies), and the Kanban structure makes status visible at a glance.
+
+---
+
 *Classify. Execute. Iterate. Evolve.* 🐚

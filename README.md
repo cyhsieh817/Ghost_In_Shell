@@ -36,6 +36,7 @@ Every time you start a new AI session, your agent:
 │            Optional Extensions                │
 │   Multi-Agent · Cross-Machine · Vector Memory │
 │   Evolution Protocol · Claude Code Native     │
+│   Agent Orchestration (Lane Routing)          │
 └──────────────────────────────────────────────┘
 ```
 
@@ -91,6 +92,10 @@ python3 create_agent.py
 | 10 | [Cross-Machine Sync](docs/10_Cross_Machine_Sync.md) | Bootstrap script, symlinks, any device |
 | 11 | [Claude Code Integration](docs/11_Claude_Code_Integration.md) | CLAUDE.md + @import native patterns |
 | 12 | [Real World Example](docs/12_Real_World_Example.md) | Full deployment walkthrough |
+| 13 | [Agent Orchestration](docs/13_Agent_Orchestration.md) | Lane routing, keyword detection, multi-agent dispatch |
+| 14 | [Multi-CLI Orchestration](docs/14_Multi_CLI_Orchestration.md) | Trident pattern — multiple AI CLIs under one identity |
+| 15 | [Domain Knowledge Pipeline](docs/15_Domain_Knowledge_Pipeline.md) | Local literature DB, enrichment, search CLI |
+| 16 | [Skill Ecosystem](docs/16_Skill_Ecosystem.md) | Skill lifecycle, security audit, governance |
 
 ---
 
@@ -191,6 +196,9 @@ Ghost In Shell is **LLM-agnostic**. The framework works with:
 3. **Memory should have layers** — Not everything belongs in context
 4. **Autonomy needs boundaries** — Freedom without guardrails is chaos
 5. **Agents should evolve** — Static prompts create static tools
+6. **Embed rules in context, not in files** — Rules in always-loaded files beat standalone policy documents
+7. **Default to delegation** — An orchestrator that does everything itself wastes its specialists
+8. **Multiple enforcement layers** — Single-layer rules don't change LLM behavior; hooks + config + agent boundaries together do
 
 ---
 
@@ -199,10 +207,10 @@ Ghost In Shell is **LLM-agnostic**. The framework works with:
 ```
 Ghost_In_Shell/
 ├── README.md              ← You are here
-├── docs/                  ← 12 design documents
+├── docs/                  ← 16 design documents
 │   ├── 01_Quick_Start.md
 │   ├── ...
-│   └── 12_Real_World_Example.md
+│   └── 16_Skill_Ecosystem.md
 ├── starter_kit/           ← Interactive CLI + templates
 │   ├── create_agent.py
 │   ├── config/            ← 19 .template files

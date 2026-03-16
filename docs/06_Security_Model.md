@@ -196,4 +196,20 @@ When setting up a new agent:
 
 ---
 
+## Mature Pattern: Distributed Policy
+
+As your agent evolves, standalone policy files (ACCESS_POLICY.md, AUTONOMY_POLICY.md) may become redundant. A mature agent embeds security rules directly in always-loaded files:
+
+| Rule Type | Where to Embed | Example |
+|-----------|---------------|---------|
+| Absolute prohibitions | SOUL.md | "Never delete without _DELETE_ prefix" |
+| Operational rules | fact.yml → rules | "New tool install requires security audit" |
+| Delegation boundaries | AGENTS.md | "Lane 5 Quality: security changes → copilot review" |
+
+**Why this is better**: Standalone policy files add token cost and can be dropped during context compression. Rules embedded in SOUL.md and fact.yml are **always in context** — they cannot be forgotten.
+
+**When to keep standalone files**: For complex compliance requirements (e.g., HIPAA, SOC2) where the policy is too large to embed, or when external auditors need a self-contained document.
+
+---
+
 *Trust, but verify. Freedom, but with fences.* 🐚
