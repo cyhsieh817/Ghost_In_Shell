@@ -72,7 +72,7 @@ python3 create_agent.py
 |---|----------|-------------------|
 | 01 | [Quick Start](docs/01_Quick_Start.md) | 5-minute setup, first session |
 | 02 | [Core Identity](docs/02_Core_Identity.md) | The Trinity — IDENTITY + SOUL + USER |
-| 03 | [Memory Architecture](docs/03_Memory_Architecture.md) | Hot/cold layered memory + cognitive engine (v4) |
+| 03 | [Memory Architecture](docs/03_Memory_Architecture.md) | Hot/cold layered memory + cognitive engine (v4) + auto-logging |
 | 04 | [Workspace Structure](docs/04_Workspace_Structure.md) | PARA-based dual workspace |
 
 ### Operations
@@ -89,7 +89,7 @@ python3 create_agent.py
 | # | Document | What You'll Learn |
 |---|----------|-------------------|
 | 09 | [Multi-Agent Sync](docs/09_Multi_Agent_Sync.md) | Horcrux architecture, shared vault |
-| 10 | [Cross-Machine Sync](docs/10_Cross_Machine_Sync.md) | Bootstrap script, symlinks, any device |
+| 10 | [Cross-Machine Sync](docs/10_Cross_Machine_Sync.md) | Bootstrap, `.nosync` protection, primary/secondary roles |
 | 11 | [Claude Code Integration](docs/11_Claude_Code_Integration.md) | CLAUDE.md + @import native patterns |
 | 12 | [Real World Example](docs/12_Real_World_Example.md) | Full deployment walkthrough |
 | 13 | [Agent Orchestration](docs/13_Agent_Orchestration.md) | Lane routing, keyword detection, multi-agent dispatch |
@@ -109,7 +109,7 @@ python3 create_agent.py
 | `SOUL.md` | Values, tone, boundaries, language | Personality & ethics |
 | `USER.md` | Who it serves, preferences, sensitive areas | Client brief |
 
-### 2. Layered Memory (v4 — Hot/Cold + Cognitive Engine)
+### 2. Layered Memory (v4 — Hot/Cold + Cognitive Engine + Auto-Logging)
 
 ```
 Always loaded (low token cost):
@@ -127,9 +127,12 @@ v4 Cognitive layer (background):
   associations.jsonl          ← Memory graph (typed, weighted edges)
   principles_candidates.jsonl ← Auto-extracted rules (human-approved)
   .retrieval_buffer.jsonl     ← Hook-based access tracking
+
+Auto-logging (Stop hook):
+  Session ends → git diff → episodic.jsonl  ← Zero manual effort
 ```
 
-**Result**: 76% token reduction vs loading everything, plus memories that strengthen with use and fade when forgotten.
+**Result**: 76% token reduction vs loading everything, plus memories that strengthen with use and fade when forgotten. **Auto-session logging** ensures no work goes unrecorded.
 
 ### 3. TRIAGE — Task Classification
 

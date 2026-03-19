@@ -13,9 +13,11 @@ You set up your AI agent perfectly on one machine. Then you:
 
 And you have to redo everything — identity files, memory, tools, plugins, configurations.
 
-## The Solution: Vault-First Architecture
+**The hidden trap**: If your workspace is cloud-synced (iCloud, Dropbox), **symlinks inside it get synced too**. When two machines have different usernames (`$HOME` differs), symlinks from Machine A overwrite Machine B's — and vice versa, creating an infinite conflict loop.
 
-Store all agent config in the **Vault** (cloud-synced). On any new machine, run one bootstrap script to create symlinks and restore the full environment.
+## The Solution: Vault-First Architecture + .nosync Protection
+
+Store all agent config in the **Vault** (cloud-synced). On any new machine, run one bootstrap script to create symlinks and restore the full environment. **All workspace-level symlinks use `.nosync` suffix** to prevent cloud sync from propagating machine-specific paths.
 
 ```
 Vault (iCloud/Dropbox/Git)         Local Machine
@@ -28,6 +30,31 @@ Vault (iCloud/Dropbox/Git)         Local Machine
 │ ├── settings.tmpl    │──generate─│ ├── settings.json   │
 │ └── bootstrap.sh     │           │ └── (ready to use)   │
 └──────────────────────┘           └─────────────────────┘
+
+Workspace (cloud-synced)
+┌──────────────────────────────────────────┐
+│ MyVault.nosync → ~/Library/.../iCloud/   │  ← .nosync = not synced
+│ .claude.nosync → ~/.claude               │  ← each machine has its own
+│ scripts/_paths.sh  → resolves VAULT      │  ← fallback chain
+└──────────────────────────────────────────┘
+```
+
+### Why `.nosync`?
+
+macOS iCloud (and some other cloud providers) sync symlinks as-is, including their **target paths**. If Machine A creates:
+```
+MyVault → /Users/alice/Library/.../iCloud/MyVault
+```
+iCloud syncs this to Machine B, where Alice's path doesn't exist. Machine B's bootstrap fixes it, but that fix syncs back to A — **ping-pong forever**.
+
+Adding `.nosync` to the symlink name tells iCloud to **skip syncing that file entirely**. Each machine maintains its own symlinks independently.
+
+```
+# ❌ BAD — synced, overwrites other machine
+MyVault → /Users/alice/Library/.../iCloud/MyVault
+
+# ✅ GOOD — not synced, each machine independent
+MyVault.nosync → /Users/alice/Library/.../iCloud/MyVault
 ```
 
 ---
@@ -187,16 +214,88 @@ claude  # or cursor, etc.
 
 ## What Gets Synced vs Local
 
-| Item | Synced (Vault) | Local Only |
-|------|---------------|------------|
-| agents/ | ✅ | Symlinked |
-| skills/ | ✅ | Symlinked |
-| hooks/ | ✅ | Symlinked |
-| CLAUDE.md | Template in vault | Generated per machine |
-| settings.json | Template in vault | Generated per machine |
-| settings.local.json | ❌ | Machine-specific |
-| Memory (fact.yml etc.) | ✅ | Via vault |
-| Plugins | ❌ | Installed per machine |
+| Item | Synced (Vault) | Local Only | Notes |
+|------|---------------|------------|-------|
+| agents/ | ✅ | Symlinked | Content synced; symlink local |
+| skills/ | ✅ | Symlinked | Content synced; symlink local |
+| hooks/ | ✅ | Symlinked | Content synced; symlink local |
+| CLAUDE.md | Template in vault | Generated per machine | Path variables differ |
+| settings.json | Template in vault | Generated per machine | Path variables differ |
+| settings.local.json | ❌ | Machine-specific | Personal overrides |
+| Memory (fact.yml etc.) | ✅ | Via vault | Shared across machines |
+| Plugins | ❌ | Installed per machine | `plugins_manifest.txt` lists them |
+| Workspace symlinks | ❌ | `.nosync` suffix | **Each machine independent** |
+| `.machine_role` | ✅ (safe) | Per-hostname entries | `hostname=role` format |
+
+---
+
+## Path Resolution: _paths.sh / _paths.py
+
+All scripts **must** use `_paths.sh` (bash) or `_paths.py` (Python) to resolve the VAULT path. **Never hardcode** `/Users/alice/...` in scripts.
+
+### Fallback Chain
+
+```bash
+# _paths.sh
+if [ -e "$WORKSPACE/MyVault.nosync" ]; then
+    export VAULT="$WORKSPACE/MyVault.nosync"          # .nosync symlink (preferred)
+elif [ -e "$WORKSPACE/MyVault" ]; then
+    export VAULT="$WORKSPACE/MyVault"                  # legacy symlink
+else
+    export VAULT="$HOME/Library/.../iCloud/MyVault"    # direct iCloud path
+fi
+```
+
+```python
+# _paths.py
+_vault_nosync = WORKSPACE / "MyVault.nosync"
+_vault_legacy = WORKSPACE / "MyVault"
+_vault_direct = Path.home() / "Library" / "..." / "MyVault"
+
+VAULT = next(p for p in [_vault_nosync, _vault_legacy, _vault_direct] if p.exists())
+```
+
+**Key principle**: Scripts reference `VAULT` from `_paths`, never construct the path themselves. This ensures the `.nosync` migration doesn't break anything — old scripts using the fallback chain still work.
+
+---
+
+## ~/.claude/ Symlinks: Direct to Vault
+
+**Critical**: The `~/.claude/agents`, `~/.claude/skills`, and `~/.claude/hooks` symlinks must point **directly to the Vault's iCloud path**, not through the workspace symlink.
+
+```bash
+# ❌ BAD — breaks if workspace symlink is renamed
+~/.claude/agents → /workspace/MyVault/_Agent_System/.../agents
+#                   ↑ this is a symlink, if renamed → chain breaks
+
+# ✅ GOOD — direct to iCloud container
+~/.claude/agents → ~/Library/Mobile Documents/iCloud~md~obsidian/.../agents
+#                   ↑ this is the real path, always stable
+```
+
+The bootstrap script handles this automatically.
+
+---
+
+## Primary / Secondary Machine Roles
+
+`.machine_role` uses hostname-based entries so multiple machines can share the file via cloud sync:
+
+```
+# .machine_role
+AliceMacBook=primary
+WorkDesktop=secondary
+```
+
+- **Primary**: Full write access to shared resources (memory consolidation, scheduled tasks)
+- **Secondary**: Read-only for shared resources; local tasks still work
+
+Scripts use `require_primary()` to guard write operations:
+
+```python
+from _paths import require_primary
+require_primary("memory consolidation")  # exits if not primary
+```
 
 ---
 
@@ -212,7 +311,23 @@ When to re-run bootstrap:
 - New directory added (agents/, skills/, hooks/)
 - CLAUDE.md.template changed (path variables updated)
 - New machine setup
+- **After migrating symlinks to `.nosync`** (one-time)
 
 ---
 
-*One source of truth. Infinite deployments.* 🐚
+## Migration Checklist: Adding .nosync
+
+If you're adding `.nosync` protection to an existing setup:
+
+1. **Rename workspace symlinks**: `mv MyVault MyVault.nosync`
+2. **Update `_paths.sh` / `_paths.py`**: Add `.nosync` to fallback chain
+3. **Update `setup-symlinks.sh`**: Create `.nosync` symlinks, clean old names
+4. **Update `bootstrap.sh`**: Same as above
+5. **Fix `~/.claude/` symlinks**: Point directly to iCloud, not through workspace
+6. **Update `.gitignore`**: Add `*.nosync` entries
+7. **Grep for hardcoded paths**: `grep -r 'MyVault/' scripts/ | grep -v _paths`
+8. **Run all scripts**: Verify nothing breaks with the new paths
+
+---
+
+*One source of truth. Infinite deployments. Zero symlink conflicts.* 🐚
