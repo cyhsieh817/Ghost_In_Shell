@@ -21,6 +21,15 @@ Ghost In Shell uses a **hot/cold separation** strategy inspired by CPU cache hie
 
 ```
 ┌─────────────────────────────────────────┐
+│   Claude Code Auto Memory (Built-in)    │
+│  ~/.claude/projects/<id>/memory/        │
+│  ┌──────────────────────────────────┐   │
+│  │ MEMORY.md  (≤80 lines)           │   │
+│  │ Guidance summaries only          │   │
+│  │ ⚠️ Must be created manually      │   │
+│  └──────────────────────────────────┘   │
+│  Independent from @import layer below   │
+├─────────────────────────────────────────┤
 │        Always Loaded (~230 lines)        │
 │  ┌──────────────┐  ┌─────────────────┐  │
 │  │ L0 MEMORY.md │  │ L1 fact.yml     │  │
@@ -48,6 +57,8 @@ Ghost In Shell uses a **hot/cold separation** strategy inspired by CPU cache hie
 ```
 
 **Result**: Only ~230 lines loaded per session vs 500+ in a single-file approach, while the cognitive layer works in the background to strengthen useful memories and surface patterns.
+
+> **Important**: The "Always Loaded" layer loads via `@import` in `CLAUDE.md` — it works regardless of whether the Claude Code Auto Memory layer exists. The two layers are fully independent.
 
 ---
 
@@ -415,16 +426,95 @@ When the agent learns something new, it goes to the right layer:
 | Recurring principle identified | `principles_candidates.jsonl` | JSONL append |
 | Current task notes | `scratchpad.md` | Markdown |
 | Navigation update | `MEMORY.md` | Markdown |
+| Cross-session guidance summaries | `~/.claude/projects/<id>/memory/MEMORY.md` | Markdown (≤80 lines) |
+
+**Auto Memory routing rules**:
+- ✅ Allowed: default output paths, tool selection rules, trigger reminders, feedback index
+- ❌ Forbidden: complete memory content (that belongs in workspace layer)
 
 ---
 
 ## Maintenance Automation
+
+### Auto Session Logging (Stop Hook)
+
+When a session ends, a **Stop hook** automatically records what was done:
+
+```
+Claude finishes responding (Stop event)
+    ↓
+memory_session_log.py (async, non-blocking)
+    ↓
+    1. git diff --stat HEAD → infer changed files
+    2. git ls-files --others → catch untracked new files
+    3. Changes ≥ 2 files → append to episodic.jsonl
+       (auto-generates id / type / title / importance)
+    4. Run memory_trigger_check.py → consolidation if threshold met
+```
+
+**Hook configuration** (in `~/.claude/settings.json`):
+
+```json
+{
+  "hooks": {
+    "Stop": [{
+      "matcher": "",
+      "hooks": [{
+        "type": "command",
+        "command": "python3 /path/to/scripts/memory_session_log.py",
+        "timeout": 15,
+        "async": true
+      }]
+    }]
+  }
+}
+```
+
+**Auto-generated entry schema**:
+
+```jsonl
+{"id":"ep-2025-01-20-003","date":"2025-01-20","ts":"2025-01-20T22:04:40+08:00","type":"refactor","title":"Session auto-log: _paths.py, bootstrap.sh, etc. 26 files","content":"Modified 26 files. 26 files changed, 1294 insertions(+), 114 deletions(-)","tags":["scripts","config"],"importance":8,"source":"stop_hook","decay_status":"active"}
+```
+
+**Key details**:
+- `source: "stop_hook"` distinguishes auto-logged from manually-written entries
+- `importance` scales with file count: `min(5 + file_count / 3, 8)`
+- Type is inferred from changed paths: `scripts/` → refactor, `CLAUDE.md` → setup, etc.
+- Sessions with < 2 file changes are skipped (avoids trivial records)
 
 ### Session End Check
 ```bash
 # Check if memory needs consolidation
 python3 scripts/memory_trigger_check.py
 ```
+
+### Validation
+
+The **memory validator** (`memory_validate.py`) performs 18 checks across structure, integrity, and consistency:
+
+```bash
+# Full validation
+python3 scripts/memory_validate.py
+
+# Runs as part of daily review
+python3 scripts/memory_daily_review_launcher.py
+```
+
+**Validation checks**:
+
+| Check | What |
+|-------|------|
+| V01 | JSON parseable |
+| V02 | Schema (required fields, valid types, ID format) |
+| V06 | ID uniqueness |
+| V07 | ID date matches date field |
+| V08-V12 | Consolidation reference integrity |
+| V13-V14 | Manifest consistency |
+| V15-V18 | Cross-reference & self-reference checks |
+
+**Allowed episode types**: `decision`, `failure`, `milestone`, `insight`, `pitfall`, `bugfix`, `setup`, `integration`, `refactor`, `knowledge_digest`, `discovery`, `architecture`, `deployment`, `security`
+
+**Defensive coding**: All field accesses use `.get()` with defaults — entries with missing fields produce warnings, not crashes.
 
 ### Weekly Consolidation
 ```bash
@@ -466,8 +556,8 @@ python3 scripts/memory_status.py
 
 | Frequency | Task | Command |
 |-----------|------|---------|
-| Every session end | Trigger check | `python3 scripts/memory_trigger_check.py` |
-| Daily | Review + flush buffer | `bash scripts/memory_daily_review.sh` |
+| Every session end | **Auto-log + trigger check** | Stop hook → `memory_session_log.py` |
+| Daily | Review + validate + flush buffer | `bash scripts/memory_daily_review.sh` |
 | Weekly | Consolidation + strength | `bash scripts/memory_weekly_consolidate.sh` |
 | Weekly | Extract principles | `python3 scripts/memory_associate.py extract-principles` |
 | On demand | Health check | `python3 scripts/memory_associate.py health` |
@@ -509,6 +599,10 @@ python3 scripts/memory_status.py
 | Ignore strength decay | Low-strength memories signal cleanup opportunities |
 | Auto-approve all principles | Human review prevents bad rules from propagating |
 | Manually track memory access | Let the retrieval hook do it transparently |
+| Let MEMORY.md "最後整合" date go stale | Update header timestamp whenever milestones are added |
+| Hardcode `$HOME` in MEMORY.md reference paths | Use `$WORKSPACE/` — MEMORY.md is cross-machine too |
+| Assume auto memory directory exists | It must be created manually on each machine; absence doesn't affect @import layer |
+| Store complete memory in auto memory layer | Auto memory is summaries only (≤80 lines); formal memory goes in workspace |
 
 ---
 

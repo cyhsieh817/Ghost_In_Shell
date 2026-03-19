@@ -158,6 +158,76 @@ If you work across multiple repos, your global CLAUDE.md imports identity/memory
 
 ---
 
+## Claude Code Auto Memory
+
+Claude Code has a built-in persistent memory feature that writes to a project-specific directory:
+
+```
+~/.claude/projects/<encoded-project-path>/memory/MEMORY.md
+```
+
+Where `<encoded-project-path>` is the project directory path with `/` replaced by `-`.
+
+### Key Facts
+
+| Property | Detail |
+|----------|--------|
+| Location | `~/.claude/projects/-Users-alice-projects-myagent/memory/MEMORY.md` |
+| Created | **Manually** — does NOT auto-create |
+| Purpose | Cross-session guidance summaries |
+| Max size | ≤ 80 lines |
+| Independence | **Completely separate from @import layer** — missing this dir does NOT break primary memory |
+
+### What Goes Here vs Workspace Memory
+
+| Auto Memory (`~/.claude/projects/.../memory/`) | Workspace Memory (`$WORKSPACE/memory/`) |
+|---|---|
+| Guidance summaries | Formal knowledge |
+| Tool selection rules | fact.yml facts |
+| Trigger reminders | episodic.jsonl events |
+| Output path pointers | scratchpad.md tasks |
+| ≤ 80 lines | No size limit |
+
+### Initial Setup (Per Machine)
+
+```bash
+# Create the directory (one-time, per machine)
+mkdir -p ~/.claude/projects/$(pwd | tr '/' '-' | sed 's/^-//')/memory/
+
+# Write a guidance summary
+cat > ~/.claude/projects/.../memory/MEMORY.md << 'EOF'
+# Auto Memory — Guidance Layer
+# ⛔ Summaries only. Full memory lives in $WORKSPACE/memory/
+
+## Default Output Paths
+- Formal facts: $WORKSPACE/memory/fact.yml
+- Episodes: $WORKSPACE/memory/episodic.jsonl
+- Tasks: $WORKSPACE/memory/scratchpad.md
+
+## Tool Selection Rules
+- [Your rules here]
+
+## Trigger Reminders
+- [Your reminders here]
+EOF
+```
+
+### Diagnostic Check
+
+```bash
+# Verify both layers exist
+PROJ_PATH=$(pwd | sed 's|/|-|g' | sed 's/^-//')
+ls ~/.claude/projects/$PROJ_PATH/memory/MEMORY.md 2>/dev/null \
+  && echo "✅ Auto memory: present" \
+  || echo "⚠️  Auto memory: missing (non-critical)"
+
+ls $WORKSPACE/memory/fact.yml 2>/dev/null \
+  && echo "✅ Primary memory: present" \
+  || echo "❌ Primary memory: MISSING (critical)"
+```
+
+---
+
 ## Non-Claude Code Platforms
 
 The same files work with other tools:
