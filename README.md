@@ -53,14 +53,40 @@ python3 create_agent.py
 
 5-step wizard → complete agent config in ~3 minutes, zero placeholder residue.
 
+If you plan to run **more than one AI CLI** in the same workspace, treat the starter kit as your **core memory layer** first, then add:
+
+- one root instruction file per CLI (`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`, etc.)
+- a shared launcher / wrapper layer
+- session-end auto-logging to `memory/episodic.jsonl`
+
 ### Option B: Manual Setup
 
 1. Copy `examples/minimal/` to your project root
 2. Edit `IDENTITY.md`, `SOUL.md`, `USER.md`
 3. Configure `memory/fact.yml`
-4. Point your AI tool's config to load these files
+4. Point your primary AI tool to load these files
+5. If multiple CLIs will share the same workspace, add companion root files (`GEMINI.md`, `AGENTS.md`, `COPILOT.md`, `CODEX.md`, `OPENCLAW.md`)
+6. Add a wrapper or native stop-hook layer so session-end logging does not depend on human memory
 
 → [Full Quick Start Guide](docs/01_Quick_Start.md)
+
+If you want a copy-ready bundle, start from [`examples/multi_cli_memory/`](examples/multi_cli_memory/).
+
+---
+
+## Portable Memory Automation (Recommended for Real Use)
+
+The framework works with just Markdown files, but **teaching it to other people becomes much easier** when you also package the automation layer. The filenames below are a **reference naming scheme**, not a starter-kit requirement.
+
+| File / Layer | Purpose |
+|--------------|---------|
+| `memory/runtime_profiles.yml` | Canonical map of runtime IDs, executors, and launchers |
+| `scripts/llm_memory_wrapper.py` | Shared launcher that injects runtime metadata before starting a CLI |
+| `scripts/memory_session_log.py` | Session-end logger that turns `git diff` into `episodic.jsonl` entries |
+| `scripts/install_llm_shell_aliases.py` | Optional shell installer so `claude`, `gemini`, etc. automatically route through wrappers |
+| `CLAUDE.md` / `GEMINI.md` / `AGENTS.md` / `COPILOT.md` / `CODEX.md` / `OPENCLAW.md` | Per-CLI root instructions with just-enough context |
+
+**Key lesson**: the model should not have to "remember" to run memory scripts. The **wrapper / hook layer owns that responsibility**.
 
 ---
 
@@ -128,8 +154,9 @@ v4 Cognitive layer (background):
   principles_candidates.jsonl ← Auto-extracted rules (human-approved)
   .retrieval_buffer.jsonl     ← Hook-based access tracking
 
-Auto-logging (Stop hook):
-  Session ends → git diff → episodic.jsonl  ← Zero manual effort
+Auto-logging (wrapper exit or native stop hook):
+  Session ends → memory_session_log.py → episodic.jsonl
+  runtime + trigger + session_id captured automatically
 ```
 
 **Result**: 76% token reduction vs loading everything, plus memories that strengthen with use and fade when forgotten. **Auto-session logging** ensures no work goes unrecorded.
@@ -168,6 +195,7 @@ Vault/
 | Example | Description | Files |
 |---------|-------------|-------|
 | [`minimal/`](examples/minimal/) | Bare essentials — identity + memory + rules | 6 files |
+| [`multi_cli_memory/`](examples/multi_cli_memory/) | Shared wrappers + runtime registry + session-end logging | Reference bundle |
 | [`team/`](examples/team/) | Multi-agent with shared vault & worker inboxes | Full setup |
 
 ---
@@ -185,10 +213,13 @@ Ghost In Shell is **LLM-agnostic**. The framework works with:
 
 | Platform | Integration Method |
 |----------|-------------------|
-| Claude Code | Native `CLAUDE.md` + `@import` |
-| Cursor | `.cursorrules` or project rules |
-| OpenClaw | `openclaw.json` multi-agent config |
-| Any LLM | Markdown files as system context |
+| Claude Code | `CLAUDE.md` + `@import` + optional native auto-memory |
+| Gemini CLI | `GEMINI.md` + shared wrapper / launcher |
+| GitHub Copilot CLI | `AGENTS.md` or `COPILOT.md` + shared wrapper / launcher |
+| Codex CLI | `CODEX.md` + shared wrapper / launcher |
+| OpenClaw | `OPENCLAW.md` / `openclaw.json` + shared wrapper / launcher |
+| Cursor / Windsurf / Continue | Project rules + the same workspace memory files |
+| Any LLM | Markdown files as system context + optional wrapper / hook layer |
 
 ---
 
