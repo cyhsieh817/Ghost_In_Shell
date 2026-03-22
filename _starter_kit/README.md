@@ -1,7 +1,7 @@
 # Ghost In Shell — Starter Kit 🐚
 
 > **Interactive CLI: deploy a complete AI agent system in ~3 minutes.**
-> Zero placeholder residue. Hot/cold memory. CLAUDE.md native.
+> Zero placeholder residue. Hot/cold memory. CLAUDE.md native. Multi-CLI ready.
 
 ---
 
@@ -13,6 +13,8 @@ python3 create_agent.py
 ```
 
 No arguments needed — the wizard guides you through everything.
+
+This starter kit generates the **core memory system** first. If you later want Claude / Gemini / Copilot / Codex / OpenClaw to share one memory graph, add the multi-CLI automation layer after the initial bootstrap.
 
 ---
 
@@ -76,6 +78,42 @@ your_vault/
 ```
 
 **Total: 14 files generated, zero placeholder residue.**
+
+This is intentionally the **minimal portable core**. For a production multi-CLI deployment, the next upgrade is:
+
+- companion root files: `GEMINI.md`, `AGENTS.md`, `COPILOT.md`, `CODEX.md`, `OPENCLAW.md`
+- shared runtime registry: `memory/runtime_profiles.yml`
+- wrapper / launcher scripts
+- session-end auto-logging to `memory/episodic.jsonl`
+
+---
+
+## Recommended Upgrade: Multi-CLI Memory Layer
+
+Once the generated workspace works with one CLI, add:
+
+1. **One root file per CLI**
+   - `CLAUDE.md` for primary orchestration
+   - `GEMINI.md` for overflow / long-context work
+   - `AGENTS.md` / `COPILOT.md` for read-only review
+   - `CODEX.md` / `OPENCLAW.md` for alternate executors
+
+2. **A deterministic launcher / hook layer**
+   - wrapper script to inject runtime metadata
+   - session-end logger to append `episodic.jsonl`
+   - optional shell installer so users can type `claude` / `gemini` directly
+
+3. **A single shared memory registry**
+   - one `memory/episodic.jsonl`
+   - one `memory/runtime_profiles.yml`
+   - one canonical `MEMORY.md` router
+
+See:
+
+- `docs/03_Memory_Architecture.md`
+- `docs/11_Claude_Code_Integration.md`
+- `docs/14_Multi_CLI_Orchestration.md`
+- `../examples/multi_cli_memory/`
 
 ---
 
@@ -143,6 +181,8 @@ Perfect! All placeholders resolved. Zero residue.
 | Chinese UI | English UI (open-source ready) |
 | Config dir output | Smart routing (files go to correct locations) |
 | structure/ copy | Programmatic directory creation |
+
+**Recommended v4+ operational layer**: add shared wrappers + session-end logging when multiple CLIs will collaborate in one workspace.
 
 ---
 

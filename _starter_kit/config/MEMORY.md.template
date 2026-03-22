@@ -1,6 +1,6 @@
 # {{AGENT_NAME}} — Memory Index {{AGENT_EMOJI}}
 
-> Memory system entry point (L0). Always loaded. Never stores actual data — only navigation.
+> Memory system entry point (L0). Always loaded by `CLAUDE.md` or an equivalent root file. Never stores actual data — only navigation.
 
 ---
 
@@ -37,9 +37,9 @@
 ## Loading Strategy
 
 ```
-1. Session start → This file + fact.yml (auto via CLAUDE.md)
+1. Session start → This file + fact.yml (auto via `CLAUDE.md` or equivalent root file)
 2. Need detail → Load relevant layer on demand
-3. Task complete → Update episodic.jsonl if significant
+3. Task complete → Update episodic.jsonl if significant (manually or via automation)
 4. Session end → Clear scratchpad if task finished
 ```
 

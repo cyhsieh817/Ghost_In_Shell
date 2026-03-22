@@ -9,6 +9,7 @@
 - Python 3.8+ (for the CLI generator)
 - An AI tool that supports loading markdown files (Claude Code, Cursor, etc.)
 - A directory for your agent's workspace
+- Optional but recommended: shell or tool-level hooks so session-end logging can be automated
 
 ---
 
@@ -30,6 +31,8 @@ The wizard walks you through 5 steps:
 | 5. System (optional) | Tools, notification preferences, rules | 60s |
 
 **Output**: Complete directory structure + 19 config files, zero placeholder residue.
+
+This gives you the **core memory system**. For a production-ready setup shared across Claude / Gemini / Copilot / Codex / OpenClaw, add the automation layer after the first successful launch.
 
 ---
 
@@ -152,12 +155,36 @@ Read IDENTITY.md, SOUL.md, and USER.md at the start of every session.
 Always check MEMORY.md before starting work.
 ```
 
+**For multi-CLI deployments (recommended after the basics work)**:
+
+1. Create one root instruction file per CLI:
+
+   | CLI | Root File | Typical Role |
+   |-----|-----------|--------------|
+   | Claude Code | `CLAUDE.md` | Primary orchestrator |
+   | Gemini CLI | `GEMINI.md` | Overflow / long-context |
+   | GitHub Copilot CLI | `AGENTS.md` or `COPILOT.md` | Review / secondary executor |
+   | Codex CLI | `CODEX.md` | Alternative implementation engine |
+   | OpenClaw | `OPENCLAW.md` | Local agent / bridge |
+
+2. Add a shared automation layer:
+   - `memory/runtime_profiles.yml` → runtime / executor / launcher mapping
+   - `scripts/llm_memory_wrapper.py` → shared launcher
+   - `scripts/memory_session_log.py` → session-end logger
+   - `scripts/install_llm_shell_aliases.py` → optional shell installer
+
+3. Make the launcher or native stop hook responsible for logging. Do **not** rely on the model to remember:
+   - when to run `memory_runtime.py`
+   - when to append to `episodic.jsonl`
+   - when to trigger consolidation checks
+
 ### Step 5: Test It
 
 Start a new session and ask:
 - "Who are you?" → Should respond with identity from IDENTITY.md
 - "What do you remember about me?" → Should reference USER.md + fact.yml
 - "What are the rules?" → Should list rules from SOUL.md + fact.yml
+- If you installed wrapper / hook automation: make a small edit, end the session, and confirm a new entry appears in `memory/episodic.jsonl`
 
 ---
 
@@ -169,6 +196,7 @@ Start a new session and ask:
 | Optimize memory for token efficiency | [03 Memory Architecture](03_Memory_Architecture.md) |
 | Organize files properly | [04 Workspace Structure](04_Workspace_Structure.md) |
 | Add task classification | [05 Task Management](05_Task_Management.md) |
+| Set up a real multi-CLI wrapper bundle | [`../examples/multi_cli_memory/`](../examples/multi_cli_memory/) |
 | Set up for a team | [09 Multi-Agent Sync](09_Multi_Agent_Sync.md) |
 
 ---

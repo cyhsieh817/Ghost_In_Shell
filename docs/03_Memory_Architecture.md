@@ -436,23 +436,48 @@ When the agent learns something new, it goes to the right layer:
 
 ## Maintenance Automation
 
-### Auto Session Logging (Stop Hook)
+### Auto Session Logging (Wrapper Exit or Native Stop Hook)
 
-When a session ends, a **Stop hook** automatically records what was done:
+When a session ends, the **launcher / hook layer** automatically records what was done:
 
 ```
-Claude finishes responding (Stop event)
+CLI exits through wrapper
+  ── or ──
+Native Stop event fires
     ↓
 memory_session_log.py (async, non-blocking)
     ↓
-    1. git diff --stat HEAD → infer changed files
-    2. git ls-files --others → catch untracked new files
-    3. Changes ≥ 2 files → append to episodic.jsonl
-       (auto-generates id / type / title / importance)
-    4. Run memory_trigger_check.py → consolidation if threshold met
+    1. Resolve runtime profile (`claude-code`, `gemini-cli`, `copilot-cli`, etc.)
+    2. git diff --stat HEAD → infer changed files
+    3. git ls-files --others → catch untracked new files
+    4. Changes ≥ 2 files → append to episodic.jsonl
+       (auto-generates id / type / title / importance / runtime / trigger)
+    5. Run memory_trigger_check.py → consolidation if threshold met
 ```
 
-**Hook configuration** (in `~/.claude/settings.json`):
+**Why wrapper-first?**
+
+- The model should **not** have to remember to run `memory_runtime.py`
+- The model should **not** have to remember to append to `episodic.jsonl`
+- The launcher or hook is deterministic; the model is not
+
+**Portable wrapper pattern** (example naming scheme):
+
+```bash
+bash scripts/void-claude.sh
+bash scripts/void-gemini.sh
+bash scripts/void-copilot.sh
+bash scripts/void-openclaw.sh
+```
+
+These wrappers can:
+
+1. set `VOID_MEMORY_RUNTIME`
+2. set `VOID_MEMORY_EXECUTOR`
+3. generate a `VOID_MEMORY_SESSION_ID`
+4. call `memory_session_log.py` on exit
+
+**Native hook configuration** (example: Claude Code `~/.claude/settings.json`):
 
 ```json
 {
@@ -461,7 +486,7 @@ memory_session_log.py (async, non-blocking)
       "matcher": "",
       "hooks": [{
         "type": "command",
-        "command": "python3 /path/to/scripts/memory_session_log.py",
+        "command": "python3 /path/to/scripts/memory_session_log.py --runtime claude-code --trigger stop-hook",
         "timeout": 15,
         "async": true
       }]
@@ -470,16 +495,37 @@ memory_session_log.py (async, non-blocking)
 }
 ```
 
+**Shared runtime registry** (recommended):
+
+```yaml
+default_executor: claude
+default_runtime: claude-code
+executors:
+  claude: { binary: "claude" }
+  gemini: { binary: "gemini" }
+  copilot: { binary: "copilot" }
+runtimes:
+  claude-code: { source: "stop_hook:claude-code" }
+  gemini-cli:  { source: "stop_hook:gemini-cli" }
+  copilot-cli: { source: "stop_hook:copilot-cli" }
+launchers:
+  claude:  { runtime: "claude-code", executor: "claude" }
+  gemini:  { runtime: "gemini-cli", executor: "gemini" }
+  copilot: { runtime: "copilot-cli", executor: "copilot" }
+```
+
 **Auto-generated entry schema**:
 
 ```jsonl
-{"id":"ep-2025-01-20-003","date":"2025-01-20","ts":"2025-01-20T22:04:40+08:00","type":"refactor","title":"Session auto-log: _paths.py, bootstrap.sh, etc. 26 files","content":"Modified 26 files. 26 files changed, 1294 insertions(+), 114 deletions(-)","tags":["scripts","config"],"importance":8,"source":"stop_hook","decay_status":"active"}
+{"id":"ep-2025-01-20-003","date":"2025-01-20","ts":"2025-01-20T22:04:40+08:00","type":"refactor","title":"Session auto-log: _paths.py, bootstrap.sh, etc. 26 files","content":"Modified 26 files. 26 files changed, 1294 insertions(+), 114 deletions(-)","tags":["scripts","config","runtime:claude-code"],"importance":8,"source":"stop_hook:claude-code","runtime":"claude-code","trigger":"wrapper-exit","session_id":"claude-code-1737381880-1234","decay_status":"active"}
 ```
 
 **Key details**:
-- `source: "stop_hook"` distinguishes auto-logged from manually-written entries
+- `source` identifies the runtime source (`stop_hook:claude-code`, `stop_hook:gemini-cli`, etc.)
+- `trigger` distinguishes wrapper-exit from native hook entrypoints
+- `runtime` makes cross-CLI memory traces searchable later
 - `importance` scales with file count: `min(5 + file_count / 3, 8)`
-- Type is inferred from changed paths: `scripts/` → refactor, `CLAUDE.md` → setup, etc.
+- Type is inferred from changed paths: `scripts/` → refactor, root config files → setup, etc.
 - Sessions with < 2 file changes are skipped (avoids trivial records)
 
 ### Session End Check
@@ -556,7 +602,7 @@ python3 scripts/memory_status.py
 
 | Frequency | Task | Command |
 |-----------|------|---------|
-| Every session end | **Auto-log + trigger check** | Stop hook → `memory_session_log.py` |
+| Every session end | **Auto-log + trigger check** | Wrapper exit or Stop hook → `memory_session_log.py` |
 | Daily | Review + validate + flush buffer | `bash scripts/memory_daily_review.sh` |
 | Weekly | Consolidation + strength | `bash scripts/memory_weekly_consolidate.sh` |
 | Weekly | Extract principles | `python3 scripts/memory_associate.py extract-principles` |

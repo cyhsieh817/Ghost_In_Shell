@@ -188,6 +188,8 @@ Where `<encoded-project-path>` is the project directory path with `/` replaced b
 | Output path pointers | scratchpad.md tasks |
 | ≤ 80 lines | No size limit |
 
+**Important**: Claude Code auto memory is a **guidance layer**, not your primary event log. Session logging still belongs in the workspace layer (`memory/episodic.jsonl`), ideally through a wrapper or native Stop hook.
+
 ### Initial Setup (Per Machine)
 
 ```bash
@@ -230,16 +232,24 @@ ls $WORKSPACE/memory/fact.yml 2>/dev/null \
 
 ## Non-Claude Code Platforms
 
-The same files work with other tools:
+The same identity and memory files also work with other tools:
 
 | Platform | How to Load |
 |----------|-------------|
+| **Gemini CLI** | Add `GEMINI.md`, then launch via shared wrapper / hook |
+| **GitHub Copilot CLI** | Use `AGENTS.md` or `COPILOT.md`, plus shared wrapper / hook |
+| **Codex CLI** | Add `CODEX.md`, plus shared wrapper / hook |
+| **OpenClaw** | Add `OPENCLAW.md` or `openclaw.json`, plus shared wrapper / hook |
 | **Cursor** | Add to `.cursorrules` or project settings |
 | **Continue.dev** | Reference in `.continuerc.json` context |
 | **Windsurf** | Add to `.windsurfrules` |
-| **Any LLM** | Paste SOUL.md + fact.yml into system prompt |
+| **Any LLM** | Paste SOUL.md + MEMORY.md + fact.yml into system prompt |
 
-The framework is the same — only the loading mechanism changes.
+The framework is the same — only the loading mechanism changes. In a multi-CLI stack:
+
+- `CLAUDE.md` usually remains the **primary orchestrator** file
+- companion files (`GEMINI.md`, `AGENTS.md`, `COPILOT.md`, `CODEX.md`, `OPENCLAW.md`) provide **just-enough context**
+- the wrapper / hook layer owns `memory_session_log.py`, not the model
 
 ---
 
