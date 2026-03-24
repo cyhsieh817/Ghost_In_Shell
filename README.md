@@ -29,6 +29,11 @@ Every time you start a new AI session, your agent:
 │              │  L0.5:Scratch│   Naming Rules │
 │              │  v4:Cognitive│                │
 ├──────────────┴──────────────┴────────────────┤
+│           Three-Layer Enforcement             │
+│   L1: deny list (settings.json) — 100%       │
+│   L2: PreToolUse Hook (shell guard) — 100%   │
+│   L3: rules/ + SOUL.md (guidance) — ~80%     │
+├──────────────────────────────────────────────┤
 │              Workspace (PARA)                 │
 │   _Agent_System/  (agent's domain)           │
 │   _User_Workspace/ (human's domain)          │
@@ -244,6 +249,8 @@ Ghost_In_Shell/
 ├── docs/                  ← 16 design documents
 │   ├── 01_Quick_Start.md
 │   ├── ...
+│   ├── 06_Security_Model.md  ← Three-layer enforcement (NEW)
+│   ├── 11_Claude_Code_Integration.md ← Path-scoped rules (NEW)
 │   └── 16_Skill_Ecosystem.md
 ├── starter_kit/           ← Interactive CLI + templates
 │   ├── create_agent.py

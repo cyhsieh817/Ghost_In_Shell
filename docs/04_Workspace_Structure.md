@@ -12,14 +12,13 @@ Ghost In Shell separates the agent's workspace from the human's workspace:
 Vault/                          ← Root (synced via iCloud/Dropbox/Git)
 │
 ├── _Agent_System/              ← 🤖 Agent's domain
-│   ├── 00_Framework/           ← System architecture docs
-│   ├── 00_Self_Introduction/   ← Agent identity files
 │   ├── 01_Inbox/               ← Agent's incoming items
 │   ├── 02_Memory/              ← Extended memory storage
 │   ├── 10_Projects/            ← Active project workspaces
 │   ├── 20_Areas/               ← Ongoing responsibilities
 │   ├── 30_Resources/           ← Knowledge base by domain
 │   ├── 31_Assets/              ← Static assets (images, templates)
+│   ├── 35_Skills/              ← Agent skill definitions
 │   ├── 40_Archive/             ← Completed/inactive items
 │   └── 99_System/              ← System config, logs, policies
 │       ├── 990_POLICY/         ← Access control, autonomy rules
@@ -182,7 +181,7 @@ Directories have permission levels (defined in `ACCESS_POLICY.md`):
 
 | Zone | Directories | Agent Can... |
 |------|-------------|-------------|
-| 🔴 PROTECTED | `00_Self_Introduction/`, `26_Security/` | Read only. Changes need human approval |
+| 🔴 PROTECTED | `SOUL.md`, `IDENTITY.md`, `USER.md` (workspace root), `26_Security/` | Read only. Changes need human approval |
 | 🟡 MANAGED | `10_Projects/`, `20_Areas/`, `30_Resources/` | Create/modify. Delete = `_DELETE_` prefix |
 | 🟢 OPEN | `01_Inbox/`, `40_Archive/`, Logs | Full read/write/delete access |
 
