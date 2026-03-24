@@ -105,9 +105,14 @@ project/
 
 ```
 project/
-├── CLAUDE.md           ← @imports + project rules
+├── CLAUDE.md           ← @imports + project rules (<200 lines!)
 ├── .claude/
-│   └── CLAUDE.md       ← Global rules (if needed separately)
+│   ├── rules/          ← Path-scoped conditional rules
+│   │   ├── safety.md   ← Always loaded (no paths restriction)
+│   │   ├── project.md  ← Loaded only when touching project/** files
+│   │   └── domain.md   ← Loaded only when touching domain/** files
+│   ├── skills/         ← Agent-callable workflow skills
+│   └── agents/         ← Specialized sub-agents with own context
 ├── IDENTITY.md
 ├── SOUL.md
 ├── USER.md
@@ -141,6 +146,62 @@ Compare to loading everything (~2000+ lines) — this is an **80% reduction**.
 
 ---
 
+## Path-Scoped Rules (`.claude/rules/`)
+
+Rules files in `.claude/rules/` provide **conditional context injection** — they only load when the agent operates on matching files, saving tokens on unrelated tasks.
+
+### How It Works
+
+```
+project/
+├── .claude/
+│   └── rules/
+│       ├── safety.md       ← Always loaded (no paths restriction)
+│       ├── ycbio.md         ← Loaded only when touching ycbio/** files
+│       └── literature.md    ← Loaded only when touching lit_* files
+```
+
+### Rule File Format
+
+```markdown
+---
+paths:
+  - "scripts/lit_*"
+  - "memory/knowledge.jsonl"
+  - "**/Knowledge_Digest/**"
+description: Literature pipeline rules — only loaded when touching literature files
+---
+
+# Literature Pipeline Rules
+
+- knowledge.jsonl ID format: k{NNN}, three-digit sequential
+- Frontmatter tags must be JSON array format (not YAML list)
+- Use atomic write: tempfile + rename to prevent corruption on interrupt
+```
+
+### Key Properties
+
+| Property | Detail |
+|----------|--------|
+| `paths` | Glob patterns — rule loads only when the tool target matches |
+| No `paths` | Rule loads for **all** operations (use for global safety rules) |
+| Scope | Project-level (`.claude/rules/`) or global (`~/.claude/rules/`) |
+| Priority | User-level rules < project-level rules |
+| Token savings | 20-30 lines per skipped rule file on unrelated tasks |
+
+### When to Use Rules vs CLAUDE.md
+
+| Content | Put In | Why |
+|---------|--------|-----|
+| Global safety rules | `rules/safety.md` (no paths) | Always available, separated from project config |
+| Project-specific conventions | `rules/project.md` | Keeps CLAUDE.md lean |
+| Domain-specific workflows | `rules/domain.md` (with paths) | Only loaded when relevant |
+| Identity, memory, navigation | `CLAUDE.md` + @import | Core context, always needed |
+
+**Key lesson**: CLAUDE.md should stay under **200 lines**. Beyond that, compliance drops. Split domain-specific rules into `rules/` and use path-scoping to load them only when needed.
+
+---
+
 ## Tips
 
 ### Keep @imported Files Small
@@ -152,9 +213,10 @@ Don't import everything — import the index, and let the agent load details on 
 ### Project vs Global
 - **Global** (`~/.claude/CLAUDE.md`): Identity, memory, preferences
 - **Project** (`./CLAUDE.md`): Tech stack, conventions, project-specific rules
+- **Path-scoped** (`.claude/rules/*.md`): Domain rules that only apply to matching files
 
 ### Multiple Projects, Same Agent
-If you work across multiple repos, your global CLAUDE.md imports identity/memory once, and each project's CLAUDE.md adds project-specific context.
+If you work across multiple repos, your global CLAUDE.md imports identity/memory once, and each project's CLAUDE.md adds project-specific context. Path-scoped rules keep domain logic isolated.
 
 ---
 

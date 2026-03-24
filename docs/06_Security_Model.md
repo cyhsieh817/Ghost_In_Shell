@@ -18,7 +18,7 @@ All directories fall into one of three zones:
 
 | Zone | Directories | Rationale |
 |------|-------------|-----------|
-| 🔴 PROTECTED | `00_Self_Introduction/`, `26_Security/`, `00_System_Architecture.md` | Core identity and security — too critical for unsupervised changes |
+| 🔴 PROTECTED | `SOUL.md`, `IDENTITY.md`, `USER.md` (workspace root), `26_Security/` | Core identity and security — too critical for unsupervised changes |
 | 🟡 MANAGED | `10_Projects/`, `20_Areas/`, `30_Resources/`, `99_System/` | Active workspace — agent needs write access but deletions should be traceable |
 | 🟢 OPEN | `01_Inbox/`, `40_Archive/`, Log files | Transient or archival — low risk |
 
@@ -28,9 +28,8 @@ All directories fall into one of three zones:
 # Access Policy
 
 ## 🔴 PROTECTED (Read-Only)
-- `_Agent_System/00_Self_Introduction/`
+- Workspace root identity files: `SOUL.md`, `IDENTITY.md`, `USER.md`
 - `_Agent_System/20_Areas/26_Security/`
-- `_Agent_System/00_System_Architecture.md`
 
 ## 🟡 MANAGED (Write with Constraints)
 - `_Agent_System/10_Projects/`
@@ -185,14 +184,26 @@ All significant actions should be logged:
 
 When setting up a new agent:
 
+**Basics**:
 - [ ] Define permission zones in ACCESS_POLICY.md
 - [ ] Define autonomy boundaries in AUTONOMY_POLICY.md
 - [ ] List core locked files in CORE_LOCK.md
 - [ ] Set up deletion protection rules
+
+**Three-Layer Enforcement** (recommended):
+- [ ] Layer 1: Add dangerous commands to `settings.json` → `permissions.deny`
+- [ ] Layer 2: Create `~/.claude/hooks/safety-guard.sh` PreToolUse Hook
+- [ ] Layer 3: Create `.claude/rules/safety.md` with behavioral guidance
+- [ ] Create path-scoped rules for domain-specific workflows (`.claude/rules/`)
+
+**Verification**:
 - [ ] Configure notification channel for 🔴/🔒 events (optional)
 - [ ] Test: Can agent read 🔴 files? ✅
 - [ ] Test: Can agent modify 🔴 files without approval? ❌
 - [ ] Test: Does `_DELETE_` prefix work correctly? ✅
+- [ ] Test: Does `rm -rf` get blocked by deny list? ✅
+- [ ] Test: Does safety Hook intercept `git push --force`? ✅
+- [ ] Test: Do path-scoped rules load only for matching files? ✅
 
 ---
 
