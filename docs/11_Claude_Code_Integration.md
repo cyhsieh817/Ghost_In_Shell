@@ -299,7 +299,7 @@ The same identity and memory files also work with other tools:
 | Platform | How to Load |
 |----------|-------------|
 | **Gemini CLI** | Add `GEMINI.md`, then launch via shared wrapper / hook |
-| **GitHub Copilot CLI** | Use `AGENTS.md` or `COPILOT.md`, plus shared wrapper / hook |
+| **GitHub Copilot CLI** | Use `COPILOT.md` — ⚠️ must be set up at **global** config level (`~/.github/copilot/`), not per-project |
 | **Codex CLI** | Add `CODEX.md`, plus shared wrapper / hook |
 | **OpenClaw** | Add `OPENCLAW.md` or `openclaw.json`, plus shared wrapper / hook |
 | **Cursor** | Add to `.cursorrules` or project settings |

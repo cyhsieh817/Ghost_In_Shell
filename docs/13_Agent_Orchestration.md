@@ -347,6 +347,58 @@ Without explicit boundaries, agents accept any task and become mini-orchestrator
 
 ---
 
+## Model Tier Policy
+
+Not all agents need the same model. A search agent wastes tokens on Opus; a strategy analyst underperforms on Haiku. The **Model Tier Policy** assigns each agent an appropriate model tier.
+
+### Three Tiers
+
+| Tier | Model | Purpose |
+|------|-------|---------|
+| **T1 Deep Thought** | `opus` | Creative work, long-chain reasoning, multi-perspective weighing |
+| **T2 Execution** | `sonnet` | Clear instructions, structured output, search & retrieval |
+| **T3 Trivial** | `haiku` | Reserved for future lightweight tasks |
+
+### Assignment Types
+
+**Fixed assignments** — Zero judgment. The orchestrator always passes this model:
+
+```markdown
+| Agent | Model | Rationale |
+|-------|-------|-----------|
+| analyst | opus | Strategy needs long-chain reasoning |
+| Explore | sonnet | Pure search, no decision-making |
+```
+
+**Conditional assignments** — Default to Sonnet, upgrade to Opus when specific criteria are met:
+
+```markdown
+| Agent | Upgrade to Opus When |
+|-------|---------------------|
+| writer | Academic manuscripts, >3000 words |
+| coder | Architecture redesign, security changes |
+| researcher | Deep research, systematic review |
+```
+
+**Fallback** — Agents not listed inherit the parent's model. Never downgrade.
+
+### Where to Configure
+
+- **AGENTS.md** → `<model_tier_policy>` section (human-readable, always in context)
+- **fact.yml** → `agent_model_tiers` (machine-readable, for programmatic access)
+
+Keep both in sync. The AGENTS.md version is authoritative.
+
+### Why This Matters
+
+Without tiering, every subagent runs on whatever model the orchestrator uses. This means either:
+- **All Opus**: Expensive and slow for simple tasks
+- **All Sonnet**: Underperforms on tasks requiring deep reasoning
+
+Tiering gives you cost control and quality optimization in one policy.
+
+---
+
 ## Comparison with Other Approaches
 
 | Approach | Routing | Enforcement | Complexity |

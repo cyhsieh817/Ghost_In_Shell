@@ -41,7 +41,7 @@ Every time you start a new AI session, your agent:
 │            Optional Extensions                │
 │   Multi-Agent · Cross-Machine · Vector Memory │
 │   Evolution Protocol · Claude Code Native     │
-│   Agent Orchestration (Lane Routing)          │
+│   Agent Orchestration · Hook Self-Healing     │
 └──────────────────────────────────────────────┘
 ```
 
@@ -111,7 +111,7 @@ The framework works with just Markdown files, but **teaching it to other people 
 | # | Document | What You'll Learn |
 |---|----------|-------------------|
 | 05 | [Task Management](docs/05_Task_Management.md) | TRIAGE + iteration + task proposals |
-| 06 | [Security Model](docs/06_Security_Model.md) | Permission zones + deletion protection |
+| 06 | [Security Model](docs/06_Security_Model.md) | Permission zones + deletion protection + hook self-healing |
 | 07 | [Evolution Protocol](docs/07_Evolution_Protocol.md) | Self-improvement loops + heartbeat |
 | 08 | [Naming Convention](docs/08_Naming_Convention.md) | File & folder naming rules |
 
@@ -220,7 +220,7 @@ Ghost In Shell is **LLM-agnostic**. The framework works with:
 |----------|-------------------|
 | Claude Code | `CLAUDE.md` + `@import` + optional native auto-memory |
 | Gemini CLI | `GEMINI.md` + shared wrapper / launcher |
-| GitHub Copilot CLI | `AGENTS.md` or `COPILOT.md` + shared wrapper / launcher |
+| GitHub Copilot CLI | `COPILOT.md` + global config (`~/.github/copilot/`) |
 | Codex CLI | `CODEX.md` + shared wrapper / launcher |
 | OpenClaw | `OPENCLAW.md` / `openclaw.json` + shared wrapper / launcher |
 | Cursor / Windsurf / Continue | Project rules + the same workspace memory files |
