@@ -163,7 +163,7 @@ Always check MEMORY.md before starting work.
    |-----|-----------|--------------|
    | Claude Code | `CLAUDE.md` | Primary orchestrator |
    | Gemini CLI | `GEMINI.md` | Overflow / long-context |
-   | GitHub Copilot CLI | `AGENTS.md` or `COPILOT.md` | Review / secondary executor |
+   | GitHub Copilot CLI | `COPILOT.md` (⚠️ requires **global** config) | Review / secondary executor |
    | Codex CLI | `CODEX.md` | Alternative implementation engine |
    | OpenClaw | `OPENCLAW.md` | Local agent / bridge |
 

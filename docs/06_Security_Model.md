@@ -223,4 +223,155 @@ As your agent evolves, standalone policy files (ACCESS_POLICY.md, AUTONOMY_POLIC
 
 ---
 
+## Hook Self-Healing (HEAL Loop)
+
+Hooks are your enforcement backbone. But hooks can **fail silently** — a broken script, a missing permission, a timeout. If you don't know a hook failed, your safety layer has a hole you can't see.
+
+The HEAL Loop makes hook failure **impossible to miss**.
+
+### Architecture: Three Layers
+
+```
+Layer 1: Sentinel (Execution Proof)
+  Every hook writes a JSON file to /tmp/ on success.
+  Missing sentinel = hook failed silently.
+
+Layer 2: Health Check (Detection)
+  SessionStart hook scans previous session's sentinels.
+  Missing sentinels → WARNING injected into agent context.
+
+Layer 3: Integrity (Diagnosis + Repair)
+  checker: read-only scan (permissions, file structure, JSON validity)
+  fixer: repair what checker found (mkdir, chmod, quarantine corrupted files)
+  Separation principle: detection NEVER has side effects.
+```
+
+### Layer 1: Sentinel Library
+
+Create shared sentinel functions for each language your hooks use:
+
+```bash
+# ~/.claude/hooks/lib/sentinel.sh
+write_sentinel() {
+  local hook_name="$1"
+  local session_id="${CLAUDE_SESSION_ID:-$$}"
+  local sentinel_dir="/tmp/vw-sentinels"
+  mkdir -p "$sentinel_dir" 2>/dev/null
+  local tmp="${sentinel_dir}/sentinel-${hook_name}-${session_id}.json.tmp"
+  local dst="${sentinel_dir}/sentinel-${hook_name}-${session_id}.json"
+  echo "{\"hook\":\"${hook_name}\",\"ts\":$(date +%s),\"status\":\"ok\"}" \
+      > "$tmp" 2>/dev/null && mv "$tmp" "$dst" 2>/dev/null
+  return 0  # Never fatal
+}
+```
+
+```python
+# ~/.claude/hooks/lib/sentinel.py
+import json, os, time
+
+def write_sentinel(hook_name: str) -> None:
+    session_id = os.environ.get("CLAUDE_SESSION_ID", str(os.getpid()))
+    sentinel_dir = "/tmp/vw-sentinels"
+    os.makedirs(sentinel_dir, exist_ok=True)
+    path = f"{sentinel_dir}/sentinel-{hook_name}-{session_id}.json"
+    try:
+        tmp = path + ".tmp"
+        with open(tmp, "w") as f:
+            json.dump({"hook": hook_name, "ts": int(time.time()), "status": "ok"}, f)
+        os.replace(tmp, path)  # POSIX atomic
+    except Exception:
+        pass  # Never fatal
+```
+
+Then add **2-3 lines** to the end of every existing hook:
+
+```bash
+# In any Bash hook:
+source "$(dirname "$0")/lib/sentinel.sh" && write_sentinel "safety-guard"
+```
+
+```python
+# In any Python hook:
+from lib.sentinel import write_sentinel
+write_sentinel("memory-tracker")
+```
+
+### Layer 2: Health Check Hook
+
+A SessionStart hook that scans the previous session's sentinels:
+
+```bash
+# ~/.claude/hooks/hook-health-check.sh (SessionStart)
+SENTINEL_DIR="/tmp/vw-sentinels"
+EXPECTED_HOOKS="safety-guard token-logger context-monitor"
+
+# Find last session's sentinels, check for missing hooks
+# If any are missing → inject WARNING via systemMessage
+# If all present → silent pass or brief confirmation
+```
+
+Register it in `settings.json` under `SessionStart` hooks.
+
+### Layer 3: Integrity Check/Fix
+
+Two separate scripts with **strict separation of concerns**:
+
+| Script | Permission | Does |
+|--------|-----------|------|
+| `hook_integrity_check.py` | **Read-only** | Scans hooks, sentinels, memory files. Reports `[PASS]/[FAIL]/[WARN]` |
+| `hook_integrity_fix.py` | **Read-write** | Fixes only what checker reported. Corrupted files → `_quarantine/` (never deleted) |
+
+```bash
+# Diagnose (safe to run anytime)
+python3 scripts/memory/hook_integrity_check.py
+
+# Fix (only after reviewing check results)
+python3 scripts/memory/hook_integrity_fix.py --dry-run  # Preview first
+python3 scripts/memory/hook_integrity_fix.py             # Execute repairs
+```
+
+All repairs are logged to `hook_heal_log.jsonl` for full traceability.
+
+### Companion Patterns
+
+**Atomic JSON Writes**: Every script that writes JSON/JSONL should use temp-file + `os.replace()` to prevent half-written corruption:
+
+```python
+# _safe_io.py
+def safe_write_json(path, data):
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data))
+    os.replace(str(tmp), str(path))  # Atomic on POSIX
+```
+
+**Idempotent Session Counting**: Prevent duplicate entries when wrappers trigger the same hook multiple times:
+
+```python
+session_id = os.environ.get("CLAUDE_SESSION_ID", "")
+flag_file = Path(f"/tmp/session-logged-{session_id}")
+if flag_file.exists():
+    sys.exit(0)  # Already logged
+# ... normal flow ...
+flag_file.touch()
+```
+
+**Quarantine over Deletion**: Corrupted files move to `memory/_quarantine/` instead of being deleted, consistent with the `_DELETE_` prefix philosophy.
+
+### Updated Security Checklist
+
+Add these items to your setup verification:
+
+- [ ] Sentinel library installed (`lib/sentinel.sh`, `lib/sentinel.py`)
+- [ ] Every hook writes a sentinel on successful execution
+- [ ] Health check hook registered in SessionStart
+- [ ] `hook_integrity_check.py` reports all PASS
+- [ ] `_quarantine/` directory exists for corrupted file isolation
+- [ ] `hook_heal_log.jsonl` initialized for repair audit trail
+
+### Design Credit
+
+This pattern is inspired by [evolving-lite](https://github.com/primeline-ai/evolving-lite)'s HEAL Loop, adapted for the Ghost In Shell multi-hook architecture.
+
+---
+
 *Trust, but verify. Freedom, but with fences.* 🐚

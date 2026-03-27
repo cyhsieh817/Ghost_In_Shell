@@ -18,6 +18,11 @@ user:
   preferences:
     communication: ["{{COMMUNICATION_STYLE}}"]
     tech_stack: ["{{TECH_STACK}}"]
+    task_reminders:
+      tool: "{{REMINDER_TOOL}}"
+      rules:
+        - "Trigger on task/reminder keywords → create reminder immediately"
+        - "Trigger on deferral intent (later, tomorrow, next time) → capture task summary + suggested time"
 
   sensitive_areas: ["{{SENSITIVE_AREAS}}"]
 
@@ -40,6 +45,21 @@ rules:
   - "{{RULE_3}}"
   - "Read files before editing — never blind-edit"
   - "Mark deletions with _DELETE_ prefix — never rm"
+
+---
+
+# Subagent Model Tiering
+# Fixed: orchestrator passes model param directly, zero judgment
+# Conditional: default model + upgrade rules (see AGENTS.md)
+# Unlisted: inherit parent model (never downgrade)
+agent_model_tiers:
+  last_updated: "{{DATE}}"
+  fixed:
+    # agent_name: "model"
+    # Example: analyst: "opus"
+  conditional:
+    # agent_name: { default: "sonnet", upgrade_to: "opus", see: "AGENTS.md" }
+  fallback: "inherit"
 
 ---
 

@@ -128,4 +128,46 @@ Match user input to Lanes. Case-insensitive, any position.
 
 ---
 
+<model_tier_policy>
+
+## Model Tier Policy (Subagent Tiering)
+
+> When spawning subagents, the orchestrator MUST pass the `model` parameter per this table.
+> Mirror this config in `fact.yml` → `agent_model_tiers` for programmatic access.
+
+### Tier Definitions
+
+| Tier | Model | Use When |
+|------|-------|----------|
+| T1 Deep Thought | `opus` | Creative work, long-chain reasoning, multi-perspective analysis |
+| T2 Execution | `sonnet` | Clear instructions, structured output, search & retrieval |
+| T3 Trivial | `haiku` | Reserved — no fixed bindings yet |
+
+### Fixed Assignments (zero-judgment, dispatch by table)
+
+<!-- TODO: Customize for your agent team -->
+
+| Agent | Model | Rationale |
+|-------|-------|-----------|
+| `{{AGENT_L3}}` | `opus` | Strategy analysis requires long-chain reasoning |
+| `Explore` | `sonnet` | Pure search and retrieval |
+
+### Conditional Assignments (default Sonnet, upgrade to Opus when criteria met)
+
+<!-- TODO: Define upgrade triggers for your agents -->
+
+| Agent | Upgrade to Opus When |
+|-------|---------------------|
+| `{{AGENT_L1}}` | Long-form writing (>3000 words), academic manuscripts |
+| `{{AGENT_L4}}` | Architecture redesign, new system design, security changes |
+| `{{AGENT_L2}}` | Deep research, systematic literature review |
+
+### Fallback
+
+Agents not listed here inherit the parent's model — never downgrade.
+
+</model_tier_policy>
+
+---
+
 *Customize this template for your agent team. See docs/13_Agent_Orchestration.md for details.* 🐚

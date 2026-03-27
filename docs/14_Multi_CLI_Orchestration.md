@@ -71,6 +71,10 @@ All CLIs share the same identity, but through **role-specific root files**:
 
 **Key principle**: the Primary owns the identity. Other CLIs receive **just enough context** to do their job correctly.
 
+> **⚠️ Copilot CLI: Global Config Required**
+>
+> Unlike Claude Code and Gemini CLI (which read per-project root files), GitHub Copilot CLI loads instructions from global config (`~/.github/copilot/`). For the memory flow to work reliably, Copilot's identity, memory paths, and language rules must be placed in the global config, then reference the project-level `AGENTS.md` from there. Without global setup, Copilot sessions will start without identity or memory context.
+
 ### Communication Pattern
 
 ```
