@@ -41,6 +41,7 @@ Every time you start a new AI session, your agent:
 │            Optional Extensions                │
 │   Multi-Agent · Cross-Machine · Vector Memory │
 │   Evolution Protocol · Claude Code Native     │
+│   Agent Contracts · Verify/Fix · Drift Audit  │
 │   Agent Orchestration · Hook Self-Healing     │
 └──────────────────────────────────────────────┘
 ```
@@ -123,7 +124,7 @@ The framework works with just Markdown files, but **teaching it to other people 
 | 10 | [Cross-Machine Sync](docs/10_Cross_Machine_Sync.md) | Bootstrap, `.nosync` protection, primary/secondary roles |
 | 11 | [Claude Code Integration](docs/11_Claude_Code_Integration.md) | CLAUDE.md + @import native patterns |
 | 12 | [Real World Example](docs/12_Real_World_Example.md) | Full deployment walkthrough |
-| 13 | [Agent Orchestration](docs/13_Agent_Orchestration.md) | Lane routing, keyword detection, multi-agent dispatch |
+| 13 | [Agent Orchestration](docs/13_Agent_Orchestration.md) | Lane routing, agent contracts, verify/fix, drift audit |
 | 14 | [Multi-CLI Orchestration](docs/14_Multi_CLI_Orchestration.md) | Trident pattern — multiple AI CLIs under one identity |
 | 15 | [Domain Knowledge Pipeline](docs/15_Domain_Knowledge_Pipeline.md) | Local literature DB, enrichment, search CLI |
 | 16 | [Skill Ecosystem](docs/16_Skill_Ecosystem.md) | Skill lifecycle, security audit, governance |
