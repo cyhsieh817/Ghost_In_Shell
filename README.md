@@ -27,7 +27,8 @@ Every time you start a new AI session, your agent:
 │   SOUL       │  L1: Facts   │   Permissions  │
 │   USER       │  L1: Episode │   Core Lock    │
 │              │  L0.5:Scratch│   Naming Rules │
-│              │  v4:Cognitive│                │
+│              │  v4:Cognitive│   Tag Gov.     │
+│              │ v4.1:Ops Ext │                │
 ├──────────────┴──────────────┴────────────────┤
 │           Three-Layer Enforcement             │
 │   L1: deny list (settings.json) — 100%       │
@@ -43,6 +44,7 @@ Every time you start a new AI session, your agent:
 │   Evolution Protocol · Claude Code Native     │
 │   Agent Contracts · Verify/Fix · Drift Audit  │
 │   Agent Orchestration · Hook Self-Healing     │
+│   Skill Dispatch · Knowledge Graph · 21 Checks│
 └──────────────────────────────────────────────┘
 ```
 

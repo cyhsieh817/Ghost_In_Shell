@@ -1,6 +1,6 @@
-# 03 — Memory Architecture (v4)
+# 03 — Memory Architecture (v4.1)
 
-> Hot/cold layered memory with association graphs, strength decay, and principle extraction.
+> Hot/cold layered memory with association graphs, strength decay, principle extraction, and operational extensions.
 
 ---
 
@@ -30,33 +30,47 @@ Ghost In Shell uses a **hot/cold separation** strategy inspired by CPU cache hie
 │  └──────────────────────────────────┘   │
 │  Independent from @import layer below   │
 ├─────────────────────────────────────────┤
-│        Always Loaded (~230 lines)        │
+│        Always Loaded (~500 lines)        │
 │  ┌──────────────┐  ┌─────────────────┐  │
 │  │ L0 MEMORY.md │  │ L1 fact.yml     │  │
-│  │  ~100 lines  │  │  (hot) ~130 ln  │  │
+│  │  ~120 lines  │  │  (hot) ~375 ln  │  │
 │  │  Index only  │  │  Active facts   │  │
 │  └──────────────┘  └─────────────────┘  │
 ├─────────────────────────────────────────┤
 │        Load on Demand                    │
 │  ┌──────────────────────────────────┐   │
-│  │ L1 fact_archive.yml  (cold)      │   │
-│  │ L1 fact_decisions.yml (cold)     │   │
-│  │ L1 episodic.jsonl    (episodes)  │   │
-│  │ L0.5 scratchpad.md   (scratch)   │   │
-│  │ L2 consolidations.jsonl (meta)   │   │
+│  │ L1 fact_tools_archive.yml (cold) │   │
+│  │ L1 fact_tools_detail.yml  (cold) │   │
+│  │ L1 fact_decisions.yml     (cold) │   │
+│  │ L1 episodic.jsonl     (episodes) │   │
+│  │ L0.5 scratchpad.md    (scratch)  │   │
+│  │ L2 consolidations.jsonl   (meta) │   │
 │  └──────────────────────────────────┘   │
 ├─────────────────────────────────────────┤
 │   v4  Cognitive Layer (Background)      │
 │  ┌──────────────────────────────────┐   │
 │  │ associations.jsonl  (graph)      │   │
+│  │ knowledge.jsonl     (extracted)  │   │
 │  │ .retrieval_buffer.jsonl (hook)   │   │
 │  │ principles_candidates.jsonl      │   │
 │  │ .last_strength_run  (marker)     │   │
 │  └──────────────────────────────────┘   │
+├─────────────────────────────────────────┤
+│   v4.1 Operational Extensions           │
+│  ┌──────────────────────────────────┐   │
+│  │ skill_dispatch.yml    (routing)  │   │
+│  │ agent_dispatch_policy.md (agent) │   │
+│  │ skills_agents_manifest.json      │   │
+│  │ tag_governance.md     (tags)     │   │
+│  │ hook_heal_log.jsonl   (healing)  │   │
+│  │ memory_manifest.yml   (health)   │   │
+│  └──────────────────────────────────┘   │
 └─────────────────────────────────────────┘
 ```
 
-**Result**: Only ~230 lines loaded per session vs 500+ in a single-file approach, while the cognitive layer works in the background to strengthen useful memories and surface patterns.
+**Result**: ~500 lines loaded per session via `@import` (MEMORY.md + fact.yml), while the cognitive layer works in the background to strengthen useful memories and surface patterns. Cold layers, operational extensions, and episodic history are loaded on demand.
+
+> **Note on fact.yml growth**: As the agent system matures, fact.yml naturally grows beyond the initial 150-line target. The TheVoidWeaver production instance runs ~375 lines with 9 top-level blocks (user, system, rules, sop_dispatch, agent_model_tiers, tools, ycbio_workflow, cross_machine_sync, memory_governance). This is acceptable when the content is structured YAML with clear section boundaries — the key metric is *relevance density*, not raw line count.
 
 > **Important**: The "Always Loaded" layer loads via `@import` in `CLAUDE.md` — it works regardless of whether the Claude Code Auto Memory layer exists. The two layers are fully independent.
 
@@ -76,14 +90,18 @@ Ghost In Shell uses a **hot/cold separation** strategy inspired by CPU cache hie
 
 | Layer | File | When to Load |
 |-------|------|--------------|
-| L1 Hot | `memory/fact.yml` | Every session |
-| L1 Cold | `memory/fact_archive.yml` | Evaluating new tools |
+| L1 Hot | `memory/fact.yml` | Every session (via @import) |
+| L1 Cold | `memory/fact_tools_archive.yml` | Evaluating new tools |
+| L1 Cold | `memory/fact_tools_detail.yml` | Tool commands/config |
 | L1 Cold | `memory/fact_decisions.yml` | Reviewing past decisions |
 | L1 Episodes | `memory/episodic.jsonl` | Need past lessons |
 | L0.5 Scratch | `memory/scratchpad.md` | During active tasks |
 | L2 Meta | `memory/consolidations.jsonl` | Pattern analysis |
 | Cognitive | `memory/associations.jsonl` | Graph queries |
+| Cognitive | `memory/knowledge.jsonl` | Domain knowledge |
 | Cognitive | `memory/principles_candidates.jsonl` | Principle review |
+| Ops | `memory/skill_dispatch.yml` | Task start (skill routing) |
+| Ops | `memory/memory_manifest.yml` | Health checks |
 
 ## Quick Links
 - [Key file paths]
@@ -104,14 +122,15 @@ Ghost In Shell uses a **hot/cold separation** strategy inspired by CPU cache hie
 ### L1 Hot: fact.yml — Active Facts
 
 **Role**: Structured data the agent needs every session.
-**Size target**: < 150 lines
+**Size target**: < 150 lines for simple agents; up to ~400 lines acceptable for mature systems with structured sections.
 **Format**: YAML (machine-readable, human-editable)
 
 ```yaml
 # fact.yml — Hot Layer
 # Always loaded. Only active, frequently-needed facts.
+# Organized into top-level blocks. Each block is independently parseable.
 
-user:
+user:                    # Identity, preferences, language rules
   name: "Jane"
   call_as: "Dr. Chen"
   language: "English"
@@ -121,43 +140,60 @@ user:
     tech_stack: ["Python", "React", "PostgreSQL"]
   sensitive_areas: ["patents", "client data"]
 
-system:
+system:                  # Agent identity, paths, platform configs
   identity: "Meridian"
   emoji: "🔬"
   paths:
     workspace: "/home/jane/projects/meridian"
     vault: "/home/jane/projects/meridian/vault"
 
-rules:
+rules:                   # Hard constraints (always enforced)
   - "Always use absolute paths"
   - "Ask before deletion — use _DELETE_ prefix"
   - "Never expose credentials in output"
 
-tools:
+# --- Optional blocks (add as your system matures) ---
+
+sop_dispatch:            # Keyword → SOP file routing (auto-trigger)
+  routes:
+    writing:
+      triggers: ["write article", "draft"]
+      must_read: ["templates/writing_sop.md"]
+
+agent_model_tiers:       # Which model for which subagent
+  fixed:
+    analyst: "opus"
+    explorer: "sonnet"
+
+tools:                   # One-line summaries (details → fact_tools_detail.yml)
   last_updated: "2025-01-15"
-  active_tool_1:
-    status: "installed"
-    purpose: "..."
-  active_tool_2:
-    status: "installed"
-    purpose: "..."
+  active_tool: "Purpose summary (install path, key flag)"
+
+memory_governance:       # Anti-bloat rules, archive routing, naming
+  milestones:
+    max_entries: 5
+    overflow: "vault/logs/"
+  archive:
+    naming: "YYYY-MM-DD-topic-slug.md"
+    separator: "-"
 ```
 
 **Design rules**:
 - Only **active, frequently-accessed** items
-- When something becomes inactive → move to `fact_archive.yml`
+- When something becomes inactive → move to `fact_tools_archive.yml`
+- Tool one-liners in hot layer; full configs in `fact_tools_detail.yml`
 - Review quarterly; archive stale entries
 
 ---
 
-### L1 Cold: fact_archive.yml — Inactive Facts
+### L1 Cold: fact_tools_archive.yml — Evaluated Tools
 
-**Role**: Historical or evaluated-but-not-active data.
+**Role**: Tools that were evaluated but not installed (or previously installed and retired).
 **Loaded**: Only when evaluating new tools or checking past evaluations.
 
 ```yaml
-# fact_archive.yml — Cold Layer
-# Load on demand. Inactive/evaluated items.
+# fact_tools_archive.yml — Cold Layer (Evaluated Tools)
+# Load on demand. Previously evaluated items.
 
 archived_tools:
   tool_name:
@@ -165,6 +201,26 @@ archived_tools:
     verdict: "not installed — needs GPU"
     notes: "Revisit when GPU available"
 ```
+
+### L1 Cold: fact_tools_detail.yml — Full Tool Configs
+
+**Role**: Complete configuration for active tools (key commands, install steps, features).
+**Loaded**: When user asks "how do I use X?" or needs specific tool commands.
+**Relationship**: `fact.yml → tools` has one-line summaries; this file has full details.
+
+```yaml
+# fact_tools_detail.yml — Cold Layer (Tool Details)
+# Each tool entry includes key_commands, features, install notes.
+
+gogcli:
+  key_commands:
+    - "gog -a user@domain.com drive list"
+    - "gog -a user@domain.com gmail search 'subject:report'"
+  features: ["Drive CRUD", "Gmail search", "Docs export"]
+  install: "npm install -g @nicholasgasior/gog"
+```
+
+> **Why two cold layers?** `fact_tools_archive.yml` tracks *rejected* tools (prevents re-evaluation). `fact_tools_detail.yml` holds *active tool details* too verbose for the hot layer. Different access patterns, different files.
 
 ---
 
@@ -377,6 +433,100 @@ Optionally promoted to fact.yml rule
 
 ---
 
+### Knowledge Extraction (`knowledge.jsonl`)
+
+A structured knowledge base extracted from literature, articles, and research — separate from episodic memory because knowledge is *timeless* while episodes are *time-bound*.
+
+```jsonl
+{"id":"know-20250120-001","date":"2025-01-20","title":"NAD+ Biosynthesis Pathway","source":"doi:10.1234/example","author":"Smith et al.","tags":["biochemistry","NAD"],"one_liner":"De novo NAD+ synthesis from tryptophan via the kynurenine pathway","key_insights":["Rate-limiting enzyme: IDO1","Tissue-specific regulation"],"relevance":"drug_target","obsidian_path":"Literature/NAD_Biosynthesis.md"}
+```
+
+**When to use**: Domain knowledge that needs to persist beyond a single session — literature summaries, extracted facts, concept definitions.
+
+---
+
+### Association Surfacing (`association_surfacer.py`)
+
+An optional script that materializes the association graph into human-readable documents:
+
+```bash
+python3 scripts/association_surfacer.py
+# → Generates an Obsidian MOC (Map of Content) with:
+#   - Mermaid causal graph
+#   - Continuation chains (multi-session threads)
+#   - Timeline view
+```
+
+This bridges the gap between machine-readable `associations.jsonl` and human-browsable knowledge maps.
+
+---
+
+## v4.1: Operational Extensions
+
+As the agent system matures, certain operational concerns require their own dedicated files. These are **not cognitive memory** — they are configuration and governance layers that inform agent behavior.
+
+### Skill Dispatch (`skill_dispatch.yml`)
+
+Routes user intent to the best available skill, eliminating the need for users to remember slash commands:
+
+```yaml
+# skill_dispatch.yml — Keyword → Skill routing
+literature_research:
+  label: "Literature Research"
+  triggers: ["papers", "PubMed", "literature review"]
+  primary:
+    - literature-search
+    - deep-research
+  secondary:
+    - pubmed-search
+    - biorxiv-search
+```
+
+**Loaded**: At task start, to match user intent → skill.
+
+### Agent Dispatch Policy (`agent_dispatch_policy.md`)
+
+Defines which subagent handles which type of work:
+
+```markdown
+| Scenario | Agent | Model |
+|----------|-------|-------|
+| Writing | writer | sonnet (upgrade to opus for publication) |
+| Research | researcher | sonnet (upgrade to opus for synthesis) |
+| Data analysis | analyst | opus |
+| Code review | copilot | external CLI |
+```
+
+### Skills & Agents Manifest (`skills_agents_manifest.json`)
+
+Canonical inventory of all installed skills and agent configurations. Machine-readable, used by audit scripts to detect drift.
+
+### Tag Governance (`tag_governance.md`)
+
+Rules for consistent tagging across episodic entries, Obsidian notes, and archives. Prevents tag proliferation and ensures searchability.
+
+### Hook Heal Log (`hook_heal_log.jsonl`)
+
+Records self-healing actions taken by the hook integrity system — when a hook fails and is auto-repaired, the action is logged here for audit.
+
+### Memory Manifest (`memory_manifest.yml`)
+
+System health metadata — episodic counts, consolidation history, trigger thresholds, prompt integrity hashes. Used by `memory_validate.py` for consistency checks.
+
+```yaml
+version: "3.0"
+stats:
+  episodic_total: 70
+  episodic_active: 62
+  episodic_fading: 8
+next_consolidation_trigger:
+  type: count
+  threshold: 5
+  last_count: 70
+```
+
+---
+
 ### Self-Healing
 
 The cognitive layer monitors its own health:
@@ -417,15 +567,21 @@ When the agent learns something new, it goes to the right layer:
 | What | Where | Format |
 |------|-------|--------|
 | User preference change | `fact.yml` → `user.preferences` | YAML |
-| New tool installed | `fact.yml` → `tools` | YAML |
-| Tool evaluated, not installed | `fact_archive.yml` | YAML |
+| New tool installed (summary) | `fact.yml` → `tools` | YAML (one-liner) |
+| New tool installed (full config) | `fact_tools_detail.yml` | YAML (commands, features) |
+| Tool evaluated, not installed | `fact_tools_archive.yml` | YAML |
 | Important decision made | `fact_decisions.yml` | YAML |
 | Task failed / succeeded | `episodic.jsonl` | JSONL append |
 | Pattern across multiple episodes | `consolidations.jsonl` | JSONL append |
 | Memory connection discovered | `associations.jsonl` | JSONL append |
+| Domain knowledge extracted | `knowledge.jsonl` | JSONL append |
 | Recurring principle identified | `principles_candidates.jsonl` | JSONL append |
+| Hook self-repair action | `hook_heal_log.jsonl` | JSONL append |
 | Current task notes | `scratchpad.md` | Markdown |
 | Navigation update | `MEMORY.md` | Markdown |
+| Skill routing rules | `skill_dispatch.yml` | YAML |
+| Agent assignment rules | `agent_dispatch_policy.md` | Markdown |
+| Tag naming rules | `tag_governance.md` | Markdown |
 | Cross-session guidance summaries | `~/.claude/projects/<id>/memory/MEMORY.md` | Markdown (≤80 lines) |
 
 **Auto Memory routing rules**:
@@ -536,7 +692,7 @@ python3 scripts/memory_trigger_check.py
 
 ### Validation
 
-The **memory validator** (`memory_validate.py`) performs 18 checks across structure, integrity, and consistency:
+The **memory validator** (`memory_validate.py`) performs 21 checks across structure, integrity, and consistency:
 
 ```bash
 # Full validation
@@ -552,13 +708,23 @@ python3 scripts/memory_daily_review_launcher.py
 |-------|------|
 | V01 | JSON parseable |
 | V02 | Schema (required fields, valid types, ID format) |
+| V03 | Consolidations JSON parseable |
+| V04 | Manifest parseable and version check |
+| V05 | Consolidation prompt file exists |
 | V06 | ID uniqueness |
 | V07 | ID date matches date field |
-| V08-V12 | Consolidation reference integrity |
-| V13-V14 | Manifest consistency |
-| V15-V18 | Cross-reference & self-reference checks |
+| V08-V12 | Consolidation reference integrity (xrefs, insights, updates, decay, importance) |
+| V13 | Manifest stats match actual episodic counts |
+| V14 | No archived entries in active episodic |
+| V15 | No high-importance entries in decay candidates |
+| V16 | No duplicate consolidations |
+| V17 | All `linked_to` references valid |
+| V18 | No self-references in cross_references |
+| V19 | Trigger config sane (last_count ≤ episodic total) |
+| V20 | Core memory paths intact |
+| V21 | Last decay run recorded |
 
-**Allowed episode types**: `decision`, `failure`, `milestone`, `insight`, `pitfall`, `bugfix`, `setup`, `integration`, `refactor`, `knowledge_digest`, `discovery`, `architecture`, `deployment`, `security`
+**Allowed episode types**: `decision`, `failure`, `milestone`, `insight`, `pitfall`, `bugfix`, `setup`, `integration`, `refactor`, `knowledge_digest`, `discovery`, `architecture`, `deployment`, `security`, `lesson`
 
 **Defensive coding**: All field accesses use `.get()` with defaults — entries with missing fields produce warnings, not crashes.
 
@@ -631,6 +797,15 @@ python3 scripts/memory_status.py
 6. **Set up daily review** — Configure a cron/launchd job for `memory_daily_review.sh`
 7. **Run initial strength** — `python3 scripts/memory_associate.py strength`
 
+### From v4 → v4.1
+
+1. **Split cold layer** — If you have `fact_archive.yml`, rename to `fact_tools_archive.yml` and create `fact_tools_detail.yml` for active tool configs
+2. **Create `knowledge.jsonl`** — Start empty; populate when extracting domain knowledge from literature
+3. **Create `memory_manifest.yml`** — Run `memory_validate.py` to auto-generate
+4. **Add operational files** (optional) — `skill_dispatch.yml`, `agent_dispatch_policy.md`, `tag_governance.md` as your agent system grows
+5. **Deduplicate episodic** — If stop-hooks have created duplicates, merge by title (keep latest `ts`, sum retrieval counts)
+6. **Sync consolidation refs** — After dedup, prune orphan episode IDs from `consolidations.jsonl`
+
 ---
 
 ## Anti-Patterns
@@ -638,18 +813,25 @@ python3 scripts/memory_status.py
 | Don't | Do Instead |
 |-------|------------|
 | Put everything in MEMORY.md | MEMORY.md is an index only |
-| Let fact.yml grow beyond 200 lines | Archive inactive items to cold layer |
+| Let fact.yml grow without structure | Keep sections as independent YAML blocks; archive stale tools to cold layer |
 | Delete old episodes | Append-only; mark resolved with tags |
 | Store task-specific notes in fact.yml | Use scratchpad.md |
 | Skip consolidation | Weekly review catches patterns |
 | Ignore strength decay | Low-strength memories signal cleanup opportunities |
 | Auto-approve all principles | Human review prevents bad rules from propagating |
 | Manually track memory access | Let the retrieval hook do it transparently |
-| Let MEMORY.md "最後整合" date go stale | Update header timestamp whenever milestones are added |
-| Hardcode `$HOME` in MEMORY.md reference paths | Use `$WORKSPACE/` — MEMORY.md is cross-machine too |
+| Let MEMORY.md header date go stale | Update timestamp whenever milestones are added |
+| Hardcode `$HOME` in reference paths | Use `$WORKSPACE/` — MEMORY.md is cross-machine too |
 | Assume auto memory directory exists | It must be created manually on each machine; absence doesn't affect @import layer |
 | Store complete memory in auto memory layer | Auto memory is summaries only (≤80 lines); formal memory goes in workspace |
+| Let stop-hook log every trivial session | Deduplicate by title — identical auto-logged sessions should merge, not accumulate |
+| Skip manifest sync after episodic cleanup | Always update `memory_manifest.yml` stats after dedup/cleanup to avoid V13/V19 drift |
+| Forget to clean consolidation refs after dedup | Consolidation entries reference episode IDs — when episodes are merged, orphan refs must be pruned |
 
 ---
 
 *Less in context. More in memory. Synapses in the void.* 🐚
+
+---
+
+*Last updated: 2026-03-29 — v4.1 (operational extensions, dual cold layer, knowledge graph, 21 validation checks)*
