@@ -9,8 +9,15 @@
 - one shared memory layer (`MEMORY.md` + `memory/fact.yml` + `memory/episodic.jsonl`)
 - one root instruction file per CLI (`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`, `COPILOT.md`, `CODEX.md`, `OPENCLAW.md`)
 - wrapper-first automation (`scripts/void-*.sh`, `scripts/llm_memory_wrapper.py`)
-- session-end auto-logging (`scripts/memory_session_log.py`)
+- session-end auto-logging with fingerprint + cooldown (`scripts/memory_session_log.py`, **v4.1**)
 - optional shell installer (`scripts/install_llm_shell_aliases.py`)
+- **v4.1 additions**:
+  - `memory/fact_governance.yml` — archive routing + sanctum registry
+  - `memory/brain_region_manifest.yml` — neuro-anatomical file routing
+  - `scripts/lgd_bridge.py` — headless bridge to LabGrimoire Desktop
+  - `scripts/memory_associate.py` — memory graph helper (lite)
+  - `scripts/sanctum_audit.py` — registry-driven write audit (lite)
+  - `scripts/hook_integrity_check.py` — Stop-hook self-verification
 
 This is the layer you add **after** the starter kit when a single workspace must support multiple AI CLIs.
 
@@ -32,13 +39,19 @@ multi_cli_memory/
 ├── MEMORY.md
 ├── memory/
 │   ├── fact.yml
+│   ├── fact_governance.yml          # archive routing + sanctum registry (v4.1)
+│   ├── brain_region_manifest.yml    # neuro-anatomical file routing (v4.1)
 │   ├── episodic.jsonl
 │   ├── runtime_profiles.yml
 │   └── scratchpad.md
 ├── scripts/
 │   ├── memory_runtime.py
 │   ├── llm_memory_wrapper.py
-│   ├── memory_session_log.py
+│   ├── memory_session_log.py        # fingerprint + cooldown + lifecycle hooks (v4.1)
+│   ├── memory_associate.py          # memory graph helper, lite (v4.1)
+│   ├── sanctum_audit.py             # registry-driven write audit, lite (v4.1)
+│   ├── hook_integrity_check.py      # Stop-hook self-verification (v4.1)
+│   ├── lgd_bridge.py                # LabGrimoire Desktop bridge (v4.1)
 │   ├── install_llm_shell_aliases.py
 │   ├── void-shell-wrappers.sh
 │   └── void-*.sh

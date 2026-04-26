@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
-create_agent.py — Ghost In Shell Starter Kit  v4.0
+create_agent.py — Ghost In Shell Starter Kit  v4.1
 Interactive CLI: collect all variables, generate a complete agent system
-with hot/cold memory separation, cognitive engine, CLAUDE.md @import, and zero placeholder residue.
+with hot/cold memory separation, cognitive engine, CLAUDE.md @import,
+sanctum governance, brain region manifest, and optional LGD pairing.
+Zero placeholder residue.
 """
 
 import os
@@ -28,8 +30,8 @@ class C:
 def banner():
     print(f"""
 {C.CYAN}{C.BOLD}╔══════════════════════════════════════════════════╗
-║   🐚  Ghost In Shell — Agent Creator  v4.0      ║
-║   Interactive wizard · Zero placeholder residue  ║
+║   🐚  Ghost In Shell — Agent Creator  v4.1      ║
+║   Sanctum + Brain Regions + LGD-ready            ║
 ╚══════════════════════════════════════════════════╝{C.RESET}
 """)
 
@@ -123,14 +125,18 @@ def get_output_path(template_name: str, workspace: str, vault: str) -> str:
         "USER.md":            os.path.join(workspace, "USER.md"),
         "MEMORY.md":          os.path.join(workspace, "MEMORY.md"),
         # Memory layer
-        "fact.yml":           os.path.join(workspace, "memory", "fact.yml"),
-        "fact_archive.yml":   os.path.join(workspace, "memory", "fact_archive.yml"),
-        "fact_decisions.yml": os.path.join(workspace, "memory", "fact_decisions.yml"),
-        "episodic.jsonl":     os.path.join(workspace, "memory", "episodic.jsonl"),
-        "scratchpad.md":      os.path.join(workspace, "memory", "scratchpad.md"),
+        "fact.yml":              os.path.join(workspace, "memory", "fact.yml"),
+        "fact_archive.yml":      os.path.join(workspace, "memory", "fact_archive.yml"),
+        "fact_decisions.yml":    os.path.join(workspace, "memory", "fact_decisions.yml"),
+        "fact_governance.yml":   os.path.join(workspace, "memory", "fact_governance.yml"),
+        "episodic.jsonl":        os.path.join(workspace, "memory", "episodic.jsonl"),
+        "scratchpad.md":         os.path.join(workspace, "memory", "scratchpad.md"),
         # v4 Cognitive layer
         "associations.jsonl":          os.path.join(workspace, "memory", "associations.jsonl"),
         "principles_candidates.jsonl": os.path.join(workspace, "memory", "principles_candidates.jsonl"),
+        # v4.1 Brain regions + LGD pairing
+        "brain_region_manifest.yml":   os.path.join(workspace, "memory", "brain_region_manifest.yml"),
+        "LGD_INTEGRATION.md":          os.path.join(workspace, "LGD_INTEGRATION.md"),
         # Policies (in vault)
         "ACCESS_POLICY.md":   os.path.join(vault, "_Agent_System/99_System/990_POLICY/ACCESS_POLICY.md"),
         "AUTONOMY_POLICY.md": os.path.join(vault, "_Agent_System/99_System/990_POLICY/AUTONOMY_POLICY.md"),
@@ -223,6 +229,14 @@ def main():
         "RULE_1": rule_1 or "Always use absolute file paths",
         "RULE_2": rule_2 or "Ask before any irreversible action",
         "RULE_3": rule_3 or "Never expose sensitive data",
+        # Reminder tool default — overridden in fact.yml after first edit
+        "REMINDER_TOOL": "your-reminder-tool",
+        # Agent lane defaults — orchestrator templates fill these in post-gen
+        "AGENT_L1": "writer",
+        "AGENT_L2": "researcher",
+        "AGENT_L3": "analyst",
+        "AGENT_L4": "coder",
+        "AGENT_L5": "reviewer",
     }
 
     # ── Confirmation Summary ─────────────────────────────────────

@@ -4,6 +4,8 @@
 
 ## Identity & Behavior
 @./SOUL.md
+@./IDENTITY.md
+@./USER.md
 
 ## Memory System
 @./MEMORY.md
@@ -18,3 +20,10 @@
 - {{RULE_1}}
 - {{RULE_2}}
 - {{RULE_3}}
+
+## On-Demand Modules (load when relevant, not every session)
+- `memory/fact_governance.yml` — archive routing + sanctum registry
+- `memory/fact_decisions.yml` — historical decisions
+- `memory/fact_archive.yml` — evaluated/inactive items
+- `memory/brain_region_manifest.yml` — neuro-anatomical file routing
+- `LGD_INTEGRATION.md` — pairing notes for LabGrimoire Desktop (optional)

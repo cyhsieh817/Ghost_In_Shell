@@ -2,6 +2,7 @@
 
 > **Interactive CLI: deploy a complete AI agent system in ~3 minutes.**
 > Zero placeholder residue. Hot/cold memory. CLAUDE.md native. Multi-CLI ready.
+> v4.1 adds: Sanctum governance · Brain region manifest · LGD pairing.
 
 ---
 
@@ -22,7 +23,7 @@ This starter kit generates the **core memory system** first. If you later want C
 
 ```
 ╔══════════════════════════════════════════════════╗
-║   🐚  Ghost In Shell — Agent Creator  v3.0      ║
+║   🐚  Ghost In Shell — Agent Creator  v4.1      ║
 ╚══════════════════════════════════════════════════╝
 
 1 / 4  🤖  Agent Identity
@@ -53,12 +54,17 @@ your_workspace/
 ├── SOUL.md                ← Personality, values, boundaries
 ├── USER.md                ← User profile & preferences
 ├── MEMORY.md              ← Memory index (L0 router)
+├── LGD_INTEGRATION.md     ← Optional pairing notes for LabGrimoire Desktop
 └── memory/
-    ├── fact.yml            ← Hot facts (L1 — loaded every session)
-    ├── fact_archive.yml    ← Cold storage (L1 — load on demand)
-    ├── fact_decisions.yml  ← Decision history (L1 — load on demand)
-    ├── episodic.jsonl      ← Lessons & milestones (append-only)
-    └── scratchpad.md       ← Current task notes
+    ├── fact.yml                  ← Hot facts (L1 — loaded every session)
+    ├── fact_archive.yml          ← Cold storage (L1 — load on demand)
+    ├── fact_decisions.yml        ← Decision history (L1 — load on demand)
+    ├── fact_governance.yml       ← Archive routing + sanctum registry (NEW v4.1)
+    ├── brain_region_manifest.yml ← Neuro-anatomical file routing (NEW v4.1)
+    ├── episodic.jsonl            ← Lessons & milestones (append-only)
+    ├── associations.jsonl        ← Memory graph edges (cognitive engine)
+    ├── principles_candidates.jsonl ← Auto-extracted rules awaiting approval
+    └── scratchpad.md             ← Current task notes
 
 your_vault/
 └── _Agent_System/
@@ -77,7 +83,7 @@ your_vault/
         └── CAPABILITIES.md          ← Agent capability declaration
 ```
 
-**Total: 14 files generated, zero placeholder residue.**
+**Total: ~17 files generated, zero placeholder residue.**
 
 This is intentionally the **minimal portable core**. For a production multi-CLI deployment, the next upgrade is:
 
@@ -129,8 +135,11 @@ See:
 | `fact.yml` | Hot facts (L1) | memory/ |
 | `fact_archive.yml` | Cold archive (L1) | memory/ |
 | `fact_decisions.yml` | Decision history (L1) | memory/ |
+| `fact_governance.yml` | Archive routing + sanctum registry | memory/ |
+| `brain_region_manifest.yml` | Brain region file mapping (seed) | memory/ |
 | `episodic.jsonl` | Episode log | memory/ |
 | `scratchpad.md` | Task scratch | memory/ |
+| `LGD_INTEGRATION.md` | LabGrimoire Desktop pairing guide | workspace root |
 | `ACCESS_POLICY.md` | Permission zones | vault/_Agent_System/99_System/990_POLICY/ |
 | `AUTONOMY_POLICY.md` | Autonomy rules | vault/_Agent_System/99_System/990_POLICY/ |
 | `TRIAGE.md` | Task classification | vault/_Agent_System/99_System/ |
@@ -171,19 +180,18 @@ Perfect! All placeholders resolved. Zero residue.
 
 ---
 
-## What Changed in v3
+## What Changed in v4.1
 
-| v2 | v3 |
-|----|-----|
-| 19 templates | 14 templates (focused) |
-| No CLAUDE.md | CLAUDE.md with @import (native) |
-| Single fact.yml | Hot/cold split (fact.yml + archive + decisions) |
-| Chinese UI | English UI (open-source ready) |
-| Config dir output | Smart routing (files go to correct locations) |
-| structure/ copy | Programmatic directory creation |
+| v3 | v4.1 |
+|----|------|
+| Hot/cold fact split | + `fact_governance.yml` (archive routing + sanctum registry) |
+| No file-protection model | + Sanctum three-tier (core / extended / extended_degraded) |
+| No memory regions | + `brain_region_manifest.yml` (neuro-anatomical routing) |
+| No LGD pairing | + `LGD_INTEGRATION.md` template (optional) |
+| 14 templates | ~17 templates |
 
-**Recommended v4+ operational layer**: add shared wrappers + session-end logging when multiple CLIs will collaborate in one workspace.
+**Operational layer**: add shared wrappers + session-end logging when multiple CLIs will collaborate (`examples/multi_cli_memory/`). Pair with **LabGrimoire Desktop** to upgrade `extended_degraded` sanctum sources to first-class write CLIs.
 
 ---
 
-*Ghost In Shell Starter Kit v3.0 🐚*
+*Ghost In Shell Starter Kit v4.1 🐚*

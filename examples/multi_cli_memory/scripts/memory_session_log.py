@@ -1,7 +1,23 @@
 #!/usr/bin/env python3
+"""
+memory_session_log.py — Multi-runtime session-end memory logger
+(Ghost In Shell v4.1 — fingerprinting + cooldown + lifecycle hooks)
+
+Triggered by stop hooks / wrapper exits for any CLI runtime
+(Claude Code / Gemini CLI / Copilot CLI / Codex / OpenClaw).
+
+Behavior:
+  1. Reads `git diff` (staged + unstaged) to infer the session's work.
+  2. If material changes exist, appends an entry to `memory/episodic.jsonl`.
+  3. Skips duplicates via a SHA-256 fingerprint of the changed file list.
+  4. Skips entries within a cooldown window (default 300 s).
+  5. Optionally invokes `memory_associate.py` and `memory_trigger_check.py`
+     (best-effort — silently skipped if those scripts are absent).
+"""
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -15,7 +31,60 @@ from memory_runtime import list_runtime_profiles, resolve_runtime_profile
 EPISODIC = MEMORY / "episodic.jsonl"
 
 
-def get_git_summary() -> dict | None:
+def _compute_fingerprint(files: list[str]) -> str:
+    """SHA-256 over the sorted file list — stable across reorderings."""
+    return hashlib.sha256("\n".join(sorted(files)).encode()).hexdigest()[:16]
+
+
+def _is_duplicate(fingerprint: str, date_str: str, runtime_id: str, cooldown_seconds: int) -> bool:
+    """True if recent entry has same fingerprint, OR last entry was inside cooldown window."""
+    if not EPISODIC.exists():
+        return False
+    try:
+        recent = []
+        for line in EPISODIC.read_text(encoding="utf-8").splitlines():
+            try:
+                e = json.loads(line)
+            except Exception:
+                continue
+            if e.get("date") == date_str and e.get("runtime") == runtime_id:
+                recent.append(e)
+        if not recent:
+            return False
+        last = recent[-1]
+        if cooldown_seconds > 0 and "ts" in last:
+            try:
+                last_ts = datetime.fromisoformat(last["ts"])
+                now_ts = datetime.now().astimezone()
+                if (now_ts - last_ts).total_seconds() < cooldown_seconds:
+                    return True
+            except Exception:
+                pass
+        for e in recent[-5:]:
+            if e.get("_fingerprint") == fingerprint:
+                return True
+        return False
+    except Exception:
+        return False
+
+
+def _maybe_run(script_name: str, *extra_args: str, timeout: int = 10) -> None:
+    """Best-effort invocation of an optional sibling script."""
+    script = WORKSPACE / "scripts" / script_name
+    if not script.exists():
+        return
+    try:
+        subprocess.run(
+            [sys.executable, str(script), *extra_args],
+            cwd=str(WORKSPACE),
+            timeout=timeout,
+            capture_output=True,
+        )
+    except Exception:
+        pass
+
+
+def get_git_summary(include_untracked: bool = False) -> dict | None:
     try:
         diff = subprocess.run(
             ["git", "diff", "--stat", "HEAD"],
@@ -31,19 +100,23 @@ def get_git_summary() -> dict | None:
             cwd=str(WORKSPACE),
             timeout=5,
         )
-        untracked = subprocess.run(
-            ["git", "ls-files", "--others", "--exclude-standard"],
-            capture_output=True,
-            text=True,
-            cwd=str(WORKSPACE),
-            timeout=5,
-        )
     except Exception:
         return None
     raw = f"{diff.stdout.strip()}\n{diff_staged.stdout.strip()}".strip()
     lines = raw.splitlines() if raw else []
     files_changed = [line.split("|")[0].strip() for line in lines if "|" in line]
-    files_changed.extend(line for line in untracked.stdout.strip().splitlines() if line)
+    if include_untracked:
+        try:
+            untracked = subprocess.run(
+                ["git", "ls-files", "--others", "--exclude-standard"],
+                capture_output=True,
+                text=True,
+                cwd=str(WORKSPACE),
+                timeout=5,
+            )
+            files_changed.extend(line for line in untracked.stdout.strip().splitlines() if line)
+        except Exception:
+            pass
     if not files_changed:
         return None
     categories: set[str] = set()
@@ -66,6 +139,8 @@ def get_git_summary() -> dict | None:
             "USER.md",
         }:
             categories.add("config")
+        elif "bootstrap" in file_path or ".nosync" in file_path or "setup-symlinks" in file_path:
+            categories.add("infra")
         else:
             categories.add("other")
     return {
@@ -96,6 +171,8 @@ def next_id(date_str: str) -> str:
 
 
 def infer_type(categories: list[str]) -> str:
+    if "infra" in categories:
+        return "setup"
     if "scripts" in categories:
         return "refactor"
     if "config" in categories:
@@ -127,6 +204,17 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Show configured runtimes and exit",
     )
+    parser.add_argument(
+        "--cooldown",
+        type=int,
+        default=300,
+        help="Skip write if last entry for same runtime was within N seconds (default: 300)",
+    )
+    parser.add_argument(
+        "--include-untracked",
+        action="store_true",
+        help="Include untracked files in change summary (default: False)",
+    )
     return parser
 
 
@@ -146,11 +234,16 @@ def main() -> int:
         print_runtimes()
         return 0
     runtime = resolve_runtime_profile(args.runtime)
-    summary = get_git_summary()
+    summary = get_git_summary(include_untracked=args.include_untracked)
     if not summary or summary["count"] < args.min_files:
         return 0
     now = datetime.now().astimezone()
     date_str = now.strftime("%Y-%m-%d")
+
+    fingerprint = _compute_fingerprint(summary["files"])
+    if _is_duplicate(fingerprint, date_str, runtime["id"], args.cooldown):
+        return 0
+
     top_files = ", ".join(Path(name).name for name in summary["files"][:5])
     if summary["count"] > 5:
         top_files += f" and {summary['count'] - 5} more"
@@ -166,6 +259,9 @@ def main() -> int:
         "runtime": runtime["id"],
         "trigger": args.trigger,
         "decay_status": "active",
+        "retrieval": {"count": 0, "last_accessed": None, "strength": 0.0},
+        "linked_to": [],
+        "_fingerprint": fingerprint,
     }
     if args.session_id:
         entry["session_id"] = args.session_id
@@ -173,17 +269,14 @@ def main() -> int:
         entry["id"] = next_id(date_str)
         with EPISODIC.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+    # Best-effort lifecycle hooks (silently skipped if scripts are absent)
+    _maybe_run("memory_associate.py", "suggest", entry["id"], timeout=15)
+    _maybe_run("memory_associate.py", "flush-buffer", timeout=10)
+
     if args.no_trigger_check:
         return 0
-    trigger_script = WORKSPACE / "scripts" / "memory_trigger_check.py"
-    if trigger_script.exists():
-        subprocess.run(
-            [sys.executable, str(trigger_script)],
-            cwd=str(WORKSPACE),
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
+    _maybe_run("memory_trigger_check.py")
     return 0
 
 

@@ -19,16 +19,17 @@ Every time you start a new AI session, your agent:
 
 ```
 ┌──────────────────────────────────────────────┐
-│              Ghost In Shell                   │
+│              Ghost In Shell  v4.1             │
 ├──────────────┬──────────────┬────────────────┤
 │   Identity   │    Memory    │   Governance   │
 │   ─────────  │   ────────   │   ──────────   │
 │   IDENTITY   │  L0: Index   │   TRIAGE       │
-│   SOUL       │  L1: Facts   │   Permissions  │
-│   USER       │  L1: Episode │   Core Lock    │
-│              │  L0.5:Scratch│   Naming Rules │
-│              │  v4:Cognitive│   Tag Gov.     │
-│              │ v4.1:Ops Ext │                │
+│   SOUL       │  L1: Facts   │   Sanctum Reg. │
+│   USER       │  L1: Episode │   Archive Tree │
+│              │  L0.5:Scratch│   Frontmatter  │
+│              │  v4:Cognitive│   Audit Hooks  │
+│              │  v4.1: Brain │                │
+│              │  Region Map  │                │
 ├──────────────┴──────────────┴────────────────┤
 │           Three-Layer Enforcement             │
 │   L1: deny list (settings.json) — 100%       │
@@ -44,7 +45,10 @@ Every time you start a new AI session, your agent:
 │   Evolution Protocol · Claude Code Native     │
 │   Agent Contracts · Verify/Fix · Drift Audit  │
 │   Agent Orchestration · Hook Self-Healing     │
-│   Skill Dispatch · Knowledge Graph · 21 Checks│
+│   Skill Dispatch · Knowledge Graph             │
+│   ★ NEW v4.1: Sanctum Governance              │
+│   ★ NEW v4.1: Brain Region Manifest           │
+│   ★ NEW v4.1: LGD Pairing (LabGrimoire)       │
 └──────────────────────────────────────────────┘
 ```
 
@@ -130,6 +134,9 @@ The framework works with just Markdown files, but **teaching it to other people 
 | 14 | [Multi-CLI Orchestration](docs/14_Multi_CLI_Orchestration.md) | Trident pattern — multiple AI CLIs under one identity |
 | 15 | [Domain Knowledge Pipeline](docs/15_Domain_Knowledge_Pipeline.md) | Local literature DB, enrichment, search CLI |
 | 16 | [Skill Ecosystem](docs/16_Skill_Ecosystem.md) | Skill lifecycle, security audit, governance |
+| 17 | [LGD Integration](docs/17_LGD_Integration.md) | Pair with LabGrimoire Desktop — local LLM, brain visualizer, write CLIs |
+| 18 | [Sanctum Governance](docs/18_Sanctum_Governance.md) | Three-tier file protection registry + audit |
+| 19 | [Brain Region Memory](docs/19_Brain_Region_Memory.md) | Neuro-anatomical file routing manifest |
 
 ---
 
@@ -143,31 +150,38 @@ The framework works with just Markdown files, but **teaching it to other people 
 | `SOUL.md` | Values, tone, boundaries, language | Personality & ethics |
 | `USER.md` | Who it serves, preferences, sensitive areas | Client brief |
 
-### 2. Layered Memory (v4 — Hot/Cold + Cognitive Engine + Auto-Logging)
+### 2. Layered Memory (v4.1 — Hot/Cold + Cognitive Engine + Brain Regions + Auto-Logging)
 
 ```
 Always loaded (low token cost):
-  L0   MEMORY.md        ← Index & navigation (~100 lines)
-  L1   fact.yml (hot)    ← Active preferences & tools (~130 lines)
+  L0   MEMORY.md        ← Index & navigation (~80 lines)
+  L1   fact.yml (hot)    ← Active preferences & tools (~150 lines)
 
 Load on demand:
-  L1   fact_archive.yml  ← Evaluated but inactive items
-  L1   fact_decisions.yml ← Historical decisions
-  L1   episodic.jsonl    ← Lessons learned, milestones
-  L0.5 scratchpad.md     ← Current task working notes
-  L2   consolidations.jsonl ← Cross-episode pattern recognition
+  L1   fact_archive.yml      ← Evaluated but inactive items
+  L1   fact_decisions.yml    ← Historical decisions
+  L1   fact_governance.yml   ← Archive routing + sanctum registry (NEW v4.1)
+  L1   episodic.jsonl        ← Lessons learned, milestones
+  L0.5 scratchpad.md         ← Current task working notes
+  L2   consolidations.jsonl  ← Cross-episode pattern recognition
 
 v4 Cognitive layer (background):
   associations.jsonl          ← Memory graph (typed, weighted edges)
   principles_candidates.jsonl ← Auto-extracted rules (human-approved)
   .retrieval_buffer.jsonl     ← Hook-based access tracking
 
+v4.1 Brain region routing (NEW):
+  brain_region_manifest.yml  ← Maps each file to a brain region
+                               (hippocampus / prefrontal / limbic / etc.)
+                               so the agent loads the right slice for the task
+
 Auto-logging (wrapper exit or native stop hook):
   Session ends → memory_session_log.py → episodic.jsonl
-  runtime + trigger + session_id captured automatically
+  + SHA-256 fingerprint dedup, configurable cooldown window,
+    auto-association suggestions on every entry
 ```
 
-**Result**: 76% token reduction vs loading everything, plus memories that strengthen with use and fade when forgotten. **Auto-session logging** ensures no work goes unrecorded.
+**Result**: 76% token reduction vs loading everything, plus memories that strengthen with use and fade when forgotten. **Auto-session logging** ensures no work goes unrecorded. **Brain region routing** narrows context to the cognitively relevant slice.
 
 ### 3. TRIAGE — Task Classification
 
@@ -202,9 +216,20 @@ Vault/
 
 | Example | Description | Files |
 |---------|-------------|-------|
-| [`minimal/`](examples/minimal/) | Bare essentials — identity + memory + rules | 6 files |
-| [`multi_cli_memory/`](examples/multi_cli_memory/) | Shared wrappers + runtime registry + session-end logging | Reference bundle |
+| [`minimal/`](examples/minimal/) | Bare essentials — identity + memory + rules | 8 files |
+| [`multi_cli_memory/`](examples/multi_cli_memory/) | Wrappers + runtime registry + session logging + sanctum + brain regions + LGD bridge | Reference bundle (v4.1) |
 | [`team/`](examples/team/) | Multi-agent with shared vault & worker inboxes | Full setup |
+
+### Pairing with LabGrimoire Desktop (LGD)
+
+If you install **LabGrimoire Desktop**, the framework upgrades automatically:
+
+- `scripts/lgd_bridge.py` lets the agent call LGD's local LLM + tool registry headlessly
+- `lgd_write_cli` rows in your sanctum registry become enforceable
+- `brain_region_manifest.yml` powers LGD's brain visualizer
+
+See [docs/17_LGD_Integration.md](docs/17_LGD_Integration.md) for the pairing
+contract. Pairing is **always optional** — the framework works fully without LGD.
 
 ---
 
@@ -249,18 +274,20 @@ Ghost In Shell is **LLM-agnostic**. The framework works with:
 ```
 Ghost_In_Shell/
 ├── README.md              ← You are here
-├── docs/                  ← 16 design documents
+├── docs/                  ← 19 design documents (3 added in v4.1)
 │   ├── 01_Quick_Start.md
 │   ├── ...
-│   ├── 06_Security_Model.md  ← Three-layer enforcement (NEW)
-│   ├── 11_Claude_Code_Integration.md ← Path-scoped rules (NEW)
-│   └── 16_Skill_Ecosystem.md
-├── starter_kit/           ← Interactive CLI + templates
+│   ├── 16_Skill_Ecosystem.md
+│   ├── 17_LGD_Integration.md       ← NEW v4.1
+│   ├── 18_Sanctum_Governance.md    ← NEW v4.1
+│   └── 19_Brain_Region_Memory.md   ← NEW v4.1
+├── _starter_kit/          ← Interactive CLI + templates (v4.1)
 │   ├── create_agent.py
-│   ├── config/            ← 19 .template files
-│   └── structure/         ← Directory skeleton
+│   └── config/            ← .template files (incl. fact_governance,
+│                            brain_region_manifest, LGD_INTEGRATION)
 ├── examples/
 │   ├── minimal/           ← ⭐ Start here
+│   ├── multi_cli_memory/  ← Reference bundle w/ sanctum + brain region + LGD
 │   └── team/              ← Multi-agent setup
 └── LICENSE
 ```

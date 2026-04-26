@@ -1,0 +1,74 @@
+# fact_governance.yml — Cold layer
+# Loaded only when archiving / auditing / refreshing manifests.
+# Generic seed. Replace placeholder paths with your vault layout.
+
+memory_governance:
+  last_audit: "2026-04-26"
+
+  milestones:
+    location: "MEMORY.md → recent milestones"
+    max_entries: 5
+    overflow: "auto-move oldest to <vault>/_Agent_System/99_System/991_Logs/Evolution_Log/"
+
+  archive:
+    location: "memory/_archive/"
+    naming: "YYYY-MM-DD-<topic-slug>.md"
+    frontmatter_required: true
+    frontmatter_fields: ["title", "date", "tags", "source"]
+    content_format: "## Summary → ## Lessons"
+
+  archive_routing:
+    decision_tree:
+      - condition: "MEMORY.md milestone count exceeds 5"
+        target: "<vault>/_Agent_System/99_System/991_Logs/Evolution_Log/"
+        naming: "YYYY-MM-DD-milestone-topic.md"
+
+      - condition: "external tool / project / GitHub repo research"
+        target: "<vault>/_Agent_System/30_Resources/Tech_Research/YYYY-MM/"
+        naming: "YYYY-MM-DD_ProjectName.md"
+
+      - condition: "session learning / lesson / operational know-how"
+        target: "<vault>/_Agent_System/99_System/991_Logs/Learning_Log/"
+        naming: "YYYY-MM-DD-topic.md"
+
+      - condition: "expired memory / retired system docs"
+        target: "memory/_archive/"
+        naming: "YYYY-MM-DD-topic-slug.md"
+
+# ── Sanctum Registry ────────────────────────────────────────────────
+# Three-tier file protection. Replace `lgd_write_cli: null` with the real
+# LGD command after pairing — see LGD_INTEGRATION.md.
+#
+# tier values:
+#   core              → real-time friction (future C-layer)
+#   extended          → post-hoc audit, has dedicated write CLI
+#   extended_degraded → no write CLI yet → stays degraded
+sanctum_registry:
+  version: 1
+  last_updated: "2026-04-26"
+  sources:
+    - id: episodic
+      path: "memory/episodic.jsonl"
+      format: jsonl
+      tier: core
+      lgd_write_cli: null   # → "lgd brain:write-episode" after pairing
+
+    - id: fact_hot
+      path: "memory/fact.yml"
+      format: yaml
+      tier: core
+      lgd_write_cli: null
+
+    - id: fact_cold
+      path_glob: "memory/fact_*.yml"
+      format: yaml
+      tier: extended
+      lgd_write_cli: null
+      exclude: ["memory/fact_governance.yml"]
+
+    - id: scratchpad
+      path: "memory/scratchpad.md"
+      format: markdown
+      tier: extended
+      lgd_write_cli: null
+      audit_skip_tag: true
