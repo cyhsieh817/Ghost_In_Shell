@@ -1,0 +1,151 @@
+{
+  "default_executor": "claude",
+  "default_runtime": "claude-code",
+  "default_launcher": "claude",
+  "executors": {
+    "claude": {
+      "label": "Claude Code",
+      "binary": "claude",
+      "args": [
+        "-p",
+        "{prompt}",
+        "--output-format",
+        "text"
+      ],
+      "timeout": 180,
+      "output_mode": "text"
+    },
+    "gemini": {
+      "label": "Gemini CLI",
+      "binary": "gemini",
+      "args": [
+        "-p",
+        "{prompt}"
+      ],
+      "timeout": 180,
+      "output_mode": "text"
+    },
+    "copilot": {
+      "label": "GitHub Copilot CLI",
+      "binary": "copilot",
+      "args": [
+        "-p",
+        "{prompt}",
+        "--allow-all-tools",
+        "--output-format",
+        "text"
+      ],
+      "timeout": 180,
+      "output_mode": "text"
+    },
+    "codex": {
+      "label": "Codex CLI",
+      "binary": "codex",
+      "args": [
+        "-p",
+        "{prompt}"
+      ],
+      "timeout": 180,
+      "output_mode": "text"
+    },
+    "openclaw-local": {
+      "label": "OpenClaw Agent (local)",
+      "binary": "openclaw",
+      "args": [
+        "agent",
+        "--local",
+        "--json",
+        "--message",
+        "{prompt}"
+      ],
+      "timeout": 300,
+      "output_mode": "json-envelope",
+      "output_text_fields": [
+        "assistant",
+        "response",
+        "reply",
+        "content",
+        "message",
+        "text",
+        "output"
+      ]
+    }
+  },
+  "runtimes": {
+    "claude-code": {
+      "label": "Claude Code",
+      "source": "stop_hook:claude-code",
+      "tags": [
+        "runtime:claude-code"
+      ]
+    },
+    "gemini-cli": {
+      "label": "Gemini CLI",
+      "source": "stop_hook:gemini-cli",
+      "tags": [
+        "runtime:gemini-cli"
+      ]
+    },
+    "copilot-cli": {
+      "label": "GitHub Copilot CLI",
+      "source": "stop_hook:copilot-cli",
+      "tags": [
+        "runtime:copilot-cli"
+      ]
+    },
+    "codex-cli": {
+      "label": "Codex CLI",
+      "source": "stop_hook:codex-cli",
+      "tags": [
+        "runtime:codex-cli"
+      ]
+    },
+    "openclaw": {
+      "label": "OpenClaw",
+      "source": "stop_hook:openclaw",
+      "tags": [
+        "runtime:openclaw"
+      ]
+    }
+  },
+  "launchers": {
+    "claude": {
+      "label": "Ghost Claude Wrapper",
+      "binary": "claude",
+      "args": [],
+      "runtime": "claude-code",
+      "executor": "claude"
+    },
+    "gemini": {
+      "label": "Ghost Gemini Wrapper",
+      "binary": "gemini",
+      "args": [],
+      "runtime": "gemini-cli",
+      "executor": "gemini"
+    },
+    "copilot": {
+      "label": "Ghost Copilot Wrapper",
+      "binary": "copilot",
+      "args": [],
+      "runtime": "copilot-cli",
+      "executor": "copilot"
+    },
+    "codex": {
+      "label": "Ghost Codex Wrapper",
+      "binary": "codex",
+      "args": [],
+      "runtime": "codex-cli",
+      "executor": "codex"
+    },
+    "openclaw": {
+      "label": "Ghost OpenClaw Wrapper",
+      "binary": "openclaw",
+      "args": [
+        "agent",
+        "--local"
+      ],
+      "runtime": "openclaw",
+      "executor": "openclaw-local"
+    }
+  }
+}

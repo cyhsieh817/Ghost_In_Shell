@@ -1,0 +1,173 @@
+# AGENTS.md — Orchestration Protocol
+
+> **Default: DELEGATE. Self-handle only trivial tasks.**
+> This file defines how your orchestrator routes tasks to specialized agents.
+
+---
+
+<delegation_rules>
+
+## Delegation Rules
+
+**Default behavior: DELEGATE.**
+
+Self-handle ONLY when:
+- Single file edit (<10 lines)
+- Git operations, memory queries
+- Quick Q&A with no specialized knowledge needed
+
+Everything else: match to a Lane and dispatch.
+
+### Delegation Flow
+
+```
+Task arrives → 1. Is it trivial? → Yes → Self-handle (L0)
+                                 → No  → 2. Match keyword to Lane
+                                        → 3. Dispatch to Lane agent
+```
+
+### Principles
+- One primary agent per task (that agent may sub-delegate)
+- Parallel dispatch OK for independent Lane tasks
+- If agent reports "out of scope", re-route to correct Lane
+
+</delegation_rules>
+
+---
+
+<keyword_detection>
+
+## Keyword Detection
+
+Match user input to Lanes. Case-insensitive, any position.
+
+<!-- TODO: Customize these for your domain -->
+
+| Keywords | Lane | Agent |
+|----------|------|-------|
+| write, draft, article, edit, blog | L1 | `{{AGENT_L1}}` |
+| search, find, research, literature, trend | L2 | `{{AGENT_L2}}` |
+| analyze, data, strategy, evaluate, compare, ROI | L3 | `{{AGENT_L3}}` |
+| build, deploy, fix, API, bug, feature | L4 | `{{AGENT_L4}}` |
+| review, PR, security, test, audit | L5 | `{{AGENT_L5}}` |
+
+</keyword_detection>
+
+---
+
+<lane_routing>
+
+## Lane Routing
+
+### L0 — Self-Handle
+- Trivial edits (<10 lines)
+- Git operations
+- Memory queries
+- Quick Q&A
+
+### L1 — Creation → `{{AGENT_L1}}`
+**Scope**: Writing, editing, content creation
+**Entry**: `subagent_type: "{{AGENT_L1}}"`
+
+### L2 — Research → `{{AGENT_L2}}`
+**Scope**: Information gathering, literature review, trend analysis
+**Entry**: `subagent_type: "{{AGENT_L2}}"`
+
+### L3 — Analysis → `{{AGENT_L3}}`
+**Scope**: Data analysis, strategy, evaluation
+**Entry**: `subagent_type: "{{AGENT_L3}}"`
+
+### L4 — Development → `{{AGENT_L4}}`
+**Scope**: Code, architecture, deployment
+**Second-level routing**:
+| Complexity | Route |
+|-----------|-------|
+| Simple (<30 lines) | Self-handle (L0) |
+| Medium (multi-file) | `{{AGENT_L4}}` |
+| Large (needs planning) | Planning workflow |
+
+### L5 — Quality → `{{AGENT_L5}}`
+**Scope**: Code review, testing, security audit
+**Second-level routing**:
+| Type | Route |
+|------|-------|
+| PR review | Review skill/workflow |
+| Post-implementation | Code reviewer agent |
+| Security-critical | Security reviewer agent |
+
+<!-- Add custom lanes below -->
+<!-- ### L6 — [Your Domain] → `{{AGENT_L6}}` -->
+
+</lane_routing>
+
+---
+
+<agent_catalog>
+
+## Agent Catalog
+
+### Direct Dispatch (Orchestrator controls routing)
+
+| Agent | Lane | Purpose | Model |
+|-------|------|---------|-------|
+| `{{AGENT_L1}}` | L1 | Content creation | sonnet |
+| `{{AGENT_L2}}` | L2 | Research & search | sonnet |
+| `{{AGENT_L3}}` | L3 | Data & strategy | sonnet |
+| `{{AGENT_L4}}` | L4 | Code implementation | sonnet |
+| `{{AGENT_L5}}` | L5 | Quality assurance | sonnet |
+
+### Skill-Managed (Never dispatch directly)
+
+<!-- List agents that are managed by skills/workflows -->
+<!-- Example:
+- build-agents (3) → managed by /build skill
+- review-agents (2) → managed by /review skill
+-->
+
+</agent_catalog>
+
+---
+
+<model_tier_policy>
+
+## Model Tier Policy (Subagent Tiering)
+
+> When spawning subagents, the orchestrator MUST pass the `model` parameter per this table.
+> Mirror this config in `fact.yml` → `agent_model_tiers` for programmatic access.
+
+### Tier Definitions
+
+| Tier | Model | Use When |
+|------|-------|----------|
+| T1 Deep Thought | `opus` | Creative work, long-chain reasoning, multi-perspective analysis |
+| T2 Execution | `sonnet` | Clear instructions, structured output, search & retrieval |
+| T3 Trivial | `haiku` | Reserved — no fixed bindings yet |
+
+### Fixed Assignments (zero-judgment, dispatch by table)
+
+<!-- TODO: Customize for your agent team -->
+
+| Agent | Model | Rationale |
+|-------|-------|-----------|
+| `{{AGENT_L3}}` | `opus` | Strategy analysis requires long-chain reasoning |
+| `Explore` | `sonnet` | Pure search and retrieval |
+
+### Conditional Assignments (default Sonnet, upgrade to Opus when criteria met)
+
+<!-- TODO: Define upgrade triggers for your agents -->
+
+| Agent | Upgrade to Opus When |
+|-------|---------------------|
+| `{{AGENT_L1}}` | Long-form writing (>3000 words), academic manuscripts |
+| `{{AGENT_L4}}` | Architecture redesign, new system design, security changes |
+| `{{AGENT_L2}}` | Deep research, systematic literature review |
+
+### Fallback
+
+Agents not listed here inherit the parent's model — never downgrade.
+
+</model_tier_policy>
+
+---
+
+*Customize this template for your agent team. See docs/13_Agent_Orchestration.md for details.* 🐚
