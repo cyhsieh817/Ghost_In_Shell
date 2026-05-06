@@ -1,14 +1,36 @@
-"""gish run-maintenance — M1 stub."""
+"""gish run-maintenance — run maintenance engines (M2)."""
 
-import sys
+from __future__ import annotations
+
+from pathlib import Path
 
 import click
 
+_ALL_ENGINES = ["session_log", "health", "audit", "decay", "associate", "consolidate"]
+
 
 @click.command("run-maintenance")
-@click.option("--engine", type=str, default=None)
-def run_maintenance_cmd(engine: str | None) -> None:
-    """Run all (or one) maintenance engine. (M1 stub.)"""
-    label = engine or "all"
-    click.echo(f"gish run-maintenance --engine {label}: M1 stub — not yet implemented (lands in M2)")
-    sys.exit(1)
+@click.option("--workspace", required=True, type=click.Path(exists=True), help="Workspace root path.")
+@click.option("--engine", type=str, default=None, help="Run a specific engine (default: all).")
+@click.option("--dry-run", is_flag=True, default=False)
+def run_maintenance_cmd(workspace: str, engine: str | None, dry_run: bool) -> None:
+    """Run all (or one) maintenance engine."""
+    from ghost_in_shell.engines import (
+        session_log, health, audit, decay, associate, consolidate
+    )
+    _MAP = {
+        "session_log": session_log,
+        "health": health,
+        "audit": audit,
+        "decay": decay,
+        "associate": associate,
+        "consolidate": consolidate,
+    }
+    to_run = [engine] if engine else _ALL_ENGINES
+    for name in to_run:
+        if name not in _MAP:
+            click.echo(click.style(f"Unknown engine: {name}", fg="red"), err=True)
+            raise SystemExit(1)
+        mod = _MAP[name]
+        result = mod.run(Path(workspace), dry_run=dry_run)
+        click.echo(f"[{name}] {result}")
