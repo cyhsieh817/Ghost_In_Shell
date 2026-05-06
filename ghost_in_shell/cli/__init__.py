@@ -1,0 +1,1 @@
+"""gish CLI — entry points."""
