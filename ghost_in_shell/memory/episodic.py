@@ -56,11 +56,14 @@ class EpisodicStore:
 
     # ------------------------------------------------------------------
     def search(self, query: str, limit: int = 20) -> list[dict]:
-        """Return entries whose title or content contains *query* (case-insensitive)."""
+        """Return entries whose title, content, or tags contain *query* (case-insensitive)."""
         q = query.lower()
         results = []
         for row in self._iter_raw():
-            if q in row.get("title", "").lower() or q in row.get("content", "").lower():
+            in_title = q in row.get("title", "").lower()
+            in_content = q in row.get("content", "").lower()
+            in_tags = any(q in t.lower() for t in row.get("tags", []))
+            if in_title or in_content or in_tags:
                 results.append(row)
                 if len(results) >= limit:
                     break
