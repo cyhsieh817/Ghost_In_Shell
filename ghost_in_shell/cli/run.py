@@ -15,9 +15,7 @@ _ALL_ENGINES = ["session_log", "health", "audit", "decay", "associate", "consoli
 @click.option("--dry-run", is_flag=True, default=False)
 def run_maintenance_cmd(workspace: str, engine: str | None, dry_run: bool) -> None:
     """Run all (or one) maintenance engine."""
-    from ghost_in_shell.engines import (
-        session_log, health, audit, decay, associate, consolidate
-    )
+    from ghost_in_shell.engines import associate, audit, consolidate, decay, health, session_log
     _MAP = {
         "session_log": session_log,
         "health": health,

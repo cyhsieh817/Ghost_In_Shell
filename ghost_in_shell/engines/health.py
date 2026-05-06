@@ -16,7 +16,7 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
     Returns a dict with counts of episodes, edges, issues, and overall status.
     """
     paths = WorkspacePaths(resolve_workspace(workspace))
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
 
     episode_count = sum(1 for _ in read_jsonl(paths.episodic)) if paths.episodic.exists() else 0
     edge_count = sum(1 for _ in read_jsonl(paths.associations)) if paths.associations.exists() else 0

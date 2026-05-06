@@ -6,7 +6,7 @@ import datetime
 import json
 from pathlib import Path
 
-from ghost_in_shell.engines._manifest import load_manifest, save_manifest, stamp_run
+from ghost_in_shell.engines._manifest import load_manifest, save_manifest
 from ghost_in_shell.memory._paths import WorkspacePaths, resolve_workspace
 from ghost_in_shell.memory._safe_io import atomic_write_text, read_jsonl
 
@@ -21,7 +21,7 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
     single synthetic entry, then calls the judge engine for a verdict.
     """
     paths = WorkspacePaths(resolve_workspace(workspace))
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
 
     if not paths.episodic.exists():
         return {"ts": ts, "merged": 0, "verdict": None, "dry_run": dry_run}

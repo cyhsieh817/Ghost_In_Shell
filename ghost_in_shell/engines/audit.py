@@ -17,7 +17,7 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
     or is missing entirely.
     """
     paths = WorkspacePaths(resolve_workspace(workspace))
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
 
     audit_files = list(paths.memory_dir.glob("*_audit.jsonl")) if paths.memory_dir.exists() else []
     total = 0

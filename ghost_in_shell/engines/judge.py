@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 _HIGH_IMPORTANCE = 7
 _HIGH_SCORE = 0.75
 _LOW_SCORE = 0.3
@@ -39,6 +38,7 @@ def evaluate(entry: dict) -> dict:
 def run(workspace, *, dry_run: bool = False) -> dict:
     """Batch-evaluate all episodic entries and return a summary."""
     from pathlib import Path
+
     from ghost_in_shell.memory._paths import WorkspacePaths, resolve_workspace
     from ghost_in_shell.memory._safe_io import read_jsonl
 

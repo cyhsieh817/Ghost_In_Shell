@@ -56,7 +56,7 @@ class RetrievalBuffer:
     # ------------------------------------------------------------------
     def record(self, entry_id: str, kind: str = "episode") -> int:
         """Increment retrieval count for *entry_id*. Returns new count."""
-        ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        ts = datetime.datetime.now(datetime.UTC).isoformat()
         with self._connect() as conn:
             conn.execute(
                 """
@@ -93,6 +93,6 @@ class RetrievalBuffer:
     ) -> float:
         count = self.retrieval_count(entry_id)
         created = datetime.datetime.fromisoformat(created_ts.replace("Z", "+00:00"))
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.now(datetime.UTC)
         weeks = (now - created).total_seconds() / (7 * 24 * 3600)
         return compute_strength(importance, count, association_edges, weeks)

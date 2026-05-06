@@ -1,14 +1,14 @@
 """Unit tests for associate engine (spec § 4.7)."""
 
-import json
-import hashlib
 import datetime
+import hashlib
+import json
 
 from ghost_in_shell.engines import associate
 
 
 def _ep(eid: str, tags: list) -> dict:
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
     fp = hashlib.sha256(eid.encode()).hexdigest()
     return {
         "id": eid,

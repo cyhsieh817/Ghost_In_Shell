@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import datetime
-from pathlib import Path
 from typing import Any
 
 import yaml
@@ -67,5 +66,5 @@ class FactStore:
 
     # ------------------------------------------------------------------
     def _audit_entry(self, action: str, key: str, value: Any) -> None:
-        ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        ts = datetime.datetime.now(datetime.UTC).isoformat()
         append_jsonl(self._audit, [{"ts": ts, "action": action, "key": key, "value": str(value)}])

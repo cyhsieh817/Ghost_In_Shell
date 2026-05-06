@@ -19,7 +19,7 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
     """
     paths = WorkspacePaths(resolve_workspace(workspace))
     log_path = paths.memory_dir / _LOG_FILE
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
     entry = {"ts": ts, "event": "session_start", "engine": "session_log"}
 
     if not dry_run:

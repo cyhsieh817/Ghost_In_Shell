@@ -1,6 +1,5 @@
 """Unit tests for RetrievalBuffer (spec § 4.6)."""
 
-import pytest
 
 from ghost_in_shell.memory.retrieval import RetrievalBuffer, compute_strength
 
@@ -52,7 +51,7 @@ def test_strength_method_uses_retrieval_count(tmp_paths):
     import datetime
     buf = RetrievalBuffer(tmp_paths)
     # Use a recent ts so decay doesn't clamp everything to 0
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
     s0 = buf.strength("ep-x", importance=5, association_edges=0, created_ts=ts)
     buf.record("ep-x")
     s1 = buf.strength("ep-x", importance=5, association_edges=0, created_ts=ts)

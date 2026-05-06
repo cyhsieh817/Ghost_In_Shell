@@ -18,7 +18,7 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
     ``elaborates`` association if none already exists.
     """
     paths = WorkspacePaths(resolve_workspace(workspace))
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
 
     if not paths.episodic.exists():
         return {"ts": ts, "created": 0, "dry_run": dry_run}

@@ -1,6 +1,5 @@
 """Unit tests for AssociationGraph (spec § 4.3)."""
 
-import pytest
 
 from ghost_in_shell.memory.associations import AssociationGraph
 

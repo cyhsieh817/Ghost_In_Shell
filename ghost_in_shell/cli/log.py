@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import datetime
 import hashlib
-import sys
 from pathlib import Path
 
 import click
@@ -33,7 +32,7 @@ def log_cmd(
     """Append an episodic memory entry."""
     paths = WorkspacePaths(resolve_workspace(Path(workspace)))
     store = EpisodicStore(paths)
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
     date = ts[:10]
     tag_list = [t.strip() for t in tags.split(",") if t.strip()]
     fp = make_fingerprint(title, content or title, date)
