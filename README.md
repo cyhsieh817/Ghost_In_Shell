@@ -4,6 +4,8 @@
 
 Ghost In Shell is an open-source framework for building AI agents with persistent identity, layered memory, and autonomous task management. It turns stateless LLM sessions into evolving digital entities that remember, learn, and grow.
 
+> **🚧 v5 clean rewrite in progress.** New work lives on branch [`v5/rewrite`](https://github.com/cyhsieh817/Ghost_In_Shell/tree/v5/rewrite) — a Python package (`ghost_in_shell`) with a `gish` CLI is taking shape there. The v4.1 documentation framework below remains valid and is frozen on branch [`legacy/v4`](https://github.com/cyhsieh817/Ghost_In_Shell/tree/legacy/v4) at tag `v4.1.0-final`. `main` will be flipped to v5 once the rewrite reaches RC (milestone M5).
+
 ---
 
 ## The Problem
