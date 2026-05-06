@@ -1,0 +1,24 @@
+schema_version: 1
+identity:
+  name: Golden Fixture User
+  call_as: Goldie
+  language: en
+  timezone: UTC
+  last_updated: "2025-01-15"
+preferences:
+  communication:
+    - concise
+    - structured
+  tech_stack:
+    - Python
+    - pydantic
+    - click
+  forbidden_words: []
+rules:
+  - Never use rm; use mv to _DELETE_ prefix instead
+  - All commits end with Co-authored-by trailer
+tools:
+  gish:
+    version: "5.0.0a2"
+    installed: true
+archive: {}
