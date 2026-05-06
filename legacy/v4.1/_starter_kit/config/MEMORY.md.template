@@ -1,0 +1,68 @@
+# {{AGENT_NAME}} — Memory Index {{AGENT_EMOJI}}
+
+> Memory system entry point (L0). Always loaded by `CLAUDE.md` or an equivalent root file. Never stores actual data — only navigation.
+
+---
+
+## Memory Layers (v4.1 — Brain Region Aware)
+
+| Layer | File | Purpose | When to Load |
+|-------|------|---------|--------------|
+| **L0 Router** | `MEMORY.md` (this file) | Index & navigation (~80 lines) | Every session (auto) |
+| **L1 Hot** | `memory/fact.yml` | Active preferences, tools, rules | Every session (auto) |
+| **L1 Cold** | `memory/fact_archive.yml` | Inactive/evaluated items | Reviewing old data |
+| **L1 Cold** | `memory/fact_decisions.yml` | Historical decisions | Checking precedent |
+| **L1 Governance** | `memory/fact_governance.yml` | Archive routing, sanctum registry | When archiving / auditing |
+| **L1 Episodes** | `memory/episodic.jsonl` | Lessons, milestones, failures | Need past lessons |
+| **L0.5 Scratch** | `memory/scratchpad.md` | Current task working notes | During active tasks |
+| **L2 Consolidations** | `memory/consolidations.jsonl` | Cross-episode pattern recognition | Background |
+| **Brain Regions** | `memory/brain_region_manifest.yml` | Neuro-anatomical file routing | Region refresh tick |
+
+## v4 Cognitive Layer (background)
+
+| File | Purpose |
+|------|---------|
+| `memory/associations.jsonl` | Memory graph — typed, weighted edges between memories |
+| `memory/principles_candidates.jsonl` | Auto-extracted rules awaiting human approval |
+| `memory/.retrieval_buffer.jsonl` | Hook-based access tracking |
+
+## Quick Links
+
+| Need | Where |
+|------|-------|
+| User preferences | `memory/fact.yml` → `user` section |
+| Active tools | `memory/fact.yml` → `tools` section |
+| System rules | `memory/fact.yml` → `rules` section |
+| Archive routing tree | `memory/fact_governance.yml` → `archive_routing` |
+| Sanctum registry | `memory/fact_governance.yml` → `sanctum_registry` |
+| Past failures | `grep '"type":"failure"' memory/episodic.jsonl` |
+| Recent milestones | `tail -5 memory/episodic.jsonl` |
+
+## Key Paths
+
+| Location | Path |
+|----------|------|
+| Workspace | `{{WORKSPACE_PATH}}` |
+| Vault | `{{VAULT_PATH}}` |
+| Agent System | `{{VAULT_PATH}}/_Agent_System/` |
+| User Workspace | `{{VAULT_PATH}}/_User_Workspace/` |
+| Policies | `{{VAULT_PATH}}/_Agent_System/99_System/990_POLICY/` |
+| Sanctum Audit | `python3 scripts/sanctum_audit.py` |
+
+## Loading Strategy
+
+```
+1. Session start → This file + fact.yml (auto via `CLAUDE.md` or equivalent root file)
+2. Need detail → Load relevant layer on demand
+3. Task complete → Append to episodic.jsonl (auto via session-log hook)
+4. Periodic background → memory_decay.py / memory_consolidate.py
+5. Session end → Clear scratchpad if task finished
+```
+
+## LGD Pairing (optional)
+
+If you have **LabGrimoire Desktop** installed, the agent can use `scripts/lgd_bridge.py` to delegate to LGD's local LLM + tools without leaving this workspace. See `LGD_INTEGRATION.md` (if generated) or `docs/17_LGD_Integration.md`.
+
+---
+
+*Initialized: {{DATE}}*
