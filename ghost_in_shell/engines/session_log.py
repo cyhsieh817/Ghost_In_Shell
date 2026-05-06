@@ -1,11 +1,33 @@
-"""session_log — M2 placeholder. See spec § 4.7."""
+"""SessionLog engine — append runtime session events (spec § 4.7)."""
 
+from __future__ import annotations
+
+import datetime
 from pathlib import Path
 
+from ghost_in_shell.engines._manifest import stamp_run
+from ghost_in_shell.memory._paths import WorkspacePaths, resolve_workspace
+from ghost_in_shell.memory._safe_io import append_jsonl
 
-def run(workspace: Path, *, dry_run: bool = False):
-    raise NotImplementedError("M2 milestone: engine logic not yet implemented")
+_LOG_FILE = "session_log.jsonl"
+
+
+def run(workspace: Path, *, dry_run: bool = False) -> dict:
+    """Append a session-start event to the session log.
+
+    Returns a summary dict with ``ts``, ``dry_run``, and ``log_path``.
+    """
+    paths = WorkspacePaths(resolve_workspace(workspace))
+    log_path = paths.memory_dir / _LOG_FILE
+    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    entry = {"ts": ts, "event": "session_start", "engine": "session_log"}
+
+    if not dry_run:
+        append_jsonl(log_path, [entry])
+        stamp_run(paths, "health")  # stamps last_health_run
+
+    return {"ts": ts, "dry_run": dry_run, "log_path": str(log_path)}
 
 
 def schedule_cron() -> str:
-    raise NotImplementedError("M2 milestone: cron spec not yet defined")
+    return "@session_start"
