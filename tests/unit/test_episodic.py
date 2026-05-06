@@ -2,13 +2,11 @@
 
 import datetime
 
-import pytest
-
 from ghost_in_shell.memory.episodic import EpisodicStore, make_fingerprint
 
 TODAY = "2024-01-01"
 TS = "2024-01-01T00:00:00Z"
-NOW_TS = datetime.datetime.now(datetime.timezone.utc).isoformat()
+NOW_TS = datetime.datetime.now(datetime.UTC).isoformat()
 
 
 def _entry(**kwargs) -> dict:

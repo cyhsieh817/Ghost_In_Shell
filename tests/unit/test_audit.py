@@ -23,7 +23,7 @@ def test_audit_detects_delete_action(tmp_paths):
 
 
 def test_audit_stamps_manifest(tmp_paths):
-    result = audit.run(tmp_paths.root)
+    audit.run(tmp_paths.root)
     manifest = tmp_paths.memory_manifest
     assert manifest.exists()
     import yaml

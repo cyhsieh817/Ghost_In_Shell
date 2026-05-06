@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import datetime
 import hashlib
+from collections.abc import Iterator
 from difflib import SequenceMatcher
-from typing import Iterator
 
 from ghost_in_shell.memory._paths import WorkspacePaths
 from ghost_in_shell.memory._safe_io import append_jsonl, read_jsonl
@@ -29,7 +29,7 @@ class EpisodicStore:
         """Validate, dedup, and persist an episodic entry. Returns the entry id."""
         validated = EpisodicEntry(**entry)
         fp = validated.fingerprint
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.now(datetime.UTC)
 
         # Cooldown dedup — same fingerprint within cooldown window
         for existing in self._iter_raw():
@@ -90,7 +90,7 @@ class EpisodicStore:
 def _parse_ts(ts: str) -> datetime.datetime:
     dt = datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))
     if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=datetime.timezone.utc)
+        dt = dt.replace(tzinfo=datetime.UTC)
     return dt
 
 

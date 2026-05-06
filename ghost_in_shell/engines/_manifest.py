@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from pathlib import Path
+from datetime import UTC, datetime
 from typing import Any
 
 import yaml
@@ -13,7 +12,7 @@ from ghost_in_shell.memory._safe_io import atomic_write_text
 
 
 def _now_iso() -> str:
-    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+    return datetime.now(UTC).astimezone().isoformat(timespec="seconds")
 
 
 def load_manifest(paths: WorkspacePaths) -> dict[str, Any]:

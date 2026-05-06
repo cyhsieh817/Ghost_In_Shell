@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 
-import json
 import shutil
 from pathlib import Path
 
 import pytest
 
+from ghost_in_shell.engines import audit, health
 from ghost_in_shell.memory._paths import WorkspacePaths
 from ghost_in_shell.memory.episodic import EpisodicStore
 from ghost_in_shell.memory.facts import FactStore
 from ghost_in_shell.memory.retrieval import compute_strength
-from ghost_in_shell.engines import health, audit
 
 GOLDEN_DIR = Path(__file__).parent.parent / "fixtures" / "golden"
 

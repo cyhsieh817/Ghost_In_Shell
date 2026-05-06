@@ -5,8 +5,8 @@ from __future__ import annotations
 import json
 import os
 import tempfile
+from collections.abc import Iterable, Iterator
 from pathlib import Path
-from typing import Iterable, Iterator
 
 
 def atomic_write_text(path: Path, content: str) -> None:

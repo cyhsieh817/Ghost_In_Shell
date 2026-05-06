@@ -24,7 +24,7 @@ def file_lock(lock_path: Path, timeout: float = 30.0):
                     break
                 except BlockingIOError:
                     if time.time() > deadline:
-                        raise TimeoutError(f"could not acquire {lock_path} within {timeout}s")
+                        raise TimeoutError(f"could not acquire {lock_path} within {timeout}s") from None
                     time.sleep(0.05)
             try:
                 yield
@@ -39,7 +39,7 @@ def file_lock(lock_path: Path, timeout: float = 30.0):
                     break
                 except OSError:
                     if time.time() > deadline:
-                        raise TimeoutError(f"could not acquire {lock_path} within {timeout}s")
+                        raise TimeoutError(f"could not acquire {lock_path} within {timeout}s") from None
                     time.sleep(0.05)
             try:
                 yield

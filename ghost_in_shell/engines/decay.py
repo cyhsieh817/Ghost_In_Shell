@@ -3,14 +3,13 @@
 from __future__ import annotations
 
 import datetime
+import json
 from pathlib import Path
 
 from ghost_in_shell.engines._manifest import stamp_run
 from ghost_in_shell.memory._paths import WorkspacePaths, resolve_workspace
 from ghost_in_shell.memory._safe_io import atomic_write_text, read_jsonl
 from ghost_in_shell.memory.retrieval import compute_strength
-
-import json
 
 _FADING_THRESHOLD = 0.4
 _ARCHIVED_THRESHOLD = 0.2
@@ -24,7 +23,7 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
     return ``{"paused": True}`` without mutating.
     """
     paths = WorkspacePaths(resolve_workspace(workspace))
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
 
     if not paths.episodic.exists():
         return {"ts": ts, "paused": False, "mutated": 0, "dry_run": dry_run}
@@ -35,7 +34,7 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
     if active_count < _SAFETY_FLOOR:
         return {"ts": ts, "paused": True, "active_count": active_count, "dry_run": dry_run}
 
-    now = datetime.datetime.now(datetime.timezone.utc)
+    now = datetime.datetime.now(datetime.UTC)
     mutated = 0
     updated: list[dict] = []
 

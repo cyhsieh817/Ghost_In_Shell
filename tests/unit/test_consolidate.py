@@ -1,14 +1,14 @@
 """Unit tests for consolidate engine + judge (spec § 4.7)."""
 
-import json
-import hashlib
 import datetime
+import hashlib
+import json
 
 from ghost_in_shell.engines import consolidate, judge
 
 
 def _ep(eid: str, importance: int) -> dict:
-    ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ts = datetime.datetime.now(datetime.UTC).isoformat()
     fp = hashlib.sha256(eid.encode()).hexdigest()
     return {
         "id": eid,

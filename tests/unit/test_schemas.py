@@ -9,11 +9,8 @@ from ghost_in_shell.memory.schemas import (
     EpisodicEntry,
     FactDocument,
     MemoryManifest,
-    NodeRef,
-    RuntimeProfiles,
     SanctumRegistry,
 )
-
 
 # ---------------------------------------------------------------------------
 # EpisodicEntry

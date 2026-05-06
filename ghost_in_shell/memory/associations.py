@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-import datetime
 import sqlite3
-from pathlib import Path
 
 from ghost_in_shell.memory._paths import WorkspacePaths
 from ghost_in_shell.memory._safe_io import append_jsonl, read_jsonl

@@ -1,14 +1,14 @@
 """Unit tests for decay engine (spec § 4.7)."""
 
-import json
 import datetime
+import json
 
 from ghost_in_shell.engines import decay
 
 
 def _make_episode(eid: str, importance: int, weeks_ago: float = 0.0) -> dict:
     ts = (
-        datetime.datetime.now(datetime.timezone.utc)
+        datetime.datetime.now(datetime.UTC)
         - datetime.timedelta(weeks=weeks_ago)
     ).isoformat()
     import hashlib
