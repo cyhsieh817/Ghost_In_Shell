@@ -152,8 +152,7 @@ cat <<EOF
   5. Run: gish doctor --workspace "$WORKSPACE_PATH"   to verify health.
   6. Try: gish recall "your query" --workspace "$WORKSPACE_PATH"
 
-  Full docs: see README.md or visit the repo.
-  Track progress: branch v5/rewrite.
+  Full docs: https://github.com/cyhsieh817/Ghost_In_Shell#documentation
 
 EOF
 
