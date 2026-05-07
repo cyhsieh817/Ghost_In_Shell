@@ -1,0 +1,78 @@
+version: "1.0"
+default_executor: claude
+default_runtime: claude-code
+default_launcher: claude
+
+executors:
+  claude:
+    label: "Claude Code"
+    binary: claude
+    args: ["-p", "{prompt}", "--output-format", "text"]
+    timeout: 600
+    output_mode: text
+    max_turns: 10
+  gemini:
+    label: "Gemini CLI"
+    binary: gemini
+    args: ["-p", "{prompt}"]
+    timeout: 180
+    output_mode: text
+    max_turns: 10
+  codex:
+    label: "Codex CLI"
+    binary: codex
+    args: ["-p", "{prompt}"]
+    timeout: 180
+    output_mode: text
+    max_turns: 10
+  copilot:
+    label: "GitHub Copilot CLI"
+    binary: copilot
+    args: ["-p", "{prompt}", "--allow-all-tools", "--output-format", "text"]
+    timeout: 180
+    output_mode: text
+    max_turns: 5
+
+runtimes:
+  claude-code:
+    label: "Claude Code"
+    source: "stop_hook:claude-code"
+    tags: ["runtime:claude-code"]
+  gemini-cli:
+    label: "Gemini CLI"
+    source: "stop_hook:gemini-cli"
+    tags: ["runtime:gemini-cli"]
+  codex-cli:
+    label: "Codex CLI"
+    source: "stop_hook:codex-cli"
+    tags: ["runtime:codex-cli"]
+  copilot-cli:
+    label: "GitHub Copilot CLI"
+    source: "stop_hook:copilot-cli"
+    tags: ["runtime:copilot-cli"]
+
+launchers:
+  claude:
+    label: "gish Claude Wrapper"
+    binary: claude
+    args: []
+    runtime: claude-code
+    executor: claude
+  gemini:
+    label: "gish Gemini Wrapper"
+    binary: gemini
+    args: []
+    runtime: gemini-cli
+    executor: gemini
+  codex:
+    label: "gish Codex Wrapper"
+    binary: codex
+    args: []
+    runtime: codex-cli
+    executor: codex
+  copilot:
+    label: "gish Copilot Wrapper"
+    binary: copilot
+    args: []
+    runtime: copilot-cli
+    executor: copilot

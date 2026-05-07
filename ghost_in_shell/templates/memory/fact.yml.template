@@ -1,0 +1,14 @@
+schema_version: 1
+identity:
+  name: "{{NAME}}"
+  call_as: "{{NAME}}"
+  language: "en"
+  timezone: "UTC"
+  last_updated: "{{TODAY}}"
+preferences:
+  communication: []
+  tech_stack: []
+  forbidden_words: []
+rules: []
+tools: {}
+archive: {}

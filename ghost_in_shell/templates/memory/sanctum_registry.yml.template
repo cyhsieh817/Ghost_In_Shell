@@ -1,0 +1,14 @@
+schema_version: 1
+entries:
+  - path: "memory/fact.yml"
+    tier: private
+    reason: "Contains personal identity and preferences"
+    enforced_actions: [write, delete]
+  - path: "memory/episodic.jsonl"
+    tier: private
+    reason: "Personal episodic memory"
+    enforced_actions: [delete]
+  - path: "memory/associations_audit.jsonl"
+    tier: private
+    reason: "Association audit trail"
+    enforced_actions: [delete]

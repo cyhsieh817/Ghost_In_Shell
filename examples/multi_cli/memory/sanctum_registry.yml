@@ -1,0 +1,10 @@
+schema_version: 1
+entries:
+  - path: "memory/fact.yml"
+    tier: private
+    reason: "Contains agent identity and preferences"
+    enforced_actions: [write, delete]
+  - path: "memory/episodic.jsonl"
+    tier: private
+    reason: "Episodic memory log"
+    enforced_actions: [delete]

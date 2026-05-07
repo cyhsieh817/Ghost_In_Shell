@@ -1,0 +1,58 @@
+[build-system]
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ghost-in-shell"
+version = "5.0.0rc1"
+description = "Multi-CLI agent memory framework with episodic recall, association graphs, sanctum governance, and brain-region routing."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Ghost In Shell contributors" },
+]
+keywords = ["ai", "agent", "memory", "claude", "gemini", "codex", "copilot"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "click>=8.1",
+    "pyyaml>=6.0",
+    "pydantic>=2.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+gish = "ghost_in_shell.cli.main:gish"
+
+[project.urls]
+Homepage = "https://github.com/cyhsieh817/Ghost_In_Shell"
+Issues = "https://github.com/cyhsieh817/Ghost_In_Shell/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["ghost_in_shell"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["legacy", "_DELETE_*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "RUF"]
+ignore = ["E501"]

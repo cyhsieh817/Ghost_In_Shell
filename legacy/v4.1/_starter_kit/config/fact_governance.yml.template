@@ -1,0 +1,134 @@
+# fact_governance.yml — Cold Layer
+# Archive routing, frontmatter rules, sanctum registry.
+# Loaded ONLY on demand: when archiving, auditing, or refreshing manifests.
+# Initialized: {{DATE}}
+
+---
+
+memory_governance:
+  last_audit: "{{DATE}}"
+
+  milestones:
+    location: "MEMORY.md → recent milestones"
+    max_entries: 5
+    overflow: "auto-move oldest to `{{VAULT_PATH}}/_Agent_System/99_System/991_Logs/Evolution_Log/`"
+    rule: "When adding a milestone, if list exceeds 5 entries, archive oldest"
+
+  tools_hot_layer:
+    format: "one-line summary (tool_name: purpose)"
+    detail_ref: "memory/fact_tools_detail.yml (optional)"
+    audit_cycle: "monthly"
+    audit_rule: "tools unused in last 30 days → move to cold layer"
+
+  auto_memory:
+    location: "~/.claude/projects/.../memory/MEMORY.md  (Claude Code auto snapshot)"
+    max_lines: 80
+    allowed_types: ["default output paths", "tool selection rules", "trigger reminders", "feedback index"]
+    overflow: "oldest entries → official layer (memory/fact.yml or episodic.jsonl)"
+    forbidden: "full memory content (this is a hint layer only)"
+
+  archive:
+    location: "memory/_archive/"
+    naming: "YYYY-MM-DD-<topic-slug>.md"
+    frontmatter_required: true
+    frontmatter_fields: ["title", "date", "tags", "source"]
+    content_format: "## Summary → ## Lessons (or ## Decisions)"
+
+  # ── Archive routing decision tree ─────────────────────────────────
+  # Evaluate top-down; first match wins.
+  archive_routing:
+    decision_tree:
+      - condition: "MEMORY.md milestone count exceeds 5"
+        target: "{{VAULT_PATH}}/_Agent_System/99_System/991_Logs/Evolution_Log/"
+        naming: "YYYY-MM-DD-milestone-topic.md"
+        frontmatter: "title / date / tags / source"
+
+      - condition: "external tool / project / GitHub repo research / tech reconnaissance"
+        target: "{{VAULT_PATH}}/_Agent_System/30_Resources/Tech_Research/YYYY-MM/"
+        naming: "YYYY-MM-DD_ProjectName.md"
+        frontmatter: "title / type / created / tags / source / verified"
+        note: "Research is *about* something external — distinct from session learnings"
+
+      - condition: "session learning / lesson / operational know-how"
+        target: "{{VAULT_PATH}}/_Agent_System/99_System/991_Logs/Learning_Log/"
+        naming: "YYYY-MM-DD-topic.md"
+        frontmatter: "title / date / tags / source"
+
+      - condition: "security scan / threat report / supply-chain incident / CVE"
+        target: "{{VAULT_PATH}}/_Agent_System/99_System/991_Logs/Security_Log/"
+        naming: "YYYY-Www.md"
+        frontmatter: "title / date / tags / source"
+
+      - condition: "audit: file creation/deletion/modification log / violation record"
+        target: "{{VAULT_PATH}}/_Agent_System/99_System/991_Logs/Audit_Log/"
+        naming: "YYYY-MM-DD-audit-topic.md"
+        frontmatter: "title / date / tags / source"
+
+      - condition: "expired memory / retired system docs / old design notes"
+        target: "memory/_archive/"
+        naming: "YYYY-MM-DD-topic-slug.md"
+        frontmatter: "title / date / tags / source"
+        note: "default archive location"
+
+    naming_rules:
+      separator: "-"
+      date_format: "YYYY-MM-DD"
+      slug: "lowercase ASCII, hyphen-separated"
+
+# ── Vault-wide Frontmatter Baseline ─────────────────────────────────
+vault_baseline:
+  description: "All new or modified .md files should carry a minimal frontmatter so the index can recall them."
+  required_fields: [title, tags, created]
+  format:
+    title: "string — derive from H1 or filename, never empty"
+    tags:  "JSON array, e.g. [project, experiment]; default []"
+    created: "YYYY-MM-DD — derive from filename date pattern or mtime"
+  applies_to: "newly created or modified .md files"
+  exemptions:
+    - "_Agent_System/99_System/991_Logs/**"
+    - "**/Clippings/**"
+    - "**/*_auto.md"
+    - "**/*.log.md"
+  enforcement: "warning (gradual) — PreToolUse hook hints, not hard-block"
+
+# ── Sanctum Registry ────────────────────────────────────────────────
+# Three-tier file protection model. Each source declares its tier and the
+# canonical write CLI (if any). The audit script flags writes that bypass
+# the canonical CLI.
+#
+# tier values:
+#   core              — C-layer (future): real-time friction on direct write
+#   extended          — D-layer: post-hoc audit; has dedicated write CLI
+#   extended_degraded — D-layer: no write CLI yet → permanent degraded mode
+#
+# Replace {{LGD_*}} hooks with your actual LabGrimoire Desktop CLI commands
+# once LGD is paired. See docs/17_LGD_Integration.md.
+sanctum_registry:
+  version: 1
+  last_updated: "{{DATE}}"
+  sources:
+    - id: episodic
+      path: "memory/episodic.jsonl"
+      format: jsonl
+      tier: core
+      lgd_write_cli: null   # replace with: "lgd brain:write-episode" if LGD installed
+
+    - id: fact_hot
+      path: "memory/fact.yml"
+      format: yaml
+      tier: core
+      lgd_write_cli: null
+
+    - id: fact_cold
+      path_glob: "memory/fact_*.yml"
+      format: yaml
+      tier: extended
+      lgd_write_cli: null
+      exclude: ["memory/fact_governance.yml"]
+
+    - id: scratchpad
+      path: "memory/scratchpad.md"
+      format: markdown
+      tier: extended
+      lgd_write_cli: null
+      audit_skip_tag: true

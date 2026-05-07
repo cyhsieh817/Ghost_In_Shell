@@ -1,0 +1,28 @@
+# fact.yml — Hot Layer (Minimal Example)
+# Loaded every session. Keep under 150 lines.
+
+user:
+  name: "Your Name"
+  call_as: "your preferred name"
+  language: "English"
+  timezone: "UTC"
+  preferences:
+    communication: ["direct", "concise"]
+    tech_stack: ["Python", "TypeScript"]  # your stack
+  sensitive_areas: ["credentials", "financial data"]
+
+system:
+  identity: "Your Agent Name"
+  emoji: "🤖"
+  paths:
+    workspace: "/absolute/path/to/your/workspace"
+
+rules:
+  - "Always use absolute paths"
+  - "Ask before deletion — use _DELETE_ prefix"
+  - "Never expose credentials in output"
+  - "Read files before editing"
+
+tools:
+  last_updated: "2025-01-01"
+  # Add your tools here as you install them
