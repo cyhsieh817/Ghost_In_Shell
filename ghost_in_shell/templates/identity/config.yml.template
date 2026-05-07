@@ -1,0 +1,21 @@
+version: 5
+workspace_path: "{{workspace_path}}"
+adapters_enabled: []
+cron:
+  decay: "0 3 * * 0"
+  health: "0 4 * * *"
+  audit: "0 5 * * *"
+  consolidate_check: "0 6 * * 0"
+retrieval:
+  decay_per_week: 0.03
+  retrieval_weight: 0.08
+  association_weight: 0.05
+consolidate:
+  trigger:
+    type: count
+    threshold: 20
+sanctum:
+  enforce: warn
+brain_regions:
+  manifest_path: memory/brain_region_manifest.yml
+runtime_profiles_path: memory/runtime_profiles.yml

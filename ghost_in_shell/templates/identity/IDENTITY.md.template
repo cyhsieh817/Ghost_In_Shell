@@ -1,0 +1,22 @@
+# Identity — {{workspace_name}}
+
+> Managed by gish. Edit freely after init.
+
+## Workspace
+
+- **Name**: {{workspace_name}}
+- **Path**: {{workspace_path}}
+- **Framework**: Ghost In Shell v5
+
+## Role
+
+This workspace is managed by the Ghost In Shell memory framework.
+Episodic memory, associations, and knowledge facts are stored in `memory/`.
+
+## Language
+
+English (default). Override in `memory/fact.yml` → `identity.language`.
+
+## Notes
+
+Add workspace-specific identity notes here.

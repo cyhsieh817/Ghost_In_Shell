@@ -21,9 +21,9 @@ v4.1 shipped as documentation + reference scripts. The engine that made the syst
 
 | Milestone | Status |
 |---|---|
-| M1 — skeleton, CLI stubs, CI gate | in progress |
-| M2 — memory layer + engines | not started |
-| M3 — multi-CLI adapters + bootstrap | not started |
+| M1 — skeleton, CLI stubs, CI gate | ✓ COMPLETE |
+| M2 — memory layer + engines | ✓ COMPLETE |
+| M3 — multi-CLI adapters + bootstrap | ✓ COMPLETE 2026-05-07 |
 | M4 — docs, examples, migrate command | not started |
 | M5 — RC, merge to main | not started |
 
