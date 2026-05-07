@@ -1,0 +1,27 @@
+schema_version: 1
+generated_at: "{{TODAY}}"
+regions:
+  hippocampus:
+    display: "Hippocampus (episodic recall)"
+    core_files:
+      - path: "memory/episodic.jsonl"
+    on_demand_files: []
+  prefrontal:
+    display: "Prefrontal (working context)"
+    core_files:
+      - path: "memory/fact.yml"
+    on_demand_files:
+      - path: "memory/memory_manifest.yml"
+  limbic:
+    display: "Limbic (emotional / goal context)"
+    core_files: []
+    on_demand_files: []
+  cerebellum:
+    display: "Cerebellum (skills / tools)"
+    core_files: []
+    on_demand_files:
+      - path: "memory/runtime_profiles.yml"
+  default:
+    display: "Default (catch-all)"
+    core_files: []
+    on_demand_files: []
