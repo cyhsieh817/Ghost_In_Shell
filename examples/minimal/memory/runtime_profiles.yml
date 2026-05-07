@@ -1,0 +1,27 @@
+version: "1.0"
+default_executor: claude
+default_runtime: claude-code
+default_launcher: claude
+
+executors:
+  claude:
+    label: "Claude Code"
+    binary: claude
+    args: ["-p", "{prompt}", "--output-format", "text"]
+    timeout: 600
+    output_mode: text
+    max_turns: 10
+
+runtimes:
+  claude-code:
+    label: "Claude Code"
+    source: "stop_hook:claude-code"
+    tags: ["runtime:claude-code"]
+
+launchers:
+  claude:
+    label: "gish Claude Wrapper"
+    binary: claude
+    args: []
+    runtime: claude-code
+    executor: claude

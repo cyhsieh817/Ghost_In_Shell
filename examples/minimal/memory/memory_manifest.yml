@@ -1,0 +1,14 @@
+schema_version: 1
+last_consolidation: null
+last_decay_run: null
+last_audit_run: null
+last_health_run: null
+stats:
+  episode_count: 1
+  edge_count: 0
+next_consolidation_trigger:
+  type: count
+  threshold: 20
+  last_count: 1
+consolidation_history: []
+quality_history: []

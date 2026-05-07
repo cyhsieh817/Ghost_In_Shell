@@ -6,6 +6,7 @@ from ghost_in_shell.cli.audit import audit_cmd
 from ghost_in_shell.cli.doctor import doctor_cmd
 from ghost_in_shell.cli.init import init_cmd
 from ghost_in_shell.cli.log import log_cmd
+from ghost_in_shell.cli.migrate import migrate_cmd
 from ghost_in_shell.cli.recall import recall_cmd
 from ghost_in_shell.cli.run import run_maintenance_cmd
 from ghost_in_shell.cli.version import version_cmd
@@ -27,3 +28,4 @@ gish.add_command(recall_cmd)
 gish.add_command(audit_cmd)
 gish.add_command(run_maintenance_cmd)
 gish.add_command(log_cmd)
+gish.add_command(migrate_cmd)
