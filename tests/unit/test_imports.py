@@ -40,4 +40,4 @@ def test_module_importable(module_name):
 def test_package_has_version():
     import ghost_in_shell
 
-    assert ghost_in_shell.__version__ == "5.0.0a4"
+    assert ghost_in_shell.__version__ == "5.0.0rc1"

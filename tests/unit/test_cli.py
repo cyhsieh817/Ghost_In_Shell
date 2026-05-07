@@ -9,7 +9,7 @@ def test_gish_version_prints_version():
     runner = CliRunner()
     result = runner.invoke(gish, ["version"])
     assert result.exit_code == 0
-    assert "5.0.0a4" in result.output
+    assert "5.0.0rc1" in result.output
 
 
 def test_gish_help_lists_all_subcommands():
