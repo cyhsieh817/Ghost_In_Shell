@@ -1,10 +1,22 @@
 """Shared pytest fixtures for ghost_in_shell tests."""
 
+import sys
 from pathlib import Path
 
 import pytest
 
 from ghost_in_shell.memory._paths import WorkspacePaths
+
+MIN_PY = (3, 11)
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    if sys.version_info < MIN_PY:
+        raise pytest.UsageError(
+            f"gshell-memory requires Python >= {MIN_PY[0]}.{MIN_PY[1]} "
+            f"(found {sys.version_info.major}.{sys.version_info.minor}). "
+            "Activate a 3.11+ venv before running pytest."
+        )
 
 
 @pytest.fixture
