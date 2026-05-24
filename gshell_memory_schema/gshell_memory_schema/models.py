@@ -302,3 +302,26 @@ class Carryover(BaseModel):
         if delta > 7:
             raise ValueError(f"carryover lifetime is {delta} days, max is 7")
         return self
+
+
+class FrozenEnum(BaseModel):
+    """A state enumeration locked against silent drift.
+
+    Once introduced, values may only be added in major-version bumps and
+    must reference a spec for the rationale.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    name: str
+    values: list[str] = Field(min_length=1)
+    introduced: str
+    layer: str
+    enforcement: Literal["audit", "block"]
+    spec_ref: str | None = None
+
+    @model_validator(mode="after")
+    def _unique_values(self) -> FrozenEnum:
+        if len(set(self.values)) != len(self.values):
+            raise ValueError("values must be unique")
+        return self
