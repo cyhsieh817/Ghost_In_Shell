@@ -173,10 +173,27 @@ class RegionDef(BaseModel):
     on_demand_files: list[RegionFile]
 
 
+class BrainRegionExtension(BaseModel):
+    """An opt-in region beyond the 5 defaults.
+
+    Mirrors RegionDef's structure but lives under `extensions:` in the
+    manifest so that 5.0 readers can ignore it.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    display: str
+    core_files: list[dict] = Field(default_factory=list)
+    on_demand_files: list[dict] = Field(default_factory=list)
+    aliases: list[str] = Field(default_factory=list)
+
+
 class BrainRegionManifest(BaseModel):
     schema_version: int = 1
     generated_at: str
     regions: dict[str, RegionDef]
+    # new in 5.1: opt-in regions beyond the 5 defaults; 5.0 readers ignore this.
+    extensions: dict[str, BrainRegionExtension] = Field(default_factory=dict)
 
     @field_validator("regions")
     @classmethod
