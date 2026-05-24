@@ -27,5 +27,13 @@ jobs:
         run: uv run ruff check .
       - name: Test (pytest)
         run: uv run pytest -q
+      - name: Test schema sub-package
+        run: |
+          cd gshell_memory_schema
+          uv run pytest -q
+      - name: JSON Schema in-sync check
+        run: |
+          cd gshell_memory_schema
+          uv run python scripts/generate_jsonschema.py --check
       - name: Personal-data gate
         run: uv run python scripts/ci/check_no_personal.py
