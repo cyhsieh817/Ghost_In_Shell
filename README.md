@@ -63,17 +63,24 @@ The bootstrap script detects your installed CLIs and prints hook snippets for ea
 | **Sanctum** | YAML registry | 3-tier access control (public / private / sacred) |
 | **Runtime Profiles** | YAML | Executor and launcher configs per CLI |
 
-### 7 Maintenance Engines
+### 14 Engines (7 maintenance + 7 capability)
 
-| Engine | What it does |
-|:-------|:-------------|
-| `associate` | Builds and updates edges in the association graph |
-| `decay` | Applies time-based strength decay; archives fading entries |
-| `consolidate` | Merges redundant episodes; promotes recurring patterns |
-| `judge` | Evaluates quality scores for new entries |
-| `health` | Runs workspace integrity checks |
-| `audit` | Validates sanctum governance compliance |
-| `session_log` | Logs session start/end events |
+| Engine | Category | What it does |
+|:-------|:---------|:-------------|
+| `associate` | maintenance | Builds and updates edges in the association graph |
+| `decay` | maintenance | Applies time-based strength decay; archives fading entries |
+| `consolidate` | maintenance | Merges redundant episodes; promotes recurring patterns |
+| `judge` | maintenance | Evaluates quality scores for new entries |
+| `health` | maintenance | Runs workspace integrity checks |
+| `audit` | maintenance | Validates sanctum governance compliance |
+| `session_log` | maintenance | Logs session start/end events |
+| `sop` | capability | Natural-language triggers map to required reading (`gish sop`) |
+| `archive_router` | capability | Condition->target decision tree (`gish archive route`) |
+| `carryover` | capability | Cross-session task hand-off (`gish carryover`) |
+| `enum_freeze` | capability | Lock state-machine values against drift (`gish enum`) |
+| `heartbeat` | capability | Periodic self-check + cron/launchd snippets (`gish heartbeat`) |
+| `brain_region_ext` | capability | Declare regions beyond the 5 defaults (`gish region`) |
+| `subdir_registry` | capability | White-list governance for memory/ subdirs (`gish memory-dir`) |
 
 ### Strength Formula
 
@@ -166,6 +173,13 @@ gish <command> [options]
 | `gish log` | View session log entries |
 | `gish migrate v4` | Migrate a legacy v4.1 workspace to v5 format |
 | `gish version` | Print version |
+| `gish sop register/list/trigger/test` | Manage SOP dispatch routes |
+| `gish archive route add/list/preview` | Manage archive routing decision tree |
+| `gish carryover create/list/expire/promote-to-episodic` | Cross-session task hand-off |
+| `gish enum freeze/list/validate` | Manage frozen state enums |
+| `gish heartbeat run/install` | Heartbeat + cron/launchd snippets |
+| `gish region declare/list` | Declare extension brain regions |
+| `gish memory-dir register/list/enforce` | Subdir white-list |
 
 All commands accept `--workspace <path>` to target a specific workspace.
 
