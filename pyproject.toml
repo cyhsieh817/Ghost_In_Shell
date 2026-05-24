@@ -56,3 +56,9 @@ extend-exclude = ["legacy", "_DELETE_*"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "RUF"]
 ignore = ["E501"]
+
+[tool.uv]
+package = true
+
+[tool.uv.workspace]
+members = ["gshell_memory_schema"]
