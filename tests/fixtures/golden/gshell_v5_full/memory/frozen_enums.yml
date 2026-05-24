@@ -1,0 +1,13 @@
+enums:
+  - name: "decision_kind"
+    values: ["adopt", "reject", "defer", "supersede"]
+    introduced: "5.0"
+    layer: "memory"
+    enforcement: "audit"
+    spec_ref: "spec/m6/frozen_enums.md"
+  - name: "rerun_status"
+    values: ["pending", "running", "succeeded", "failed", "cancelled"]
+    introduced: "5.0"
+    layer: "engine"
+    enforcement: "block"
+    spec_ref: "spec/m6/frozen_enums.md"

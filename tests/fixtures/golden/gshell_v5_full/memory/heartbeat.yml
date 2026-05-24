@@ -1,0 +1,4 @@
+cadence: "hourly"
+checks: ["self_identity", "workspace_health"]
+output_format: "summary"
+idle_threshold: 5

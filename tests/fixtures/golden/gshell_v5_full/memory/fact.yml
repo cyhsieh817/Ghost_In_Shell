@@ -1,0 +1,13 @@
+identity:
+  name: "fixture"
+  call_as: "fixture"
+  language: "en"
+  timezone: "UTC"
+  last_updated: "2026-05-24T00:00:00Z"
+preferences:
+  communication: []
+  tech_stack: []
+  forbidden_words: []
+rules: []
+tools: {}
+archive: {}

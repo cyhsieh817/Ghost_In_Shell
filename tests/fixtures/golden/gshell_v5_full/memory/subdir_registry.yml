@@ -1,0 +1,11 @@
+enforcement: "warn"
+registered:
+  - path: "_archive"
+    purpose: "Long-term archived material."
+    lifecycle: "permanent"
+  - path: "carryover"
+    purpose: "Cross-session task hand-off notes."
+    lifecycle: "rotating"
+  - path: "heartbeat_logs"
+    purpose: "Heartbeat check outputs."
+    lifecycle: "ephemeral"

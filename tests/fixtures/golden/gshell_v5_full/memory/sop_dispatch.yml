@@ -1,0 +1,7 @@
+routes:
+  - name: "example_route"
+    triggers: ["fixture_trigger"]
+    must_read: ["docs/example.md"]
+    also_read: []
+    skills_pipeline: []
+    note: "Synthetic SOP route for the v5_full golden fixture."
