@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gshell-memory-schema"
+version = "5.0.0"
+description = "Pydantic models and JSON Schema for gshell-memory workspace files."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Ghost In Shell contributors" },
+]
+keywords = ["ai", "agent", "memory", "schema", "pydantic"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "hypothesis>=6.100",
+    "ruff>=0.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/cyhsieh817/Ghost_In_Shell"
+
+[tool.hatch.build.targets.wheel]
+packages = ["gshell_memory_schema"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+pythonpath = ["."]
