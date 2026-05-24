@@ -144,7 +144,7 @@ toml = [
 
 [[package]]
 name = "gshell-memory"
-version = "5.0.0rc1"
+version = "5.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
@@ -174,7 +174,7 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "gshell-memory-schema"
-version = "5.0.0"
+version = "5.1.0"
 source = { editable = "gshell_memory_schema" }
 dependencies = [
     { name = "pydantic" },

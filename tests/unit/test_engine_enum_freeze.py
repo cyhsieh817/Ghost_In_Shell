@@ -1,4 +1,5 @@
 import pytest
+
 from gshell_memory.engines.enum_freeze import FrozenEnumEngine
 
 

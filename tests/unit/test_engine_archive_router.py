@@ -1,8 +1,9 @@
 from pathlib import Path
 
 import yaml
-from gshell_memory.engines.archive_router import ArchiveRouter
 from gshell_memory_schema.models import ArchiveRoute
+
+from gshell_memory.engines.archive_router import ArchiveRouter
 
 
 def _ws(tmp_path: Path, routes: list[dict]) -> Path:

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## gshell-memory [5.0.0] — 2026-05-24
+
 ### Added
 - M5 stabilisation: CI workflow (pytest + ruff + personal-data gate)
 - M5 packaging: PyPI distribution as `gshell-memory`
@@ -15,8 +17,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bridge: LabGrimoire_Desktop adapter via `grimoire.toml#[sources.memory] type = "gshell"`
 
 ### Changed
+- First stable release. Promoted from `5.0.0rc1`.
+- Depends on `gshell-memory-schema>=5.1,<6.0`.
 - Python package renamed `ghost_in_shell` → `gshell_memory`. The old name remains importable as a deprecation alias for one minor cycle (5.1) and is removed in 6.0.
 - README static '214 tests' badge replaced with live GitHub Actions and PyPI badges.
+
+## gshell-memory-schema [5.1.0] — 2026-05-24
+
+### Added
+- `BrainRegionExtension` model for opt-in regions beyond the 5 fixed defaults; lives under `extensions:` so that 5.0 readers can safely ignore it.
+- New capability models: `SOPRoute`, `ArchiveRoute`, `Carryover` (7-day expiry validator), `FrozenEnum`, `HeartbeatConfig`, `SubdirRegistry`.
+- JSON Schema artifacts regenerated and gated by an in-sync CI check.
+
+### Changed
+- `BrainRegionManifest.schema_version` accepts both legacy `int` and new `"5.1"` string; new `init` writes `"5.1"`.
+- `__schema_version__` bumped to `(5, 1)`.
 
 ## [5.0.0rc1] — 2026-05-22
 

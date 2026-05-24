@@ -2,8 +2,9 @@ from pathlib import Path
 
 import pytest
 import yaml
-from gshell_memory.engines.sop import SOPEngine
 from gshell_memory_schema.models import SOPRoute
+
+from gshell_memory.engines.sop import SOPEngine
 
 
 def _ws_with_sop(tmp_path: Path, routes: list[dict]) -> Path:
