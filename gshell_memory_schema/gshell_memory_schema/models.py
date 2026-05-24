@@ -236,3 +236,22 @@ class RuntimeProfiles(BaseModel):
 Workspace = FactDocument
 FactStore = FactDocument
 Association = AssociationEntry
+
+
+class SOPRoute(BaseModel):
+    """A standard-operating-procedure routing entry.
+
+    When the agent detects any string in `triggers` in the user's request,
+    it must read every file in `must_read` before proceeding, optionally
+    pulls `also_read` later, and may chain `skills_pipeline` for execution.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    name: str
+    triggers: list[str] = Field(min_length=1)
+    must_read: list[str] = Field(min_length=1)
+    also_read: list[str] = Field(default_factory=list)
+    skills_pipeline: list[str] = Field(default_factory=list)
+    note: str | None = None
+    inline_sop: str | None = None
