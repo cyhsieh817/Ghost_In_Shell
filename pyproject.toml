@@ -24,6 +24,7 @@ dependencies = [
     "click>=8.1",
     "pyyaml>=6.0",
     "pydantic>=2.7",
+    "gshell-memory-schema>=5.0,<6.0",
 ]
 
 [project.optional-dependencies]
@@ -59,6 +60,9 @@ ignore = ["E501"]
 
 [tool.uv]
 package = true
+
+[tool.uv.sources]
+gshell-memory-schema = { workspace = true }
 
 [tool.uv.workspace]
 members = ["gshell_memory_schema"]
