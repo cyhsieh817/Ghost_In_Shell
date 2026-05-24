@@ -4,6 +4,7 @@ import click
 
 from gshell_memory.cli.archive import archive_group
 from gshell_memory.cli.audit import audit_cmd
+from gshell_memory.cli.carryover import carryover_group
 from gshell_memory.cli.doctor import doctor_cmd
 from gshell_memory.cli.init import init_cmd
 from gshell_memory.cli.log import log_cmd
@@ -33,3 +34,4 @@ gish.add_command(log_cmd)
 gish.add_command(migrate_cmd)
 gish.add_command(sop_group)
 gish.add_command(archive_group)
+gish.add_command(carryover_group)
