@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.0] — 2026-05-24
+
+### Added
+- LabGrimoire Desktop Bridge: see docs/ch.18-lgd-bridge.md.
+- `gish doctor` is hardened against schema-violating writes; reports issues via structured `health.issues` list instead of crashing.
+- New integration test `tests/integration/test_lgd_interop.py`.
+
 ## gshell-memory [5.0.0] — 2026-05-24
 
 ### Added
