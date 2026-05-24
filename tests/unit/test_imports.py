@@ -5,27 +5,27 @@ import importlib
 import pytest
 
 MEMORY_MODULES = [
-    "ghost_in_shell.memory.facts",
-    "ghost_in_shell.memory.episodic",
-    "ghost_in_shell.memory.associations",
-    "ghost_in_shell.memory.brain_regions",
-    "ghost_in_shell.memory.sanctum",
-    "ghost_in_shell.memory.retrieval",
+    "gshell_memory.memory.facts",
+    "gshell_memory.memory.episodic",
+    "gshell_memory.memory.associations",
+    "gshell_memory.memory.brain_regions",
+    "gshell_memory.memory.sanctum",
+    "gshell_memory.memory.retrieval",
 ]
 ENGINE_MODULES = [
-    "ghost_in_shell.engines.associate",
-    "ghost_in_shell.engines.decay",
-    "ghost_in_shell.engines.consolidate",
-    "ghost_in_shell.engines.health",
-    "ghost_in_shell.engines.audit",
-    "ghost_in_shell.engines.session_log",
+    "gshell_memory.engines.associate",
+    "gshell_memory.engines.decay",
+    "gshell_memory.engines.consolidate",
+    "gshell_memory.engines.health",
+    "gshell_memory.engines.audit",
+    "gshell_memory.engines.session_log",
 ]
 ADAPTER_MODULES = [
-    "ghost_in_shell.adapters.base",
-    "ghost_in_shell.adapters.claude",
-    "ghost_in_shell.adapters.gemini",
-    "ghost_in_shell.adapters.codex",
-    "ghost_in_shell.adapters.copilot",
+    "gshell_memory.adapters.base",
+    "gshell_memory.adapters.claude",
+    "gshell_memory.adapters.gemini",
+    "gshell_memory.adapters.codex",
+    "gshell_memory.adapters.copilot",
 ]
 
 
@@ -38,6 +38,6 @@ def test_module_importable(module_name):
 
 
 def test_package_has_version():
-    import ghost_in_shell
+    import gshell_memory
 
-    assert ghost_in_shell.__version__ == "5.0.0rc1"
+    assert gshell_memory.__version__ == "5.0.0rc1"

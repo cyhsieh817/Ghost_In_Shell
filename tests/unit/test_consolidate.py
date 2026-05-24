@@ -4,7 +4,7 @@ import datetime
 import hashlib
 import json
 
-from ghost_in_shell.engines import consolidate, judge
+from gshell_memory.engines import consolidate, judge
 
 
 def _ep(eid: str, importance: int) -> dict:

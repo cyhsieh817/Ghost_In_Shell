@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from ghost_in_shell.memory.schemas import (
+from gshell_memory.memory.schemas import (
     AssociationEntry,
     BrainRegionManifest,
     EpisodicEntry,

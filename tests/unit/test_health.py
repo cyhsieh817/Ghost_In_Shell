@@ -1,6 +1,6 @@
 """Unit tests for health engine (spec § 4.7)."""
 
-from ghost_in_shell.engines import health
+from gshell_memory.engines import health
 
 
 def test_health_dry_run_no_files(tmp_paths):

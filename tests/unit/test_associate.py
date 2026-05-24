@@ -4,7 +4,7 @@ import datetime
 import hashlib
 import json
 
-from ghost_in_shell.engines import associate
+from gshell_memory.engines import associate
 
 
 def _ep(eid: str, tags: list) -> dict:

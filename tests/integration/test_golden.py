@@ -7,11 +7,11 @@ from pathlib import Path
 
 import pytest
 
-from ghost_in_shell.engines import audit, health
-from ghost_in_shell.memory._paths import WorkspacePaths
-from ghost_in_shell.memory.episodic import EpisodicStore
-from ghost_in_shell.memory.facts import FactStore
-from ghost_in_shell.memory.retrieval import compute_strength
+from gshell_memory.engines import audit, health
+from gshell_memory.memory._paths import WorkspacePaths
+from gshell_memory.memory.episodic import EpisodicStore
+from gshell_memory.memory.facts import FactStore
+from gshell_memory.memory.retrieval import compute_strength
 
 GOLDEN_DIR = Path(__file__).parent.parent / "fixtures" / "golden"
 

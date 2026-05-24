@@ -1,6 +1,6 @@
 """Unit tests for session_log engine (spec § 4.7)."""
 
-from ghost_in_shell.engines import session_log
+from gshell_memory.engines import session_log
 
 
 def test_session_log_dry_run(tmp_paths):

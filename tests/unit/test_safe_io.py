@@ -1,11 +1,11 @@
-"""Tests for ghost_in_shell.memory._safe_io — atomic writes + jsonl helpers."""
+"""Tests for gshell_memory.memory._safe_io — atomic writes + jsonl helpers."""
 
 import json
 from pathlib import Path
 
 import pytest
 
-from ghost_in_shell.memory._safe_io import (
+from gshell_memory.memory._safe_io import (
     append_jsonl,
     atomic_write_text,
     read_jsonl,

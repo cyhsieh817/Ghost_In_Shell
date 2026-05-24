@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from ghost_in_shell.cli.main import gish
+from gshell_memory.cli.main import gish
 
 
 @pytest.fixture

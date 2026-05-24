@@ -1,10 +1,10 @@
-"""Tests for ghost_in_shell.memory._lock — file-based lock context manager."""
+"""Tests for gshell_memory.memory._lock — file-based lock context manager."""
 
 import multiprocessing
 import time
 from pathlib import Path
 
-from ghost_in_shell.memory._lock import file_lock
+from gshell_memory.memory._lock import file_lock
 
 
 def _holds_lock(lock_path: str, hold_seconds: float) -> None:

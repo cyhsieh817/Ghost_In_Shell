@@ -3,7 +3,7 @@ requires = ["hatchling>=1.18"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ghost-in-shell"
+name = "gshell-memory"
 version = "5.0.0rc1"
 description = "Multi-CLI agent memory framework with episodic recall, association graphs, sanctum governance, and brain-region routing."
 readme = "README.md"
@@ -34,14 +34,14 @@ dev = [
 ]
 
 [project.scripts]
-gish = "ghost_in_shell.cli.main:gish"
+gish = "gshell_memory.cli.main:gish"
 
 [project.urls]
 Homepage = "https://github.com/cyhsieh817/Ghost_In_Shell"
 Issues = "https://github.com/cyhsieh817/Ghost_In_Shell/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["ghost_in_shell"]
+packages = ["gshell_memory", "ghost_in_shell"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

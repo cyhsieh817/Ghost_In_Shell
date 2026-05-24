@@ -8,7 +8,7 @@ from unittest.mock import patch
 import pytest
 from click.testing import CliRunner
 
-from ghost_in_shell.cli.main import gish
+from gshell_memory.cli.main import gish
 
 
 @pytest.fixture
@@ -173,7 +173,7 @@ class TestInitNonInteractive:
 class TestCronGeneration:
     def test_schedule_flag_triggers_cron_install(self, runner, tmp_path):
         ws = str(tmp_path / "ws")
-        with patch("ghost_in_shell.engines._cron._install_unix_cron") as mock_cron:
+        with patch("gshell_memory.engines._cron._install_unix_cron") as mock_cron:
             mock_cron.return_value = {"status": "installed", "system": "unix"}
             result = runner.invoke(gish, ["init", ws, "--schedule", "--non-interactive"])
         assert result.exit_code == 0
@@ -181,13 +181,13 @@ class TestCronGeneration:
 
     def test_cron_already_installed_does_not_fail(self, runner, tmp_path):
         ws = str(tmp_path / "ws")
-        with patch("ghost_in_shell.engines._cron._install_unix_cron") as mock_cron:
+        with patch("gshell_memory.engines._cron._install_unix_cron") as mock_cron:
             mock_cron.return_value = {"status": "already_installed", "system": "unix"}
             result = runner.invoke(gish, ["init", ws, "--schedule", "--non-interactive"])
         assert result.exit_code == 0
 
     def test_cron_lines_contain_workspace_path(self, tmp_path):
-        from ghost_in_shell.engines._cron import _COMMENT, _CRON_TEMPLATE
+        from gshell_memory.engines._cron import _COMMENT, _CRON_TEMPLATE
 
         ws = tmp_path / "myworkspace"
         comment = _COMMENT.format(workspace=ws)
@@ -201,7 +201,7 @@ class TestCronGeneration:
         assert "--engine consolidate-check" in lines
 
     def test_cron_unix_skips_if_already_present(self, tmp_path):
-        from ghost_in_shell.engines._cron import _COMMENT, _install_unix_cron
+        from gshell_memory.engines._cron import _COMMENT, _install_unix_cron
 
         ws = tmp_path / "ws"
         comment = _COMMENT.format(workspace=ws)
@@ -213,7 +213,7 @@ class TestCronGeneration:
         assert result["status"] == "already_installed"
 
     def test_cron_unix_installs_when_not_present(self, tmp_path):
-        from ghost_in_shell.engines._cron import _install_unix_cron
+        from gshell_memory.engines._cron import _install_unix_cron
 
         ws = tmp_path / "ws"
         existing = "0 2 * * * echo hello\n"

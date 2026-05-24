@@ -2,7 +2,7 @@
 
 import datetime
 
-from ghost_in_shell.memory.episodic import EpisodicStore, make_fingerprint
+from gshell_memory.memory.episodic import EpisodicStore, make_fingerprint
 
 TODAY = "2024-01-01"
 TS = "2024-01-01T00:00:00Z"
