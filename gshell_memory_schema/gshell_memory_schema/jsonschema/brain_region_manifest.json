@@ -101,9 +101,16 @@
       "type": "object"
     },
     "schema_version": {
-      "default": 1,
-      "title": "Schema Version",
-      "type": "integer"
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "default": "5.1",
+      "title": "Schema Version"
     }
   },
   "required": [

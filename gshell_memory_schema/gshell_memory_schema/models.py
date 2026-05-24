@@ -189,7 +189,8 @@ class BrainRegionExtension(BaseModel):
 
 
 class BrainRegionManifest(BaseModel):
-    schema_version: int = 1
+    # 5.1: schema_version is now a string ("5.1"); legacy int values are coerced.
+    schema_version: int | str = "5.1"
     generated_at: str
     regions: dict[str, RegionDef]
     # new in 5.1: opt-in regions beyond the 5 defaults; 5.0 readers ignore this.
