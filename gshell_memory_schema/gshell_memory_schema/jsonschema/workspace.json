@@ -1,0 +1,103 @@
+{
+  "$defs": {
+    "FactIdentity": {
+      "properties": {
+        "call_as": {
+          "title": "Call As",
+          "type": "string"
+        },
+        "language": {
+          "title": "Language",
+          "type": "string"
+        },
+        "last_updated": {
+          "title": "Last Updated",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "timezone": {
+          "title": "Timezone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "call_as",
+        "language",
+        "timezone",
+        "last_updated"
+      ],
+      "title": "FactIdentity",
+      "type": "object"
+    },
+    "FactPreferences": {
+      "properties": {
+        "communication": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Communication",
+          "type": "array"
+        },
+        "forbidden_words": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Forbidden Words",
+          "type": "array"
+        },
+        "tech_stack": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tech Stack",
+          "type": "array"
+        }
+      },
+      "title": "FactPreferences",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "archive": {
+      "additionalProperties": true,
+      "title": "Archive",
+      "type": "object"
+    },
+    "identity": {
+      "$ref": "#/$defs/FactIdentity"
+    },
+    "preferences": {
+      "$ref": "#/$defs/FactPreferences"
+    },
+    "rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Rules",
+      "type": "array"
+    },
+    "schema_version": {
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "tools": {
+      "additionalProperties": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Tools",
+      "type": "object"
+    }
+  },
+  "required": [
+    "identity",
+    "preferences"
+  ],
+  "title": "FactDocument",
+  "type": "object"
+}

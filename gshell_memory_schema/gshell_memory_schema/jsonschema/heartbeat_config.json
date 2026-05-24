@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "description": "Heartbeat cadence + checks configuration.",
+  "properties": {
+    "cadence": {
+      "enum": [
+        "hourly",
+        "four_hourly",
+        "daily",
+        "monthly"
+      ],
+      "title": "Cadence",
+      "type": "string"
+    },
+    "checks": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Checks",
+      "type": "array"
+    },
+    "idle_threshold": {
+      "default": 5,
+      "maximum": 50,
+      "minimum": 1,
+      "title": "Idle Threshold",
+      "type": "integer"
+    },
+    "output_format": {
+      "default": "summary",
+      "enum": [
+        "ok_only",
+        "summary",
+        "verbose"
+      ],
+      "title": "Output Format",
+      "type": "string"
+    }
+  },
+  "required": [
+    "cadence",
+    "checks"
+  ],
+  "title": "HeartbeatConfig",
+  "type": "object"
+}

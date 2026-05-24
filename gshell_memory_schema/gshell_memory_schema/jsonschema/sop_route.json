@@ -1,0 +1,71 @@
+{
+  "additionalProperties": false,
+  "description": "A standard-operating-procedure routing entry.\n\nWhen the agent detects any string in `triggers` in the user's request,\nit must read every file in `must_read` before proceeding, optionally\npulls `also_read` later, and may chain `skills_pipeline` for execution.",
+  "properties": {
+    "also_read": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Also Read",
+      "type": "array"
+    },
+    "inline_sop": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Inline Sop"
+    },
+    "must_read": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Must Read",
+      "type": "array"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Note"
+    },
+    "skills_pipeline": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Skills Pipeline",
+      "type": "array"
+    },
+    "triggers": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Triggers",
+      "type": "array"
+    }
+  },
+  "required": [
+    "name",
+    "triggers",
+    "must_read"
+  ],
+  "title": "SOPRoute",
+  "type": "object"
+}

@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "description": "Cross-session task hand-off, max 7 days from created date.",
+  "properties": {
+    "created": {
+      "format": "date",
+      "title": "Created",
+      "type": "string"
+    },
+    "expires": {
+      "format": "date",
+      "title": "Expires",
+      "type": "string"
+    },
+    "project_slug": {
+      "title": "Project Slug",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "expired",
+        "promoted"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "topic": {
+      "title": "Topic",
+      "type": "string"
+    }
+  },
+  "required": [
+    "project_slug",
+    "topic",
+    "created",
+    "expires",
+    "status"
+  ],
+  "title": "Carryover",
+  "type": "object"
+}

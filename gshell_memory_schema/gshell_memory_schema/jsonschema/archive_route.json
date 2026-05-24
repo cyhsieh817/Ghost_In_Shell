@@ -1,0 +1,50 @@
+{
+  "additionalProperties": false,
+  "description": "A condition-target-naming entry in the archive decision tree.\n\nRoutes are evaluated in priority order; the first one whose `condition`\nmatches wins. `condition` is a free-form string for now; engine layer\ndecides interpretation (literal substring, glob, etc.).",
+  "properties": {
+    "condition": {
+      "title": "Condition",
+      "type": "string"
+    },
+    "frontmatter_required": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Frontmatter Required",
+      "type": "array"
+    },
+    "naming_pattern": {
+      "title": "Naming Pattern",
+      "type": "string"
+    },
+    "note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Note"
+    },
+    "priority": {
+      "minimum": 1,
+      "title": "Priority",
+      "type": "integer"
+    },
+    "target_dir": {
+      "title": "Target Dir",
+      "type": "string"
+    }
+  },
+  "required": [
+    "condition",
+    "target_dir",
+    "naming_pattern",
+    "priority"
+  ],
+  "title": "ArchiveRoute",
+  "type": "object"
+}

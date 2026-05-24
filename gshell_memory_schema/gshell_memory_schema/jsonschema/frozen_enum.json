@@ -1,0 +1,55 @@
+{
+  "additionalProperties": false,
+  "description": "A state enumeration locked against silent drift.\n\nOnce introduced, values may only be added in major-version bumps and\nmust reference a spec for the rationale.",
+  "properties": {
+    "enforcement": {
+      "enum": [
+        "audit",
+        "block"
+      ],
+      "title": "Enforcement",
+      "type": "string"
+    },
+    "introduced": {
+      "title": "Introduced",
+      "type": "string"
+    },
+    "layer": {
+      "title": "Layer",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "spec_ref": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Spec Ref"
+    },
+    "values": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Values",
+      "type": "array"
+    }
+  },
+  "required": [
+    "name",
+    "values",
+    "introduced",
+    "layer",
+    "enforcement"
+  ],
+  "title": "FrozenEnum",
+  "type": "object"
+}
