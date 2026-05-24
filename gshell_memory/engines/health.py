@@ -9,6 +9,11 @@ from gshell_memory.engines._manifest import load_manifest, save_manifest, stamp_
 from gshell_memory.memory._paths import WorkspacePaths, resolve_workspace
 from gshell_memory.memory._safe_io import read_jsonl
 
+try:
+    from gshell_memory_schema.models import EpisodicEntry
+except ImportError:  # pragma: no cover - schema package always present in this repo
+    EpisodicEntry = None  # type: ignore[assignment,misc]
+
 
 def run(workspace: Path, *, dry_run: bool = False) -> dict:
     """Scan the workspace and return a health report.
@@ -20,13 +25,21 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
     ts = datetime.datetime.now(datetime.UTC).isoformat()
 
     episode_count = sum(1 for _ in read_jsonl(paths.episodic)) if paths.episodic.exists() else 0
-    edge_count = sum(1 for _ in read_jsonl(paths.associations)) if paths.associations.exists() else 0
+    edge_count = (
+        sum(1 for _ in read_jsonl(paths.associations)) if paths.associations.exists() else 0
+    )
 
     issues: list[str] = []
     if not paths.fact_yml.exists():
         issues.append("fact.yml missing")
     if not paths.memory_manifest.exists():
         issues.append("memory_manifest.yml missing")
+
+    # Schema validation — surface ValidationError as a diagnostic, do not crash.
+    # Bridge contract: tolerate LGD-style writes that may be schema-violating.
+    if EpisodicEntry is not None and paths.episodic.exists():
+        schema_issues = _validate_episodes(paths.episodic)
+        issues.extend(schema_issues)
 
     heal_hints = _detect_missed_triggers(paths)
 
@@ -56,6 +69,36 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
     return report
 
 
+def _validate_episodes(episodic_path: Path, *, max_report: int = 5) -> list[str]:
+    """Validate each episode against the schema. Return human-readable issue strings.
+
+    Never raises. Truncates after ``max_report`` entries to keep doctor output readable.
+    """
+    issues: list[str] = []
+    invalid_count = 0
+    try:
+        for entry in read_jsonl(episodic_path):
+            try:
+                EpisodicEntry.model_validate(entry)
+            except ValidationError as exc:
+                invalid_count += 1
+                if len(issues) < max_report:
+                    ep_id = entry.get("id", "<no-id>") if isinstance(entry, dict) else "<malformed>"
+                    fields = sorted({str(err.get("loc", ("?",))[0]) for err in exc.errors()})
+                    issues.append(f"episode {ep_id!r}: schema violation in field(s) {fields}")
+            except Exception as exc:  # pragma: no cover - defensive
+                invalid_count += 1
+                if len(issues) < max_report:
+                    issues.append(f"episode validation error: {exc}")
+    except Exception as exc:  # pragma: no cover - defensive
+        issues.append(f"could not read episodic.jsonl for schema check: {exc}")
+        return issues
+
+    if invalid_count > len(issues):
+        issues.append(f"... and {invalid_count - len(issues)} more schema violation(s)")
+    return issues
+
+
 def _detect_missed_triggers(paths: WorkspacePaths) -> list[str]:
     """Detect likely missed triggers and return hint strings."""
     hints: list[str] = []
@@ -80,4 +123,3 @@ def _write_heal_log(paths: WorkspacePaths, ts: str, hints: list[str]) -> None:
 
 def schedule_cron() -> str:
     return "0 6 * * *"
-
