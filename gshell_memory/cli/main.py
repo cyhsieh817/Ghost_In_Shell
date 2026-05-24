@@ -12,6 +12,7 @@ from gshell_memory.cli.init import init_cmd
 from gshell_memory.cli.log import log_cmd
 from gshell_memory.cli.migrate import migrate_cmd
 from gshell_memory.cli.recall import recall_cmd
+from gshell_memory.cli.region import region_group
 from gshell_memory.cli.run import run_maintenance_cmd
 from gshell_memory.cli.sop import sop_group
 from gshell_memory.cli.version import version_cmd
@@ -39,3 +40,4 @@ gish.add_command(archive_group)
 gish.add_command(carryover_group)
 gish.add_command(enum_group)
 gish.add_command(heartbeat_group)
+gish.add_command(region_group)
