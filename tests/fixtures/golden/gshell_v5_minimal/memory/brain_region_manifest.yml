@@ -1,0 +1,23 @@
+schema_version: 1
+generated_at: "2026-05-24T00:00:00Z"
+regions:
+  hippocampus:
+    display: "h"
+    core_files: []
+    on_demand_files: []
+  prefrontal:
+    display: "p"
+    core_files: []
+    on_demand_files: []
+  limbic:
+    display: "l"
+    core_files: []
+    on_demand_files: []
+  cerebellum:
+    display: "c"
+    core_files: []
+    on_demand_files: []
+  default:
+    display: "d"
+    core_files: []
+    on_demand_files: []

@@ -1,0 +1,13 @@
+routes:
+  - condition: "tag:fixture"
+    target_dir: "_archive/fixture/"
+    naming_pattern: "{date}-{slug}.md"
+    frontmatter_required: ["date", "slug"]
+    note: "Synthetic archive route A."
+    priority: 1
+  - condition: "tag:legacy"
+    target_dir: "_archive/legacy/"
+    naming_pattern: "{date}-{slug}.md"
+    frontmatter_required: ["date", "slug"]
+    note: "Synthetic archive route B."
+    priority: 2

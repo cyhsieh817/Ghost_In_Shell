@@ -1,0 +1,7 @@
+tools:
+  tool_X:
+    purpose: "synthetic tool"
+    triggers: ["fixture_trigger"]
+  tool_Z:
+    purpose: "another synthetic tool"
+    triggers: ["fixture_other"]

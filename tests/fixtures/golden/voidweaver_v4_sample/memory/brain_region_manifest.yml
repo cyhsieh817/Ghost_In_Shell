@@ -1,0 +1,31 @@
+# v4-layout sample: declares a custom region directly under `regions:`.
+# v5 validation will reject this (expected); `gish migrate v4` collapses
+# `amygdala` into `default` and the migration doc explains re-declaration
+# via the v5 `extensions:` block.
+schema_version: 1
+generated_at: "2026-05-24T00:00:00Z"
+regions:
+  hippocampus:
+    display: "h"
+    core_files: []
+    on_demand_files: []
+  prefrontal:
+    display: "p"
+    core_files: []
+    on_demand_files: []
+  limbic:
+    display: "l"
+    core_files: []
+    on_demand_files: []
+  cerebellum:
+    display: "c"
+    core_files: []
+    on_demand_files: []
+  default:
+    display: "d"
+    core_files: []
+    on_demand_files: []
+  amygdala:
+    display: "a"
+    core_files: []
+    on_demand_files: []

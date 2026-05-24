@@ -1,0 +1,4 @@
+rules:
+  - id: "rule_Y"
+    summary: "Synthetic governance rule for v4 fixture."
+    severity: "info"
