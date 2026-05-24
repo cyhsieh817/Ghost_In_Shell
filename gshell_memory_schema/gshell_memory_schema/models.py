@@ -325,3 +325,14 @@ class FrozenEnum(BaseModel):
         if len(set(self.values)) != len(self.values):
             raise ValueError("values must be unique")
         return self
+
+
+class HeartbeatConfig(BaseModel):
+    """Heartbeat cadence + checks configuration."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    cadence: Literal["hourly", "four_hourly", "daily", "monthly"]
+    checks: list[str] = Field(min_length=1)
+    output_format: Literal["ok_only", "summary", "verbose"] = "summary"
+    idle_threshold: int = Field(default=5, ge=1, le=50)
