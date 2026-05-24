@@ -336,3 +336,24 @@ class HeartbeatConfig(BaseModel):
     checks: list[str] = Field(min_length=1)
     output_format: Literal["ok_only", "summary", "verbose"] = "summary"
     idle_threshold: int = Field(default=5, ge=1, le=50)
+
+
+class RegisteredSubdir(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    path: str
+    purpose: str
+    lifecycle: Literal["permanent", "rotating", "ephemeral"]
+
+
+class SubdirRegistry(BaseModel):
+    """White-list of directories that may exist under memory/.
+
+    Unregistered subdirectories are warned about (default) or blocked
+    entirely depending on `enforcement`.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    registered: list[RegisteredSubdir]
+    enforcement: Literal["warn", "block"]
