@@ -19,6 +19,8 @@
   <img src="https://img.shields.io/badge/license-MIT-green" alt="license" />
 </p>
 
+> **Pairs with [LabGrimoire Desktop](https://github.com/cyhsieh817/LabGrimoire_Desktop)** — a Tauri/Rust GUI that reads the same workspace. See [Chapter 18](docs/ch.18-lgd-bridge.md) for the contract.
+
 ---
 
 **Ghost In Shell** (`gish`) is a multi-CLI agent memory framework for AI command-line tools. It provides persistent episodic memory, association graphs, strength-based recall, sanctum governance, and brain-region routing — all running locally, no cloud required.
