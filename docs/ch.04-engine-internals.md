@@ -184,6 +184,54 @@ See [Chapter 08 — Cron & Hooks](ch.08-cron-hooks.md) for full scheduling detai
 
 ---
 
+## Capability engines (M6)
+
+Beyond the seven maintenance engines above, the M6 milestone introduces seven capability engines. These do not run on the maintenance cron; instead they expose declarative configuration files under `memory/` and small Python entry points that callers (skills, hooks, CLI sub-commands) invoke on demand. Each engine ships with a `gish` sub-command for inspection and a frozen YAML schema so workspaces can evolve without breaking downstream agents.
+
+### `sop_dispatch` — Trigger-Matched Required-Reading Dispatcher
+
+**Entry point**: `ghost_in_shell.engines.sop_dispatch.SOPEngine`
+
+Reads `memory/sop_dispatch.yml`, a table of trigger phrases mapped to required reading material (SOPs, templates, checklists). When an agent receives user input matching a trigger, `SOPEngine.trigger(phrase)` returns the ordered list of documents that must be loaded before proceeding. `list()` enumerates all registered SOPs and `register(entry)` appends new mappings while preserving precedence. The engine guarantees deterministic dispatch: identical input always yields the same SOP bundle, which makes it safe to wire into pre-prompt hooks. Designed so that domain-specific workflows (popsci, proposal writing, slide decks) can be onboarded without touching CLI code.
+
+### `archive_routing` — Priority-Sorted Routing Decision Tree
+
+**Entry point**: `ghost_in_shell.engines.archive_routing.ArchiveRouter`
+
+Reads `memory/archive_routing.yml`, a priority-sorted list of `condition → target_dir` rules. Given a candidate artifact (path, tags, frontmatter), `ArchiveRouter.preview(artifact)` walks the rules top-down and returns the first matching destination plus the rule trace, without performing the move. This dry-run posture lets callers confirm routing before mutating disk. Conditions support tag predicates, path globs, and frontmatter equality checks; ties are broken by declaration order, so higher-priority rules sit at the top of the file. The engine is the canonical answer to "where does this file belong" and underpins both manual archive commands and automated post-write hooks.
+
+### `carryover` — 7-Day Cross-Session Task Hand-Off
+
+**Entry point**: `ghost_in_shell.engines.carryover.CarryoverEngine`
+
+Manages `memory/carryover/*.md` notes, each with frontmatter recording `created_at`, `expires_at`, `owner`, and `status`. `create(task)` writes a new carryover with a default 7-day TTL so an unfinished thread survives a session boundary. `expire()` sweeps stale notes (past `expires_at`) into the archive, and `promote(note)` upgrades a carryover into a tracked task when the work resumes. The 7-day window is deliberately short: longer-lived intent belongs in episodic memory or a project plan. Together these three operations form a minimal cross-session inbox that prevents in-flight work from being silently dropped.
+
+### `frozen_enums` — Locked State-Machine Values
+
+**Entry point**: `ghost_in_shell.engines.frozen_enums.FrozenEnumEngine`
+
+Reads `memory/frozen_enums.yml`, which records enum names whose value sets are contractually frozen (e.g. `source.kind` with 18 values, `session.status` with 6). `freeze(name, values)` locks a new enum and `validate(name, value)` checks an incoming value against the locked set, raising on drift. Freezing prevents the silent value-set expansion that erodes downstream consumers; any change requires an explicit unfreeze plus a migration plan. The engine is intentionally dumb: it stores nothing about semantics, only the exact allowed strings, so platform contracts stay readable in a single YAML file.
+
+### `heartbeat` — Periodic Self-Check + Log Emission
+
+**Entry point**: `ghost_in_shell.engines.heartbeat.HeartbeatEngine`
+
+Reads `memory/heartbeat.yml` and emits a periodic liveness record to `.gish/logs/heartbeat.jsonl`. `run()` executes a single self-check (workspace reachable, memory writable, last maintenance timestamp fresh) and appends one log entry; `install()` writes a platform-appropriate scheduler snippet (cron on Linux, launchd plist on macOS) so the run happens on the configured cadence. The log lets external monitors confirm an agent is alive even when no user input is flowing, and gives the health engine a concrete signal for "system has been quiet too long". Default cadence is every 15 minutes.
+
+### `brain_region` — Opt-In Regions Beyond the Default Five
+
+**Entry point**: `ghost_in_shell.engines.brain_region.BrainRegionStore`
+
+The default brain has five regions (episodic, semantic, procedural, working, sensory). For workspaces that need more, `BrainRegionStore.declare(name, schema)` registers an opt-in region in the `extensions` block of `brain_region_manifest.yml`. The manifest stays the single source of truth for which regions exist and what fields each entry must carry, so consolidate/associate/decay engines can continue to operate uniformly. Extensions are explicitly opt-in: a workspace gets no extra regions until it declares them, which keeps minimal installs minimal and stops region sprawl. Declared regions appear in `gish region list` and become valid targets for writes immediately.
+
+### `subdir_registry` — `memory/` Subdirectory White-List
+
+**Entry point**: `ghost_in_shell.engines.subdir_registry.SubdirRegistryEngine`
+
+Reads `memory/subdir_registry.yml`, a white-list of approved subdirectory names under `memory/` plus an enforcement level (`warn` or `block`). `enforce(path)` checks a proposed write target against the list: `warn` emits a log entry and continues, `block` raises and aborts the write. This keeps the memory tree shaped according to the documented layout, so agents do not silently grow ad-hoc directories that the rest of the system cannot find. New subdirectories are added explicitly via the registry, which makes layout changes auditable and reversible.
+
+---
+
 ## Next Steps
 
 → [Chapter 05 — Multi-CLI Adapters](ch.05-multi-cli-adapters.md)
