@@ -5,6 +5,8 @@ from __future__ import annotations
 import datetime
 from pathlib import Path
 
+from pydantic import ValidationError
+
 from gshell_memory.engines._manifest import load_manifest, save_manifest, stamp_run
 from gshell_memory.memory._paths import WorkspacePaths, resolve_workspace
 from gshell_memory.memory._safe_io import read_jsonl
