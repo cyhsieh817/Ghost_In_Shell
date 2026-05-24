@@ -6,9 +6,17 @@ The gshell-memory engine package re-exports from here to avoid duplication.
 
 from __future__ import annotations
 
+from datetime import date as _date
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    field_validator,
+    model_validator,
+)
 
 HexFingerprint = Annotated[
     str,
@@ -273,3 +281,24 @@ class ArchiveRoute(BaseModel):
     frontmatter_required: list[str] = Field(default_factory=list)
     note: str | None = None
     priority: int = Field(ge=1)
+
+
+class Carryover(BaseModel):
+    """Cross-session task hand-off, max 7 days from created date."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    project_slug: str
+    topic: str
+    created: _date
+    expires: _date
+    status: Literal["active", "expired", "promoted"]
+
+    @model_validator(mode="after")
+    def _validate_expiry_window(self) -> Carryover:
+        delta = (self.expires - self.created).days
+        if delta < 0:
+            raise ValueError(f"expires ({self.expires}) cannot precede created ({self.created})")
+        if delta > 7:
+            raise ValueError(f"carryover lifetime is {delta} days, max is 7")
+        return self
