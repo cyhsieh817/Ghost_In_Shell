@@ -1,7 +1,7 @@
 """Unit tests for RetrievalBuffer (spec § 4.6)."""
 
 
-from ghost_in_shell.memory.retrieval import RetrievalBuffer, compute_strength
+from gshell_memory.memory.retrieval import RetrievalBuffer, compute_strength
 
 
 def test_record_increments_count(tmp_paths):

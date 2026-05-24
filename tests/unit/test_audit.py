@@ -2,7 +2,7 @@
 
 import json
 
-from ghost_in_shell.engines import audit
+from gshell_memory.engines import audit
 
 
 def test_audit_empty_workspace(tmp_paths):

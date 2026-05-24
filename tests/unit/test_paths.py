@@ -1,10 +1,10 @@
-"""Tests for ghost_in_shell.memory._paths — workspace path resolver."""
+"""Tests for gshell_memory.memory._paths — workspace path resolver."""
 
 from pathlib import Path
 
 import pytest
 
-from ghost_in_shell.memory._paths import WorkspacePaths, resolve_workspace
+from gshell_memory.memory._paths import WorkspacePaths, resolve_workspace
 
 
 def test_workspace_paths_dataclass_has_known_files(tmp_workspace: Path):

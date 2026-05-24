@@ -2,7 +2,7 @@
 
 import yaml
 
-from ghost_in_shell.memory.sanctum import SanctumRegistry, Verdict
+from gshell_memory.memory.sanctum import SanctumRegistry, Verdict
 
 
 def _write_registry(tmp_paths) -> None:

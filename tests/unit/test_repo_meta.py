@@ -9,7 +9,7 @@ def test_readme_mentions_v5():
     # v5 is now on main (5.0.0rc1); "rewrite", "in progress", or "complete" are all valid signals
     assert any(
         kw in readme.lower()
-        for kw in ("in progress", "rewrite", "complete", "quick start", "ghost_in_shell")
+        for kw in ("in progress", "rewrite", "complete", "quick start", "gshell_memory")
     ), "README should describe v5 status or features"
 
 

@@ -3,7 +3,7 @@
 import datetime
 import json
 
-from ghost_in_shell.engines import decay
+from gshell_memory.engines import decay
 
 
 def _make_episode(eid: str, importance: int, weeks_ago: float = 0.0) -> dict:

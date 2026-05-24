@@ -1,7 +1,7 @@
 """Unit tests for AssociationGraph (spec § 4.3)."""
 
 
-from ghost_in_shell.memory.associations import AssociationGraph
+from gshell_memory.memory.associations import AssociationGraph
 
 TS = "2024-01-01T00:00:00Z"
 

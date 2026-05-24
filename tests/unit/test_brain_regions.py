@@ -2,7 +2,7 @@
 
 import yaml
 
-from ghost_in_shell.memory.brain_regions import BrainRegionRouter
+from gshell_memory.memory.brain_regions import BrainRegionRouter
 
 
 def _write_manifest(tmp_paths) -> None:

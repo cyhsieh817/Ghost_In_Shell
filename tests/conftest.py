@@ -1,11 +1,11 @@
-"""Shared pytest fixtures for ghost_in_shell tests."""
+"""Shared pytest fixtures for gshell_memory tests."""
 
 import sys
 from pathlib import Path
 
 import pytest
 
-from ghost_in_shell.memory._paths import WorkspacePaths
+from gshell_memory.memory._paths import WorkspacePaths
 
 MIN_PY = (3, 11)
 

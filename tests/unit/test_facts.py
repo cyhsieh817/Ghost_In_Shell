@@ -2,7 +2,7 @@
 
 import yaml
 
-from ghost_in_shell.memory.facts import FactStore
+from gshell_memory.memory.facts import FactStore
 
 
 def test_load_empty_when_no_file(tmp_paths):

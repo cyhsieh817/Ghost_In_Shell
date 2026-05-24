@@ -6,12 +6,12 @@ from unittest.mock import patch
 
 import pytest
 
-from ghost_in_shell.adapters import get_adapter
-from ghost_in_shell.adapters.base import CLIAdapter
-from ghost_in_shell.adapters.claude import ClaudeAdapter
-from ghost_in_shell.adapters.codex import CodexAdapter
-from ghost_in_shell.adapters.copilot import CopilotAdapter
-from ghost_in_shell.adapters.gemini import GeminiAdapter
+from gshell_memory.adapters import get_adapter
+from gshell_memory.adapters.base import CLIAdapter
+from gshell_memory.adapters.claude import ClaudeAdapter
+from gshell_memory.adapters.codex import CodexAdapter
+from gshell_memory.adapters.copilot import CopilotAdapter
+from gshell_memory.adapters.gemini import GeminiAdapter
 
 
 @pytest.fixture(
@@ -109,7 +109,7 @@ class TestDetectInstallation:
     def test_copilot_false_when_nothing(self, tmp_path):
         adapter = CopilotAdapter()
         with patch("shutil.which", return_value=None), patch(
-            "ghost_in_shell.adapters.copilot.Path.home", return_value=tmp_path
+            "gshell_memory.adapters.copilot.Path.home", return_value=tmp_path
         ):
             assert adapter.detect_installation() is False
 

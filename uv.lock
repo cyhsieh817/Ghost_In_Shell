@@ -137,7 +137,7 @@ toml = [
 ]
 
 [[package]]
-name = "ghost-in-shell"
+name = "gshell-memory"
 version = "5.0.0rc1"
 source = { editable = "." }
 dependencies = [
