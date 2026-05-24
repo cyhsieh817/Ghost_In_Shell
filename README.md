@@ -13,7 +13,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-5.0.0rc1-blue" alt="version" />
+  <a href="https://github.com/cyhsieh817/Ghost_In_Shell/actions/workflows/ci.yml"><img src="https://github.com/cyhsieh817/Ghost_In_Shell/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://pypi.org/project/gshell-memory/"><img src="https://img.shields.io/pypi/v/gshell-memory.svg" alt="PyPI" /></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-brightgreen" alt="python" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="license" />
 </p>
