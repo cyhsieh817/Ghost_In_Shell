@@ -255,3 +255,21 @@ class SOPRoute(BaseModel):
     skills_pipeline: list[str] = Field(default_factory=list)
     note: str | None = None
     inline_sop: str | None = None
+
+
+class ArchiveRoute(BaseModel):
+    """A condition-target-naming entry in the archive decision tree.
+
+    Routes are evaluated in priority order; the first one whose `condition`
+    matches wins. `condition` is a free-form string for now; engine layer
+    decides interpretation (literal substring, glob, etc.).
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    condition: str
+    target_dir: str
+    naming_pattern: str
+    frontmatter_required: list[str] = Field(default_factory=list)
+    note: str | None = None
+    priority: int = Field(ge=1)
