@@ -27,3 +27,4 @@ env/
 .gish/
 *.bak
 .claude/worktrees/
+gshell_memory_schema/_DELETE_jsonschema_old/

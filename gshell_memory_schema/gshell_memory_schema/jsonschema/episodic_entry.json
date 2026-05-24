@@ -1,0 +1,234 @@
+{
+  "$defs": {
+    "Links": {
+      "properties": {
+        "facts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Facts",
+          "type": "array"
+        },
+        "files": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Files",
+          "type": "array"
+        }
+      },
+      "title": "Links",
+      "type": "object"
+    },
+    "Quality": {
+      "properties": {
+        "duplicate_suspect": {
+          "default": false,
+          "title": "Duplicate Suspect",
+          "type": "boolean"
+        },
+        "exclusive": {
+          "default": true,
+          "title": "Exclusive",
+          "type": "boolean"
+        },
+        "predictive": {
+          "default": false,
+          "title": "Predictive",
+          "type": "boolean"
+        },
+        "recurrence": {
+          "default": 0,
+          "title": "Recurrence",
+          "type": "integer"
+        },
+        "score": {
+          "default": 0.65,
+          "title": "Score",
+          "type": "number"
+        }
+      },
+      "title": "Quality",
+      "type": "object"
+    },
+    "RetrievalState": {
+      "properties": {
+        "count": {
+          "default": 0,
+          "title": "Count",
+          "type": "integer"
+        },
+        "last_accessed": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Accessed"
+        },
+        "strength": {
+          "default": 0.7,
+          "title": "Strength",
+          "type": "number"
+        }
+      },
+      "title": "RetrievalState",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "content": {
+      "title": "Content",
+      "type": "string"
+    },
+    "date": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Date"
+    },
+    "decay_status": {
+      "enum": [
+        "active",
+        "fading",
+        "archived"
+      ],
+      "title": "Decay Status",
+      "type": "string"
+    },
+    "fingerprint": {
+      "maxLength": 64,
+      "minLength": 64,
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Fingerprint",
+      "type": "string"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "importance": {
+      "maximum": 10,
+      "minimum": 1,
+      "title": "Importance",
+      "type": "integer"
+    },
+    "linked_to": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Linked To",
+      "type": "array"
+    },
+    "links": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Links"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "quality": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Quality"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "retrieval": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RetrievalState"
+        },
+        {
+          "additionalProperties": true,
+          "type": "object"
+        }
+      ],
+      "title": "Retrieval"
+    },
+    "source": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source"
+    },
+    "tags": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "array"
+    },
+    "title": {
+      "maxLength": 200,
+      "title": "Title",
+      "type": "string"
+    },
+    "ts": {
+      "title": "Ts",
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "decision",
+        "failure",
+        "milestone",
+        "insight",
+        "pitfall",
+        "lesson",
+        "bugfix",
+        "setup",
+        "integration",
+        "refactor",
+        "knowledge_digest",
+        "discovery",
+        "architecture",
+        "deployment",
+        "security",
+        "agent_write",
+        "maintenance"
+      ],
+      "title": "Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "ts",
+    "type",
+    "title",
+    "content",
+    "tags",
+    "importance",
+    "fingerprint",
+    "decay_status",
+    "retrieval"
+  ],
+  "title": "EpisodicEntry",
+  "type": "object"
+}

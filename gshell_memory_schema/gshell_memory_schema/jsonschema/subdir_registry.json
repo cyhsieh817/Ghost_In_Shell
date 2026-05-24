@@ -1,0 +1,58 @@
+{
+  "$defs": {
+    "RegisteredSubdir": {
+      "additionalProperties": false,
+      "properties": {
+        "lifecycle": {
+          "enum": [
+            "permanent",
+            "rotating",
+            "ephemeral"
+          ],
+          "title": "Lifecycle",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "purpose": {
+          "title": "Purpose",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "purpose",
+        "lifecycle"
+      ],
+      "title": "RegisteredSubdir",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "White-list of directories that may exist under memory/.\n\nUnregistered subdirectories are warned about (default) or blocked\nentirely depending on `enforcement`.",
+  "properties": {
+    "enforcement": {
+      "enum": [
+        "warn",
+        "block"
+      ],
+      "title": "Enforcement",
+      "type": "string"
+    },
+    "registered": {
+      "items": {
+        "$ref": "#/$defs/RegisteredSubdir"
+      },
+      "title": "Registered",
+      "type": "array"
+    }
+  },
+  "required": [
+    "registered",
+    "enforcement"
+  ],
+  "title": "SubdirRegistry",
+  "type": "object"
+}

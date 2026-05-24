@@ -1,0 +1,161 @@
+{
+  "$defs": {
+    "ExecutorProfile": {
+      "properties": {
+        "args": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Args",
+          "type": "array"
+        },
+        "binary": {
+          "title": "Binary",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "max_turns": {
+          "default": 10,
+          "title": "Max Turns",
+          "type": "integer"
+        },
+        "output_mode": {
+          "default": "text",
+          "enum": [
+            "text",
+            "json"
+          ],
+          "title": "Output Mode",
+          "type": "string"
+        },
+        "timeout": {
+          "default": 600,
+          "title": "Timeout",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "label",
+        "binary",
+        "args"
+      ],
+      "title": "ExecutorProfile",
+      "type": "object"
+    },
+    "LauncherProfile": {
+      "properties": {
+        "args": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Args",
+          "type": "array"
+        },
+        "binary": {
+          "title": "Binary",
+          "type": "string"
+        },
+        "executor": {
+          "title": "Executor",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "runtime": {
+          "title": "Runtime",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "binary",
+        "args",
+        "runtime",
+        "executor"
+      ],
+      "title": "LauncherProfile",
+      "type": "object"
+    },
+    "RuntimeProfile": {
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label",
+        "source",
+        "tags"
+      ],
+      "title": "RuntimeProfile",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "default_executor": {
+      "title": "Default Executor",
+      "type": "string"
+    },
+    "default_launcher": {
+      "title": "Default Launcher",
+      "type": "string"
+    },
+    "default_runtime": {
+      "title": "Default Runtime",
+      "type": "string"
+    },
+    "executors": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ExecutorProfile"
+      },
+      "title": "Executors",
+      "type": "object"
+    },
+    "launchers": {
+      "additionalProperties": {
+        "$ref": "#/$defs/LauncherProfile"
+      },
+      "title": "Launchers",
+      "type": "object"
+    },
+    "runtimes": {
+      "additionalProperties": {
+        "$ref": "#/$defs/RuntimeProfile"
+      },
+      "title": "Runtimes",
+      "type": "object"
+    },
+    "version": {
+      "default": "1.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "default_executor",
+    "default_runtime",
+    "default_launcher",
+    "executors",
+    "runtimes",
+    "launchers"
+  ],
+  "title": "RuntimeProfiles",
+  "type": "object"
+}

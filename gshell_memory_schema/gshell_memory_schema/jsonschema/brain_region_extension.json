@@ -1,0 +1,38 @@
+{
+  "additionalProperties": false,
+  "description": "An opt-in region beyond the 5 defaults.\n\nMirrors RegionDef's structure but lives under `extensions:` in the\nmanifest so that 5.0 readers can ignore it.",
+  "properties": {
+    "aliases": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Aliases",
+      "type": "array"
+    },
+    "core_files": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Core Files",
+      "type": "array"
+    },
+    "display": {
+      "title": "Display",
+      "type": "string"
+    },
+    "on_demand_files": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "On Demand Files",
+      "type": "array"
+    }
+  },
+  "required": [
+    "display"
+  ],
+  "title": "BrainRegionExtension",
+  "type": "object"
+}

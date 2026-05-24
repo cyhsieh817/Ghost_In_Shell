@@ -1,0 +1,110 @@
+{
+  "$defs": {
+    "ConsolidationTrigger": {
+      "properties": {
+        "last_count": {
+          "default": 0,
+          "title": "Last Count",
+          "type": "integer"
+        },
+        "threshold": {
+          "default": 20,
+          "title": "Threshold",
+          "type": "integer"
+        },
+        "type": {
+          "default": "count",
+          "enum": [
+            "count",
+            "calendar"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "title": "ConsolidationTrigger",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "consolidation_history": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Consolidation History",
+      "type": "array"
+    },
+    "last_audit_run": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Audit Run"
+    },
+    "last_consolidation": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Consolidation"
+    },
+    "last_decay_run": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Decay Run"
+    },
+    "last_health_run": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Health Run"
+    },
+    "next_consolidation_trigger": {
+      "$ref": "#/$defs/ConsolidationTrigger"
+    },
+    "quality_history": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Quality History",
+      "type": "array"
+    },
+    "schema_version": {
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "stats": {
+      "additionalProperties": true,
+      "title": "Stats",
+      "type": "object"
+    }
+  },
+  "title": "MemoryManifest",
+  "type": "object"
+}

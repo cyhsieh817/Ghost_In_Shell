@@ -1,0 +1,76 @@
+{
+  "$defs": {
+    "NodeRef": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "episode",
+            "fact",
+            "file",
+            "skill"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "NodeRef",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "created_by": {
+      "title": "Created By",
+      "type": "string"
+    },
+    "dst": {
+      "$ref": "#/$defs/NodeRef"
+    },
+    "evidence": {
+      "title": "Evidence",
+      "type": "string"
+    },
+    "src": {
+      "$ref": "#/$defs/NodeRef"
+    },
+    "ts": {
+      "title": "Ts",
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "supports",
+        "contradicts",
+        "elaborates",
+        "references",
+        "caused-by"
+      ],
+      "title": "Type",
+      "type": "string"
+    },
+    "weight": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Weight",
+      "type": "number"
+    }
+  },
+  "required": [
+    "ts",
+    "src",
+    "dst",
+    "type",
+    "weight",
+    "evidence",
+    "created_by"
+  ],
+  "title": "AssociationEntry",
+  "type": "object"
+}

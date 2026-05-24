@@ -1,0 +1,61 @@
+{
+  "$defs": {
+    "SanctumEntry": {
+      "properties": {
+        "enforced_actions": {
+          "items": {
+            "enum": [
+              "read",
+              "write",
+              "delete"
+            ],
+            "type": "string"
+          },
+          "title": "Enforced Actions",
+          "type": "array"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "tier": {
+          "enum": [
+            "public",
+            "private",
+            "sacred"
+          ],
+          "title": "Tier",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "tier",
+        "reason",
+        "enforced_actions"
+      ],
+      "title": "SanctumEntry",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/SanctumEntry"
+      },
+      "title": "Entries",
+      "type": "array"
+    },
+    "schema_version": {
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "title": "SanctumRegistry",
+  "type": "object"
+}
