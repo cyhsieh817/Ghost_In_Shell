@@ -192,3 +192,29 @@ If `gish doctor` reports a brain region error, check that all region names in
 
 → [Chapter 00 — Overview](ch.00-overview.md) (start over)  
 → [Chapter 01 — Quick Start](ch.01-quick-start.md) (set up hooks in new workspace)
+
+---
+
+## Reconnecting custom regions after v4 migration (5.1)
+
+`gish migrate v4` collapses any non-default region into `default`. If you had
+custom regions in v4 that you want back (e.g. `amygdala` for security gating,
+`parietal` for path management), re-declare them as 5.1 extensions:
+
+```bash
+gish region declare amygdala \
+    --display "amygdala (security / vigilance)" \
+    --on-demand POLICY.md \
+    --aliases security \
+    --workspace ~/my-workspace
+
+gish region declare parietal \
+    --display "parietal (paths / spatial)" \
+    --on-demand PATHS.md \
+    --workspace ~/my-workspace
+```
+
+After declaration, the manifest's `extensions:` block holds these regions.
+5.0 readers ignore them gracefully; 5.1+ readers activate them. Files
+mistakenly merged into `default` during migration must be moved manually —
+gish does not preserve enough history to do this automatically.
