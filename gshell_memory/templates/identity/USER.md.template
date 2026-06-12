@@ -1,0 +1,22 @@
+# User — {{workspace_name}}
+
+> Managed by gish. Describe the human this agent serves.
+> Keep it short: this file is loaded into every session's context.
+
+## Who
+
+- **Name / handle**: (your name)
+- **Role**: (e.g. researcher, developer, founder)
+- **Timezone**: (e.g. UTC+8)
+- **Language**: English (override here if you prefer another)
+
+## Preferences
+
+- Communication style: (e.g. concise, detailed, casual)
+- Things the agent should always do:
+- Things the agent should never do:
+
+## Notes
+
+Structured preferences belong in `memory/fact.yml` → `user`.
+This file is the human-readable summary the agent reads at session start.

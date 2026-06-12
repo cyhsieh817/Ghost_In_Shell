@@ -70,7 +70,7 @@ Ghost In Shell uses a **hot/cold separation** strategy inspired by CPU cache hie
 
 **Result**: ~500 lines loaded per session via `@import` (MEMORY.md + fact.yml), while the cognitive layer works in the background to strengthen useful memories and surface patterns. Cold layers, operational extensions, and episodic history are loaded on demand.
 
-> **Note on fact.yml growth**: As the agent system matures, fact.yml naturally grows beyond the initial 150-line target. The the-upstream-workspace production instance runs ~375 lines with 9 top-level blocks (user, system, rules, sop_dispatch, agent_model_tiers, tools, ycbio_workflow, cross_machine_sync, memory_governance). This is acceptable when the content is structured YAML with clear section boundaries — the key metric is *relevance density*, not raw line count.
+> **Note on fact.yml growth**: As the agent system matures, fact.yml naturally grows beyond the initial 150-line target. A production instance upstream runs ~375 lines with 9 top-level blocks (user, system, rules, sop_dispatch, agent_model_tiers, tools, domain_workflow, cross_machine_sync, memory_governance). This is acceptable when the content is structured YAML with clear section boundaries — the key metric is *relevance density*, not raw line count.
 
 > **Important**: The "Always Loaded" layer loads via `@import` in `CLAUDE.md` — it works regardless of whether the Claude Code Auto Memory layer exists. The two layers are fully independent.
 

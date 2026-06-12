@@ -2,9 +2,20 @@
 # Each line is a literal substring that must NOT appear anywhere in the repo
 # (excluding the `legacy/` directory and this file itself).
 # Comments start with `#`. Blank lines ignored.
-# Forks are encouraged to edit this list to match their own private content.
+#
+# ⚠️ This file is PUBLIC. Never list private identifiers (emails, usernames,
+# home paths) here — that would publish the very strings you want to hide.
+# Put those in `tests/forbidden_strings.local.txt` (gitignored) or inject
+# them in CI via the GISH_FORBIDDEN_EXTRA environment variable (newline-
+# separated, e.g. from a repository secret).
+#
+# Structural checks that need no literals at all (e.g. flagging any real
+# `/Users/<name>` home path that is not a documented example persona) are
+# built into scripts/ci/check_no_personal.py itself.
+#
+# Forks are encouraged to adapt this setup to their own private content.
 
-# === Trademarks / company names (My Lord's biotech) ===
+# === Trademarks / company names (publicly known; safe to list) ===
 Cellergy
 icNAD+
 icNAD+®
@@ -14,20 +25,13 @@ yc-biotech.net
 yc-biotech
 元培醫事科技
 
-# === Personal contact / account ===
-user@example.com
-cyuh@
-example-user
-
-# === Private workspace / vault paths ===
-UpstreamVault
-/Users/example/Documents/upstream-projects
-{{VAULT}}
-
-# === Personal automation tools ===
+# === Personal automation tools (not part of v5 scope) ===
 remindctl
 gogcli
 molty
+
+# === Vault template tokens (private workspace conventions) ===
+{{VAULT}}
 
 # === Domain-specific skills not part of v5 scope ===
 bazi

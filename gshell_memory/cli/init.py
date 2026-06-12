@@ -24,7 +24,9 @@ def _load_template(path: Path, substitutions: dict[str, str] | None = None) -> s
     return text
 
 
-def _seed_file(dest: Path, template_path: Path, substitutions: dict[str, str] | None = None) -> bool:
+def _seed_file(
+    dest: Path, template_path: Path, substitutions: dict[str, str] | None = None
+) -> bool:
     """Write dest from template only if dest does not yet exist. Returns True if written."""
     if dest.exists():
         return False
@@ -45,7 +47,9 @@ def _seed_empty(dest: Path) -> bool:
 @click.command("init")
 @click.argument("workspace")
 @click.option("--schedule/--no-schedule", default=False, help="Install cron schedule after init.")
-@click.option("--auto-hooks", is_flag=True, default=False, help="Auto-append hooks (with .bak backup).")
+@click.option(
+    "--auto-hooks", is_flag=True, default=False, help="Auto-append hooks (with .bak backup)."
+)
 @click.option("--non-interactive", is_flag=True, default=False, help="Skip prompts; use defaults.")
 def init_cmd(workspace: str, schedule: bool, auto_hooks: bool, non_interactive: bool) -> None:
     """Initialize a Ghost In Shell workspace at WORKSPACE."""
@@ -85,8 +89,14 @@ def init_cmd(workspace: str, schedule: bool, auto_hooks: bool, non_interactive: 
     written = _seed_file(config_dest, _IDENTITY_TMPL / "config.yml.template", subst)
     _echo_seed(config_dest, ws, written)
 
-    # Step 3b — create IDENTITY.md and SOUL.md at workspace root
-    for tmpl_name, dest_name in [("IDENTITY.md.template", "IDENTITY.md"), ("SOUL.md.template", "SOUL.md")]:
+    # Step 3b — create the four root identity files referenced by every
+    # adapter's @imports block (IDENTITY / SOUL / USER / MEMORY).
+    for tmpl_name, dest_name in [
+        ("IDENTITY.md.template", "IDENTITY.md"),
+        ("SOUL.md.template", "SOUL.md"),
+        ("USER.md.template", "USER.md"),
+        ("MEMORY.md.template", "MEMORY.md"),
+    ]:
         dest = ws / dest_name
         written = _seed_file(dest, _IDENTITY_TMPL / tmpl_name, subst)
         _echo_seed(dest, ws, written)
@@ -102,7 +112,9 @@ def init_cmd(workspace: str, schedule: bool, auto_hooks: bool, non_interactive: 
             click.echo(f"[{name}] session-end hook:")
             click.echo(adapter.session_end_hook())
     else:
-        click.echo("\n(No known CLIs detected; install claude/gemini/codex/gh to see hook snippets.)")
+        click.echo(
+            "\n(No known CLIs detected; install claude/gemini/codex/gh to see hook snippets.)"
+        )
 
     # Step 5 — cron schedule
     do_schedule = schedule
@@ -163,15 +175,15 @@ def _next_steps(ws: Path, detected: list[str]) -> str:
         "── Next steps ──",
         f"  1. Edit {ws / 'IDENTITY.md'} to describe your workspace.",
         f"  2. Edit {ws / 'SOUL.md'} to choose a persona.",
-        f"  3. Edit {ws / 'memory' / 'fact.yml'} to set identity & preferences.",
-        "  4. Add the hook snippets above to your CLI configuration.",
-        "  5. Run `gish doctor --workspace <path>` to verify workspace health.",
+        f"  3. Edit {ws / 'USER.md'} to describe yourself.",
+        f"  4. Edit {ws / 'memory' / 'fact.yml'} to set identity & preferences.",
+        "  5. Add the hook snippets above to your CLI configuration.",
+        "  6. Run `gish doctor --workspace <path>` to verify workspace health.",
     ]
     if not detected:
-        lines.append("  6. Install a supported CLI: claude / gemini / codex / gh")
+        lines.append("  7. Install a supported CLI: claude / gemini / codex / gh")
     return "\n".join(lines)
 
 
 if __name__ == "__main__":
     sys.exit(init_cmd())
-

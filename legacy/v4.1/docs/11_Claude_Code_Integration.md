@@ -157,7 +157,7 @@ project/
 ├── .claude/
 │   └── rules/
 │       ├── safety.md       ← Always loaded (no paths restriction)
-│       ├── ycbio.md         ← Loaded only when touching ycbio/** files
+│       ├── projectx.md         ← Loaded only when touching projectx/** files
 │       └── literature.md    ← Loaded only when touching lit_* files
 ```
 

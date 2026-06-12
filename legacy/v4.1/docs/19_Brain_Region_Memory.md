@@ -67,7 +67,7 @@ refresh:
 ```
 
 - The manifest is **rebuilt** by `memory_region_manifest_build.py`
-  (the-upstream-workspace's reference; portable version coming).
+  (upstream reference; portable version coming).
 - Manual edits live in `brain_region_overrides.yml` so the rebuild
   doesn't clobber them.
 - Refresh tick: `bash scripts/memory_region_refresh_tick.sh` (weekly default).

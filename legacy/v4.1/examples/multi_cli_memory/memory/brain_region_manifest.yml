@@ -1,6 +1,6 @@
 # brain_region_manifest.yml — Neuro-anatomical file routing (seed)
 # Schema version: 1
-# Auto-rebuilt by `scripts/memory_region_manifest_build.py` (see the-upstream-workspace
+# Auto-rebuilt by `scripts/memory_region_manifest_build.py` (see the upstream reference implementation
 # canonical implementation). Manual edits are overwritten — pin/exclude via
 # brain_region_overrides.yml.
 schema_version: 1

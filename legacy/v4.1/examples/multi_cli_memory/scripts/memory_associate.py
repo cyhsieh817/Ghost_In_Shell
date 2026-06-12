@@ -12,7 +12,7 @@ Subcommands:
 
 This is a **portable seed**: it understands the on-disk schema but skips the
 heavyweight scoring logic. Replace with a richer implementation when you
-want true automatic linking. The full reference lives in the-upstream-workspace's
+want true automatic linking. The full reference lives in the upstream
 `scripts/memory_associate.py`.
 """
 from __future__ import annotations

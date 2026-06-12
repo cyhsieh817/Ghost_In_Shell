@@ -69,6 +69,15 @@ class TestInitCreatesStructure:
         assert result.exit_code == 0
         assert (Path(ws) / "SOUL.md").exists()
 
+    def test_creates_all_adapter_import_files(self, runner, tmp_path):
+        """Every adapter's @imports block references these four root files;
+        init must create them all or fresh Claude Code setups break."""
+        ws = str(tmp_path / "ws")
+        result = runner.invoke(gish, ["init", ws, "--non-interactive"])
+        assert result.exit_code == 0
+        for name in ("IDENTITY.md", "SOUL.md", "USER.md", "MEMORY.md"):
+            assert (Path(ws) / name).exists(), f"init did not create {name}"
+
     def test_creates_fact_yml(self, runner, tmp_path):
         ws = str(tmp_path / "ws")
         result = runner.invoke(gish, ["init", ws, "--non-interactive"])

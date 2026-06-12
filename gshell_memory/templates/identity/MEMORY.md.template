@@ -1,0 +1,24 @@
+# Memory Index — {{workspace_name}}
+
+> Managed by gish. This is the L0 routing file loaded at session start —
+> keep it as an index, never paste memory content here.
+
+## Memory layers
+
+| Layer | File | Load when |
+|:------|:-----|:----------|
+| Facts | `memory/fact.yml` | user preferences / settings needed |
+| Episodic | `memory/episodic.jsonl` | past decisions / lessons needed |
+| Associations | `memory/associations.jsonl` | exploring related memories |
+| Brain regions | `memory/brain_region_manifest.yml` | routing a domain query |
+
+## Commands
+
+- `gish recall <query>` — search episodic memory
+- `gish log` — review the session log
+- `gish dream --workspace .` — nightly reorganize + archive (scheduled)
+- `gish doctor --workspace .` — health check
+
+## Recent milestones
+
+<!-- gish appends here; keep at most 5, archive overflow -->

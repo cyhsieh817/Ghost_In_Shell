@@ -25,6 +25,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`associate-strength`, `consolidate-check`) and omitted the required
   `--workspace` option — every installed schedule line failed at runtime.
   Regression-guarded by `test_cron_template_only_schedules_real_commands`.
+- `gish init` now creates all four root identity files (`IDENTITY.md`,
+  `SOUL.md`, `USER.md`, `MEMORY.md`). Previously the adapters' `@imports`
+  snippets referenced `USER.md` / `MEMORY.md` that init never wrote, so a
+  fresh Claude Code setup started with two broken imports.
+
+### Security / Privacy
+- Personal-data gate redesigned: the public `forbidden_strings.txt` no
+  longer lists private identifiers (which itself leaked them). Private
+  entries move to gitignored `tests/forbidden_strings.local.txt` or the
+  `GISH_FORBIDDEN_EXTRA` env var (CI secret); a literal-free structural
+  check now flags any real `/Users/<name>` home path that is not a
+  documented example persona.
+- Internal development plan documents removed from the published tree;
+  remaining upstream-workspace references in `legacy/` neutralized.
 
 ## [5.1.0] — 2026-05-24
 

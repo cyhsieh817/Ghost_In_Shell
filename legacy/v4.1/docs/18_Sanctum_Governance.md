@@ -96,7 +96,7 @@ sanctum_registry:
 ```
 
 The portable lite version (in `examples/multi_cli_memory/scripts/`) only
-reads the registry; the full reference (the-upstream-workspace's version) also
+reads the registry; the full upstream reference implementation also
 checks frontmatter, write actor, and last-modified mtime drift.
 
 ---
