@@ -193,12 +193,11 @@ class TestCronGeneration:
         comment = _COMMENT.format(workspace=ws)
         lines = _CRON_TEMPLATE.format(workspace=ws, comment=comment)
         assert str(ws) in lines
-        assert "gish run-maintenance" in lines
-        assert "--engine decay" in lines
-        assert "--engine health" in lines
-        assert "--engine audit" in lines
-        assert "--engine associate-strength" in lines
-        assert "--engine consolidate-check" in lines
+        # 5.2: one nightly dream replaces five scattered run-maintenance
+        # entries (two of which named engines that never existed).
+        assert "gish dream" in lines
+        assert "--workspace" in lines
+        assert "run-maintenance" not in lines
 
     def test_cron_unix_skips_if_already_present(self, tmp_path):
         from gshell_memory.engines._cron import _COMMENT, _install_unix_cron

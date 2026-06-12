@@ -172,6 +172,7 @@ gish <command> [options]
 | `gish doctor` | Run workspace health checks |
 | `gish audit` | Validate sanctum governance compliance |
 | `gish run-maintenance` | Execute all maintenance engines (decay, consolidate, etc.) |
+| `gish dream` | Nightly sleep cycle: replay → rem → verdict → prune → gate (deep sleep on Sundays) |
 | `gish log` | View session log entries |
 | `gish migrate v4` | Migrate a legacy v4.1 workspace to v5 format |
 | `gish version` | Print version |

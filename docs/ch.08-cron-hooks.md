@@ -10,7 +10,7 @@ system up to date with minimal manual intervention.
 
 | Trigger | When | What it does |
 |---------|------|--------------|
-| Cron | Daily (default 06:00) | run-maintenance: decay + consolidate + associate + health |
+| Cron | Nightly (default 03:30) | `gish dream`: replay → rem → verdict → prune → gate; deep sleep on Sundays adds audit + carryover expiry |
 | Session-start hook | CLI session begins | Load identity + memory into context |
 | Session-end hook | CLI session ends | `gish log --from-session` |
 | Inline / manual | On demand | `gish recall`, `gish log`, `gish doctor` |
@@ -37,7 +37,7 @@ gish init ~/my-workspace --schedule --non-interactive
 ### Default Schedule
 
 ```cron
-0 6 * * *  gish run-maintenance --workspace /path/to/workspace
+30 3 * * *  cd /path/to/workspace && gish dream --workspace .
 ```
 
 On macOS, `gish init --schedule` emits a `launchd` plist to

@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `gish dream` — unified nightly sleep-cycle maintenance, modeled on human sleep:
+  replay (associate) → rem (consolidate) → verdict (judge) → prune (decay) →
+  gate (health). Deep sleep on Sundays (or `--deep`) adds a full audit and
+  carryover expiry. Stages are failure-isolated: one crashing engine never
+  blocks pruning or the wake-up gate.
+- New engine `gshell_memory.engines.dream` with `run(workspace, dry_run, deep, today)`.
+
+### Changed
+- `gish init --schedule` now installs a single nightly `gish dream` entry
+  (03:30) instead of five scattered `run-maintenance` lines, across cron,
+  Windows Task XML, and the fallback shell script.
+
+### Fixed
+- Cron/scheduler templates referenced engines that never existed
+  (`associate-strength`, `consolidate-check`) and omitted the required
+  `--workspace` option — every installed schedule line failed at runtime.
+  Regression-guarded by `test_cron_template_only_schedules_real_commands`.
+
 ## [5.1.0] — 2026-05-24
 
 ### Added

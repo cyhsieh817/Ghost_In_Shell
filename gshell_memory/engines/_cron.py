@@ -8,13 +8,13 @@ from pathlib import Path
 
 _COMMENT = "# Ghost In Shell maintenance — managed by gish init (workspace: {workspace})"
 
+# One nightly dream replaces the former five scattered entries. The old
+# template was broken twice over: `associate-strength` / `consolidate-check`
+# never existed as engine names, and every line omitted the required
+# --workspace option. `gish dream` auto-escalates to deep sleep on Sundays.
 _CRON_TEMPLATE = """\
 {comment}
-0 3 * * 0  cd {workspace} && gish run-maintenance --engine decay
-0 4 * * *  cd {workspace} && gish run-maintenance --engine health
-0 5 * * *  cd {workspace} && gish run-maintenance --engine audit
-0 6 * * 0  cd {workspace} && gish run-maintenance --engine associate-strength
-0 7 * * 0  cd {workspace} && gish run-maintenance --engine consolidate-check
+30 3 * * *  cd {workspace} && gish dream --workspace .
 """
 
 
@@ -64,11 +64,7 @@ def _emit_windows_xml(workspace: Path) -> dict:
 <!-- Ghost In Shell maintenance tasks — managed by gish init (workspace: {workspace}) -->
 <!-- Import this file via: schtasks /create /xml "{xml_path}" /tn "GishMaintenance" -->
 <Tasks>
-  <Task><Action><Execute>gish</Execute><Arguments>run-maintenance --engine decay</Arguments></Action></Task>
-  <Task><Action><Execute>gish</Execute><Arguments>run-maintenance --engine health</Arguments></Action></Task>
-  <Task><Action><Execute>gish</Execute><Arguments>run-maintenance --engine audit</Arguments></Action></Task>
-  <Task><Action><Execute>gish</Execute><Arguments>run-maintenance --engine associate-strength</Arguments></Action></Task>
-  <Task><Action><Execute>gish</Execute><Arguments>run-maintenance --engine consolidate-check</Arguments></Action></Task>
+  <Task><Action><Execute>gish</Execute><Arguments>dream --workspace {workspace}</Arguments></Action></Task>
 </Tasks>
 """
     xml_path.write_text(xml_content, encoding="utf-8")
@@ -85,11 +81,7 @@ def _emit_fallback_sh(workspace: Path) -> dict:
 # Run this script manually or add to your system scheduler.
 set -e
 cd {workspace}
-gish run-maintenance --engine decay
-gish run-maintenance --engine health
-gish run-maintenance --engine audit
-gish run-maintenance --engine associate-strength
-gish run-maintenance --engine consolidate-check
+gish dream --workspace .
 """
     sh_path.write_text(sh_content, encoding="utf-8")
     sh_path.chmod(0o755)

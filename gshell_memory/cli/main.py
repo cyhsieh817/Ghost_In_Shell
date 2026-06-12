@@ -6,6 +6,7 @@ from gshell_memory.cli.archive import archive_group
 from gshell_memory.cli.audit import audit_cmd
 from gshell_memory.cli.carryover import carryover_group
 from gshell_memory.cli.doctor import doctor_cmd
+from gshell_memory.cli.dream import dream_cmd
 from gshell_memory.cli.enum import enum_group
 from gshell_memory.cli.heartbeat import heartbeat_group
 from gshell_memory.cli.init import init_cmd
@@ -34,6 +35,7 @@ gish.add_command(doctor_cmd)
 gish.add_command(recall_cmd)
 gish.add_command(audit_cmd)
 gish.add_command(run_maintenance_cmd)
+gish.add_command(dream_cmd)
 gish.add_command(log_cmd)
 gish.add_command(migrate_cmd)
 gish.add_command(sop_group)
