@@ -1,24 +1,44 @@
 # Memory Index — {{workspace_name}}
 
-> Managed by gish. This is the L0 routing file loaded at session start —
-> keep it as an index, never paste memory content here.
+> Managed by gish. Every session loads this file in full, so every line here
+> costs something in every session. Keep it an index: one trigger phrase and
+> one link per line. The lesson itself lives in the linked note.
+>
+> **How to write a line** (see docs ch.19):
+> - Write the trigger as the *symptom you will have* when the note matters,
+>   not as the cause. "The tool said OK, so it is fixed" finds a note;
+>   "tool reports are unreliable" does not.
+> - If a failure can go both ways (missed alarm / false alarm, too loose /
+>   too strict), name both directions, or one direction will never be found.
+> - Before adding a line, run `gish index budget --workspace .`.
+
+## Tier 1 — rules you will not know you are breaking
+
+<!-- Only rules that apply to almost every task AND that you would not think
+     to look up. Everything else goes on a shelf index below. Example:
+- "The tool returned success, so it is done" → [verify the final state](memory/knowledge/feedback/verify-final-state.md)
+-->
+
+## Shelves
+
+<!-- Optional second-level indexes for notes you look up on purpose, e.g.
+     memory/knowledge/INDEX_tools.md. Link them here. -->
 
 ## Memory layers
 
-| Layer | File | Load when |
-|:------|:-----|:----------|
+| Layer | Location | Load when |
+|:------|:---------|:----------|
+| Knowledge notes | `memory/knowledge/<shelf>/` | an index line above matches the task |
 | Facts | `memory/fact.yml` | user preferences / settings needed |
-| Episodic | `memory/episodic.jsonl` | past decisions / lessons needed |
+| Episodic | `memory/episodic.jsonl` | past decisions / failures needed |
 | Associations | `memory/associations.jsonl` | exploring related memories |
 | Brain regions | `memory/brain_region_manifest.yml` | routing a domain query |
 
 ## Commands
 
-- `gish recall <query>` — search episodic memory
-- `gish log` — review the session log
+- `gish recall <query> --workspace .` — search episodic memory
+- `gish knowledge new feedback <slug> -d "<one line>" --workspace .` — new note
+- `gish knowledge lint --workspace .` — frontmatter, broken links, orphans
+- `gish index budget --workspace .` — measure this file before adding to it
 - `gish dream --workspace .` — nightly reorganize + archive (scheduled)
 - `gish doctor --workspace .` — health check
-
-## Recent milestones
-
-<!-- gish appends here; keep at most 5, archive overflow -->

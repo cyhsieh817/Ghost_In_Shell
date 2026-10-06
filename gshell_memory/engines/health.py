@@ -43,6 +43,9 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
         schema_issues = _validate_episodes(paths.episodic)
         issues.extend(schema_issues)
 
+    knowledge_report = _check_knowledge(paths)
+    issues.extend(knowledge_report.pop("issues"))
+
     heal_hints = _detect_missed_triggers(paths)
 
     status = "ok" if not issues else "degraded"
@@ -55,6 +58,7 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
         "status": status,
         "dry_run": dry_run,
         "heal_hints": heal_hints,
+        "knowledge": knowledge_report,
     }
 
     if not dry_run:
@@ -99,6 +103,28 @@ def _validate_episodes(episodic_path: Path, *, max_report: int = 5) -> list[str]
     if invalid_count > len(issues):
         issues.append(f"... and {invalid_count - len(issues)} more schema violation(s)")
     return issues
+
+
+def _check_knowledge(paths: WorkspacePaths) -> dict:
+    """Index budget + note lint. Only errors become health issues; warnings are counted."""
+    from gshell_memory.engines import knowledge
+
+    report: dict = {"issues": []}
+    measured = knowledge.budget(paths)
+    report["index_status"] = measured["status"]
+    if measured["status"] in ("over_budget", "truncating"):
+        report["issues"].append(
+            f"MEMORY.md is {measured['status']} ({measured['chars']} chars, "
+            f"max {measured['max_chars']}): move entries to a shelf index"
+        )
+    linted = knowledge.lint(paths)
+    report["notes"] = linted["notes"]
+    report["warnings"] = linted["warnings"]
+    if linted["errors"]:
+        report["issues"].append(
+            f"knowledge lint: {linted['errors']} error(s); run `gish knowledge lint`"
+        )
+    return report
 
 
 def _detect_missed_triggers(paths: WorkspacePaths) -> list[str]:

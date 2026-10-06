@@ -20,7 +20,7 @@ transparently regardless of which tool you use.
 ## Adapter Architecture
 
 Every adapter inherits from `CLIAdapter` (abstract base class in
-`ghost_in_shell.adapters.base`):
+`gshell_memory.adapters.base`):
 
 ```python
 class CLIAdapter(ABC):
@@ -34,7 +34,7 @@ class CLIAdapter(ABC):
     def launch(self, args: list[str]) -> int: ...   # Generic launcher
 ```
 
-`ghost_in_shell.adapters.get_adapter(name)` returns the correct concrete adapter.
+`gshell_memory.adapters.get_adapter(name)` returns the correct concrete adapter.
 
 ---
 
@@ -154,7 +154,7 @@ Run `gish init` (or `gish init --non-interactive`) to automatically detect insta
 and print the correct hook snippets for each:
 
 ```bash
-gish init ~/my-workspace --non-interactive
+gish init ./my-workspace --non-interactive
 ```
 
 Output:
@@ -176,7 +176,7 @@ Output:
 ## Checking Adapter Detection
 
 ```python
-from ghost_in_shell.adapters import get_adapter
+from gshell_memory.adapters import get_adapter
 
 adapter = get_adapter("claude")
 print(adapter.detect_installation())   # True / False

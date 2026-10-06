@@ -40,4 +40,4 @@ def test_module_importable(module_name):
 def test_package_has_version():
     import gshell_memory
 
-    assert gshell_memory.__version__ == "5.0.0rc1"
+    assert gshell_memory.__version__ == "5.2.0"

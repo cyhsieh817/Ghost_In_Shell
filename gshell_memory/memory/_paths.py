@@ -27,6 +27,28 @@ class WorkspacePaths:
         return self.memory_dir / "episodic.jsonl"
 
     @property
+    def episodic_lock(self) -> Path:
+        """Serialises every read-modify-write of episodic.jsonl."""
+        return self.memory_dir / ".episodic.lock"
+
+    @property
+    def archive_dir(self) -> Path:
+        return self.memory_dir / "_archive"
+
+    @property
+    def knowledge_dir(self) -> Path:
+        return self.memory_dir / "knowledge"
+
+    @property
+    def index_file(self) -> Path:
+        """Startup index loaded into every session (see ch.19)."""
+        return self.root / "MEMORY.md"
+
+    @property
+    def proposals_dir(self) -> Path:
+        return self.root / ".gish" / "proposals"
+
+    @property
     def associations(self) -> Path:
         return self.memory_dir / "associations.jsonl"
 

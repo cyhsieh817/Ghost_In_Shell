@@ -18,14 +18,14 @@ Get from zero to `gish recall "anything"` in under five minutes.
 pip install -e .
 
 # Or from PyPI once published
-pip install ghost-in-shell
+pip install gshell-memory
 ```
 
 Verify:
 
 ```bash
 gish version
-# Ghost In Shell 5.0.0a4
+# ghost-in-shell 5.2.0
 ```
 
 ---
@@ -36,18 +36,18 @@ The fastest path uses the provided `bootstrap.sh` script which initialises a wor
 installs a cron schedule in one step:
 
 ```bash
-bash bootstrap.sh ~/my-workspace
+bash bootstrap.sh ./my-workspace
 ```
 
 To do it manually:
 
 ```bash
-gish init ~/my-workspace
+gish init ./my-workspace
 ```
 
 `gish init` will:
 
-1. Create the directory structure under `~/my-workspace/`.
+1. Create the directory structure under `./my-workspace/`.
 2. Seed all template files (`fact.yml`, `episodic.jsonl`, `brain_region_manifest.yml`, etc.).
 3. Detect installed CLIs and print the appropriate hook snippets.
 4. Optionally install the cron maintenance schedule.
@@ -60,19 +60,19 @@ Open the three identity files and fill in relevant details:
 
 ```bash
 # Who the agent is
-$EDITOR ~/my-workspace/IDENTITY.md
+$EDITOR ./my-workspace/IDENTITY.md
 
 # Persona / tone
-$EDITOR ~/my-workspace/SOUL.md
+$EDITOR ./my-workspace/SOUL.md
 
 # Your preferences (optional)
-$EDITOR ~/my-workspace/USER.md
+$EDITOR ./my-workspace/USER.md
 ```
 
 At minimum, edit `memory/fact.yml` to set your workspace name:
 
 ```yaml
-# ~/my-workspace/memory/fact.yml
+# ./my-workspace/memory/fact.yml
 identity:
   name: "My Agent"
   language: "en"
@@ -115,7 +115,7 @@ See [Chapter 08 — Cron & Hooks](ch.08-cron-hooks.md) for full hook setup per C
 ## Log a Memory
 
 ```bash
-gish log --workspace ~/my-workspace \
+gish log --workspace ./my-workspace \
   --title "Learned about gish" \
   --content "Ghost In Shell stores episodic memories in a JSONL file." \
   --tags learned,gish \
@@ -127,7 +127,7 @@ gish log --workspace ~/my-workspace \
 ## Recall a Memory
 
 ```bash
-gish recall --workspace ~/my-workspace "episodic memories"
+gish recall --workspace ./my-workspace "episodic memories"
 ```
 
 Sample output:
@@ -144,22 +144,45 @@ Sample output:
 ## Check Workspace Health
 
 ```bash
-gish doctor --workspace ~/my-workspace
+gish doctor --workspace ./my-workspace
 # Status: ok
 # Episodes: 1  Edges: 0
 ```
 
 ---
 
-## Run Maintenance
+## Record a Lesson
 
-Apply decay, consolidation, and association engines in one command:
+Episodes record what happened. A lesson you want every future session to
+respect goes into a knowledge note, behind one index line:
 
 ```bash
-gish run-maintenance --workspace ~/my-workspace
+gish knowledge new feedback verify-final-state \
+  -d "A tool's success message is a claim; check the final state" \
+  --workspace ./my-workspace
+# fill in the body, then add to MEMORY.md:
+#   - "The tool returned success, so it is done" → [verify](memory/knowledge/feedback/verify-final-state.md)
+gish index budget --workspace ./my-workspace
+gish knowledge lint --workspace ./my-workspace
 ```
 
-This is also what the cron schedule runs nightly.
+How to word the trigger so it is actually found: [Chapter 19](ch.19-knowledge-index.md).
+
+---
+
+## Run Maintenance
+
+One command runs the whole nightly cycle — replay, judge-gated consolidation,
+decay, and the health gate:
+
+```bash
+gish dream --workspace ./my-workspace --dry-run   # preview, writes nothing
+gish dream --workspace ./my-workspace
+```
+
+`gish init --schedule` installs it as a nightly job. On a machine that shares
+the workspace but should not write to it, set `GISH_MACHINE_ROLE=secondary`
+([Chapter 20](ch.20-write-discipline.md)).
 
 ---
 

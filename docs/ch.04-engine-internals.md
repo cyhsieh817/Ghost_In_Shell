@@ -1,7 +1,7 @@
 # Chapter 04 — Engine Internals
 
 Ghost In Shell ships seven engines that maintain memory quality over time. Each engine
-is a pure Python module in `ghost_in_shell/engines/`. They can be invoked individually
+is a pure Python module in `gshell_memory/engines/`. They can be invoked individually
 or together via `gish run-maintenance`.
 
 ---
@@ -22,17 +22,17 @@ or together via `gish run-maintenance`.
 
 ## `associate` — Association Graph Builder
 
-**Entry point**: `ghost_in_shell.engines.associate.run(workspace: Path)`
+**Entry point**: `gshell_memory.engines.associate.run(workspace: Path)`
 
 The associate engine scans episodic entries and creates directed edges in
 `memory/associations.jsonl` when two entries share tags, overlapping content, or similar
 timestamps within a configurable window.
 
 ```python
-from ghost_in_shell.engines import associate
+from gshell_memory.engines import associate
 from pathlib import Path
 
-result = associate.run(Path("~/my-workspace"))
+result = associate.run(Path("./my-workspace"))
 print(result["edges_created"])
 ```
 
@@ -42,7 +42,7 @@ Return dict keys: `edges_created`, `total_edges`, `status`.
 
 ## `decay` — Strength Decay
 
-**Entry point**: `ghost_in_shell.engines.decay.run(workspace: Path)`
+**Entry point**: `gshell_memory.engines.decay.run(workspace: Path)`
 
 Applies exponential decay to `retrieval.strength` for all active episodic entries.
 The decay formula uses a configurable λ (lambda) decay rate from `memory_manifest.yml`.
@@ -56,25 +56,36 @@ Return dict keys: `decayed`, `faded`, `status`.
 
 ## `consolidate` — Episode Consolidation
 
-**Entry point**: `ghost_in_shell.engines.consolidate.run(workspace: Path)`
+**Entry point**: `gshell_memory.engines.consolidate.run(workspace: Path, *, dry_run=False)`
 
-When the episode count exceeds the `next_consolidation_trigger.threshold` in
-`memory_manifest.yml` (default: 20 new episodes), consolidation runs. It groups similar
-episodes using SequenceMatcher and creates summary entries, marking the originals as
-`decay_status: consolidated`.
+Consolidation runs in three separate steps — **propose → judge → apply** — so the
+step that rewrites memory never grades its own work (details in
+[Chapter 20](ch.20-write-discipline.md#4-nothing-grades-its-own-work)):
 
-This keeps the episodic store from growing unbounded while preserving the essential
-narrative.
+1. **propose** — when at least 3 active episodes have importance ≤ 4, build one
+   `knowledge_digest` entry whose `linked_to` lists every source. The proposal is
+   written to `.gish/proposals/consolidation_<stamp>.json`.
+2. **judge** — `judge.grade_proposal` runs deterministic pre-checks (sources exist,
+   no source with importance ≥ 8, unique id, links back) and, if
+   `consolidate.judge_command` is configured, an external judge. Only grades A–C
+   pass; a configured judge that fails to produce a grade blocks the apply.
+3. **apply** — under the episodic lock, re-check that the sources are unchanged,
+   append them to `memory/_archive/episodic_consolidated.jsonl`, then replace them
+   in `episodic.jsonl` with the merged entry. Nothing is deleted.
 
-Return dict keys: `groups_found`, `summaries_created`, `status`.
+Return dict keys: `merged` (sources in the proposal), `applied`, `verdict`
+(`grade`, `passed`, `checks`, `external`), `proposal`, `dry_run`. A dry run builds
+and grades the proposal in memory and writes nothing.
 
 ---
 
 ## `judge` — Quality Scoring
 
-**Entry point**: `ghost_in_shell.engines.judge.run(workspace: Path)`
+**Entry points**: `gshell_memory.engines.judge.run(workspace: Path)` (advisory
+verdicts for existing episodes) and `judge.grade_proposal(...)` (the consolidation
+gate above).
 
-Scores each episode across five quality dimensions:
+`run` reads each episode's quality fields:
 
 | Dimension | Meaning |
 |-----------|---------|
@@ -93,7 +104,7 @@ Return dict keys: `scored`, `updated`, `status`.
 
 ## `health` — Workspace Health Check
 
-**Entry point**: `ghost_in_shell.engines.health.run(workspace: Path, *, dry_run: bool = False)`
+**Entry point**: `gshell_memory.engines.health.run(workspace: Path, *, dry_run: bool = False)`
 
 Produces a health report dict:
 
@@ -119,7 +130,7 @@ hook is not configured.
 
 ## `audit` — Sanctum Compliance
 
-**Entry point**: `ghost_in_shell.engines.audit.run(workspace: Path)`
+**Entry point**: `gshell_memory.engines.audit.run(workspace: Path)`
 
 Checks that files listed in `sanctum_registry.yml` are present and accessible according
 to their declared tier. Also validates that no disallowed actions have been performed
@@ -131,7 +142,7 @@ Return dict keys: `violations`, `warnings`, `status`.
 
 ## `session_log` — Session Boundary Recording
 
-**Entry point**: `ghost_in_shell.engines.session_log.record(workspace: Path, ...)`
+**Entry point**: `gshell_memory.engines.session_log.record(workspace: Path, ...)`
 
 Called by `gish log --from-session` at session end. Records a session boundary entry to
 `.gish/logs/session_boundaries.jsonl`.
@@ -144,13 +155,13 @@ This is what lets the health engine detect whether session hooks are properly co
 
 ```bash
 # Run all maintenance engines
-gish run-maintenance --workspace ~/my-workspace
+gish run-maintenance --workspace ./my-workspace
 
 # Dry-run mode (no writes)
-gish run-maintenance --workspace ~/my-workspace --dry-run
+gish run-maintenance --workspace ./my-workspace --dry-run
 
 # Just run health check
-gish doctor --workspace ~/my-workspace
+gish doctor --workspace ./my-workspace
 ```
 
 ---
@@ -159,9 +170,9 @@ gish doctor --workspace ~/my-workspace
 
 ```python
 from pathlib import Path
-from ghost_in_shell.engines import associate, decay, consolidate, health
+from gshell_memory.engines import associate, decay, consolidate, health
 
-ws = Path("~/my-workspace").expanduser().resolve()
+ws = Path("./my-workspace").resolve()
 
 health.run(ws)
 decay.run(ws)
@@ -190,43 +201,43 @@ Beyond the seven maintenance engines above, the M6 milestone introduces seven ca
 
 ### `sop_dispatch` — Trigger-Matched Required-Reading Dispatcher
 
-**Entry point**: `ghost_in_shell.engines.sop_dispatch.SOPEngine`
+**Entry point**: `gshell_memory.engines.sop.SOPEngine`
 
 Reads `memory/sop_dispatch.yml`, a table of trigger phrases mapped to required reading material (SOPs, templates, checklists). When an agent receives user input matching a trigger, `SOPEngine.trigger(phrase)` returns the ordered list of documents that must be loaded before proceeding. `list()` enumerates all registered SOPs and `register(entry)` appends new mappings while preserving precedence. The engine guarantees deterministic dispatch: identical input always yields the same SOP bundle, which makes it safe to wire into pre-prompt hooks. Designed so that domain-specific workflows (popsci, proposal writing, slide decks) can be onboarded without touching CLI code.
 
 ### `archive_routing` — Priority-Sorted Routing Decision Tree
 
-**Entry point**: `ghost_in_shell.engines.archive_routing.ArchiveRouter`
+**Entry point**: `gshell_memory.engines.archive_router.ArchiveRouter`
 
 Reads `memory/archive_routing.yml`, a priority-sorted list of `condition → target_dir` rules. Given a candidate artifact (path, tags, frontmatter), `ArchiveRouter.preview(artifact)` walks the rules top-down and returns the first matching destination plus the rule trace, without performing the move. This dry-run posture lets callers confirm routing before mutating disk. Conditions support tag predicates, path globs, and frontmatter equality checks; ties are broken by declaration order, so higher-priority rules sit at the top of the file. The engine is the canonical answer to "where does this file belong" and underpins both manual archive commands and automated post-write hooks.
 
 ### `carryover` — 7-Day Cross-Session Task Hand-Off
 
-**Entry point**: `ghost_in_shell.engines.carryover.CarryoverEngine`
+**Entry point**: `gshell_memory.engines.carryover.CarryoverEngine`
 
 Manages `memory/carryover/*.md` notes, each with frontmatter recording `created_at`, `expires_at`, `owner`, and `status`. `create(task)` writes a new carryover with a default 7-day TTL so an unfinished thread survives a session boundary. `expire()` sweeps stale notes (past `expires_at`) into the archive, and `promote(note)` upgrades a carryover into a tracked task when the work resumes. The 7-day window is deliberately short: longer-lived intent belongs in episodic memory or a project plan. Together these three operations form a minimal cross-session inbox that prevents in-flight work from being silently dropped.
 
 ### `frozen_enums` — Locked State-Machine Values
 
-**Entry point**: `ghost_in_shell.engines.frozen_enums.FrozenEnumEngine`
+**Entry point**: `gshell_memory.engines.enum_freeze.FrozenEnumEngine`
 
 Reads `memory/frozen_enums.yml`, which records enum names whose value sets are contractually frozen (e.g. `source.kind` with 18 values, `session.status` with 6). `freeze(name, values)` locks a new enum and `validate(name, value)` checks an incoming value against the locked set, raising on drift. Freezing prevents the silent value-set expansion that erodes downstream consumers; any change requires an explicit unfreeze plus a migration plan. The engine is intentionally dumb: it stores nothing about semantics, only the exact allowed strings, so platform contracts stay readable in a single YAML file.
 
 ### `heartbeat` — Periodic Self-Check + Log Emission
 
-**Entry point**: `ghost_in_shell.engines.heartbeat.HeartbeatEngine`
+**Entry point**: `gshell_memory.engines.heartbeat.HeartbeatEngine`
 
 Reads `memory/heartbeat.yml` and emits a periodic liveness record to `.gish/logs/heartbeat.jsonl`. `run()` executes a single self-check (workspace reachable, memory writable, last maintenance timestamp fresh) and appends one log entry; `install()` writes a platform-appropriate scheduler snippet (cron on Linux, launchd plist on macOS) so the run happens on the configured cadence. The log lets external monitors confirm an agent is alive even when no user input is flowing, and gives the health engine a concrete signal for "system has been quiet too long". Default cadence is every 15 minutes.
 
 ### `brain_region` — Opt-In Regions Beyond the Default Five
 
-**Entry point**: `ghost_in_shell.engines.brain_region.BrainRegionStore`
+**Entry point**: `gshell_memory.memory.brain_regions.BrainRegionStore`
 
 The default brain has five regions (episodic, semantic, procedural, working, sensory). For workspaces that need more, `BrainRegionStore.declare(name, schema)` registers an opt-in region in the `extensions` block of `brain_region_manifest.yml`. The manifest stays the single source of truth for which regions exist and what fields each entry must carry, so consolidate/associate/decay engines can continue to operate uniformly. Extensions are explicitly opt-in: a workspace gets no extra regions until it declares them, which keeps minimal installs minimal and stops region sprawl. Declared regions appear in `gish region list` and become valid targets for writes immediately.
 
 ### `subdir_registry` — `memory/` Subdirectory White-List
 
-**Entry point**: `ghost_in_shell.engines.subdir_registry.SubdirRegistryEngine`
+**Entry point**: `gshell_memory.engines.subdir_registry.SubdirRegistryEngine`
 
 Reads `memory/subdir_registry.yml`, a white-list of approved subdirectory names under `memory/` plus an enforcement level (`warn` or `block`). `enforce(path)` checks a proposed write target against the list: `warn` emits a log entry and continues, `block` raises and aborts the write. This keeps the memory tree shaped according to the documented layout, so agents do not silently grow ad-hoc directories that the rest of the system cannot find. New subdirectories are added explicitly via the registry, which makes layout changes auditable and reversible.
 

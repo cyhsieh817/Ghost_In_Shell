@@ -55,7 +55,9 @@ class TestInitCreatesStructure:
         assert config.exists()
         content = config.read_text()
         assert "version: 5" in content
-        assert str(Path(ws).resolve()) in content
+        # Config must stay portable across machines: no absolute paths.
+        assert str(Path(ws).resolve()) not in content
+        assert 'workspace_path: "."' in content
 
     def test_creates_identity_md(self, runner, tmp_path):
         ws = str(tmp_path / "ws")

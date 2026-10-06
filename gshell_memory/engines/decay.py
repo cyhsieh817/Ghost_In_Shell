@@ -7,7 +7,9 @@ import json
 from pathlib import Path
 
 from gshell_memory.engines._manifest import stamp_run
+from gshell_memory.memory._lock import file_lock
 from gshell_memory.memory._paths import WorkspacePaths, resolve_workspace
+from gshell_memory.memory._role import require_primary
 from gshell_memory.memory._safe_io import atomic_write_text, read_jsonl
 from gshell_memory.memory.retrieval import compute_strength
 
@@ -28,6 +30,15 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
     if not paths.episodic.exists():
         return {"ts": ts, "paused": False, "mutated": 0, "dry_run": dry_run}
 
+    if not dry_run:
+        require_primary("decay")
+    # Read and rewrite under the episodic lock: a rewrite computed from a
+    # stale read would silently drop any episode appended in between.
+    with file_lock(paths.episodic_lock):
+        return _run_locked(paths, ts, dry_run=dry_run)
+
+
+def _run_locked(paths: WorkspacePaths, ts: str, *, dry_run: bool) -> dict:
     entries = list(read_jsonl(paths.episodic))
     active_count = sum(1 for e in entries if e.get("decay_status") == "active")
 

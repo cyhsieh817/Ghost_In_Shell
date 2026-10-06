@@ -5,8 +5,8 @@
 ## Workspace
 
 - **Name**: {{workspace_name}}
-- **Path**: {{workspace_path}}
-- **Framework**: Ghost In Shell v5
+- **Path**: this directory (keep paths in memory files workspace-relative)
+- **Framework**: Ghost In Shell v5.2
 
 ## Role
 

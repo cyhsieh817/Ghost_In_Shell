@@ -111,11 +111,11 @@ prefrontal:
 ## Programmatic Access
 
 ```python
-from ghost_in_shell.memory.brain_regions import BrainRegionManifest
-from ghost_in_shell.memory._paths import WorkspacePaths, resolve_workspace
+from gshell_memory.memory.brain_regions import BrainRegionManifest
+from gshell_memory.memory._paths import WorkspacePaths, resolve_workspace
 from pathlib import Path
 
-paths = WorkspacePaths(resolve_workspace(Path("~/my-workspace")))
+paths = WorkspacePaths(resolve_workspace(Path("./my-workspace")))
 manifest = BrainRegionManifest(paths)
 
 # Get files for a region

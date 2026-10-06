@@ -24,14 +24,14 @@ system up to date with minimal manual intervention.
 
 ```bash
 # Install during init
-gish init ~/my-workspace --schedule
+gish init ./my-workspace --schedule
 
 # Install separately
-gish init ~/my-workspace
+gish init ./my-workspace
 # Then confirm "Install cron schedule?" prompt
 
 # Non-interactive
-gish init ~/my-workspace --schedule --non-interactive
+gish init ./my-workspace --schedule --non-interactive
 ```
 
 ### Default Schedule
@@ -52,7 +52,7 @@ To install a custom schedule:
 ```bash
 crontab -e
 # Add:
-30 3 * * *  /path/to/.venv/bin/gish run-maintenance --workspace ~/my-workspace
+30 3 * * *  /path/to/.venv/bin/gish run-maintenance --workspace ./my-workspace
 ```
 
 ---
@@ -117,7 +117,7 @@ This is what lets `gish doctor` detect whether hooks are properly configured.
 # ~/bin/gemini-with-memory
 gemini "$@"
 exit_code=$?
-gish log --from-session --workspace ~/my-workspace --runtime gemini-cli
+gish log --from-session --workspace ./my-workspace --runtime gemini-cli
 exit $exit_code
 ```
 
@@ -132,7 +132,7 @@ alias gemini='~/bin/gemini-with-memory'
 
 ```bash
 # ~/.zshrc
-alias copilot='gh copilot; gish log --from-session --workspace ~/my-workspace --runtime copilot-cli'
+alias copilot='gh copilot; gish log --from-session --workspace ./my-workspace --runtime copilot-cli'
 ```
 
 ---
@@ -143,20 +143,20 @@ Any command can be called manually at any time:
 
 ```bash
 # Record a memory
-gish log --workspace ~/my-workspace \
+gish log --workspace ./my-workspace \
   --title "Decided to use PostgreSQL" \
   --content "Chose PostgreSQL over SQLite for concurrent write support." \
   --tags database,decision \
   --importance 8
 
 # Search memory
-gish recall --workspace ~/my-workspace "PostgreSQL"
+gish recall --workspace ./my-workspace "PostgreSQL"
 
 # Run all maintenance
-gish run-maintenance --workspace ~/my-workspace
+gish run-maintenance --workspace ./my-workspace
 
 # Health check
-gish doctor --workspace ~/my-workspace
+gish doctor --workspace ./my-workspace
 ```
 
 ---
@@ -174,7 +174,7 @@ detects degraded state.
 **Viewing hints**:
 
 ```bash
-gish doctor --workspace ~/my-workspace --heal-hooks
+gish doctor --workspace ./my-workspace --heal-hooks
 ```
 
 Output:
@@ -192,10 +192,10 @@ How to fix:
 **Programmatic access**:
 
 ```python
-from ghost_in_shell.engines import health
+from gshell_memory.engines import health
 from pathlib import Path
 
-report = health.run(Path("~/my-workspace"))
+report = health.run(Path("./my-workspace"))
 for hint in report["heal_hints"]:
     print(hint)
 ```

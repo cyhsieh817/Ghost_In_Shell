@@ -1,7 +1,7 @@
 """Golden fixtures parse against current Pydantic models.
 
 Per plan Task M6-B.0: minimal/full v5 fixtures must validate; lgd_legacy
-and voidweaver_v4_sample are intentional "pre-migration" snapshots and
+and legacy_v4_sample are intentional "pre-migration" snapshots and
 are exercised only at the file-presence level here. Their full
 validation lives in migration tests that wave M6-B introduces.
 """
@@ -112,8 +112,8 @@ def test_lgd_legacy_files_present():
     assert "fingerprint" not in entry
 
 
-def test_voidweaver_v4_sample_files_present():
-    base = FIXTURES / "voidweaver_v4_sample" / "memory"
+def test_legacy_v4_sample_files_present():
+    base = FIXTURES / "legacy_v4_sample" / "memory"
     for name in (
         "fact.yml",
         "fact_governance.yml",

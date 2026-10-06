@@ -81,6 +81,15 @@ def init_cmd(workspace: str, schedule: bool, auto_hooks: bool, non_interactive: 
         written = _seed_empty(dest)
         _echo_seed(dest, ws, written)
 
+    # Step 2b — knowledge shelves (one note per fact; indexed from MEMORY.md)
+    from gshell_memory.engines.knowledge import SHELVES
+
+    for shelf in SHELVES.values():
+        shelf_dir = mem / "knowledge" / shelf
+        existed = shelf_dir.is_dir()
+        shelf_dir.mkdir(parents=True, exist_ok=True)
+        _echo_seed(shelf_dir, ws, not existed)
+
     # Step 3 — create .gish/config.yml
     gish_dir = ws / ".gish"
     gish_dir.mkdir(exist_ok=True)

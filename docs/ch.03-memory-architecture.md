@@ -150,10 +150,10 @@ and eventually moved to `archive:` namespace in the fact store.
 
 ```python
 from pathlib import Path
-from ghost_in_shell.memory._paths import WorkspacePaths, resolve_workspace
-from ghost_in_shell.memory.episodic import EpisodicStore, make_fingerprint
+from gshell_memory.memory._paths import WorkspacePaths, resolve_workspace
+from gshell_memory.memory.episodic import EpisodicStore, make_fingerprint
 
-ws = resolve_workspace(Path("~/my-workspace"))
+ws = resolve_workspace(Path("./my-workspace"))
 paths = WorkspacePaths(ws)
 store = EpisodicStore(paths)
 

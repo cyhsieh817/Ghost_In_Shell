@@ -19,11 +19,13 @@
   <img src="https://img.shields.io/badge/license-MIT-green" alt="license" />
 </p>
 
-> **Pairs with [LabGrimoire Desktop](https://github.com/cyhsieh817/LabGrimoire_Desktop)** — a Tauri/Rust GUI that reads the same workspace. See [Chapter 18](docs/ch.18-lgd-bridge.md) for the contract.
+> **New in 5.2** — the knowledge index and its budget, single-writer guard, and judge-gated consolidation, distilled from a year of daily use. See [ch.19](docs/ch.19-knowledge-index.md), [ch.20](docs/ch.20-write-discipline.md), [ch.21](docs/ch.21-field-lessons.md).
+>
+> Optional desktop pairing: LabGrimoire Desktop reads the same workspace — see [Chapter 18](docs/ch.18-lgd-bridge.md).
 
 ---
 
-**Ghost In Shell** (`gish`) is a multi-CLI agent memory framework for AI command-line tools. It provides persistent episodic memory, association graphs, strength-based recall, sanctum governance, and brain-region routing — all running locally, no cloud required.
+**Ghost In Shell** (`gish`) is a multi-CLI agent memory framework for AI command-line tools. It provides persistent episodic memory, a trigger-phrase knowledge index, association graphs, strength-based recall, sanctum governance, and brain-region routing — all running locally, no cloud required.
 
 Works with **Claude Code** &middot; **Gemini CLI** &middot; **Codex CLI** &middot; **GitHub Copilot CLI**
 
@@ -41,9 +43,9 @@ Or install manually:
 
 ```bash
 pip install -e .
-gish init ~/my-workspace
-gish doctor --workspace ~/my-workspace
-gish recall "last architecture decision" --workspace ~/my-workspace
+gish init ./my-workspace
+gish doctor --workspace ./my-workspace
+gish recall "last architecture decision" --workspace ./my-workspace
 ```
 
 The bootstrap script detects your installed CLIs and prints hook snippets for each one.
@@ -58,6 +60,7 @@ The bootstrap script detects your installed CLIs and prints hook snippets for ea
 
 | Store | Format | Purpose |
 |:------|:-------|:--------|
+| **Knowledge** | Markdown + YAML frontmatter | One note per rule or fact, found through the startup index (`MEMORY.md`) |
 | **Fact** | YAML | Structured identity, preferences, rules, tools |
 | **Episodic** | JSONL | Timestamped decisions, failures, milestones, insights |
 | **Associations** | JSONL + SQLite cache | Typed edges between episodes, facts, files, and skills |
@@ -65,14 +68,14 @@ The bootstrap script detects your installed CLIs and prints hook snippets for ea
 | **Sanctum** | YAML registry | 3-tier access control (public / private / sacred) |
 | **Runtime Profiles** | YAML | Executor and launcher configs per CLI |
 
-### 14 Engines (7 maintenance + 7 capability)
+### 15 Engines (7 maintenance + 8 capability)
 
 | Engine | Category | What it does |
 |:-------|:---------|:-------------|
 | `associate` | maintenance | Builds and updates edges in the association graph |
-| `decay` | maintenance | Applies time-based strength decay; archives fading entries |
-| `consolidate` | maintenance | Merges redundant episodes; promotes recurring patterns |
-| `judge` | maintenance | Evaluates quality scores for new entries |
+| `decay` | maintenance | Applies time-based strength decay; marks fading / archived entries |
+| `consolidate` | maintenance | Proposes merges of low-importance episodes; applies only after the judge passes; archives sources |
+| `judge` | maintenance | Grades consolidation proposals (A–F, fail-closed external judge); advisory episode verdicts |
 | `health` | maintenance | Runs workspace integrity checks |
 | `audit` | maintenance | Validates sanctum governance compliance |
 | `session_log` | maintenance | Logs session start/end events |
@@ -83,6 +86,7 @@ The bootstrap script detects your installed CLIs and prints hook snippets for ea
 | `heartbeat` | capability | Periodic self-check + cron/launchd snippets (`gish heartbeat`) |
 | `brain_region_ext` | capability | Declare regions beyond the 5 defaults (`gish region`) |
 | `subdir_registry` | capability | White-list governance for memory/ subdirs (`gish memory-dir`) |
+| `knowledge` | capability | Startup-index budget, note frontmatter contract, broken-link and orphan lint (`gish index`, `gish knowledge`) |
 
 ### Strength Formula
 
@@ -143,8 +147,10 @@ my-workspace/
 ├── IDENTITY.md
 ├── SOUL.md
 ├── USER.md                    # optional
-├── MEMORY.md                  # index loaded at session start
+├── MEMORY.md                  # startup index: one trigger + link per line
 ├── memory/
+│   ├── knowledge/             # feedback/ projects/ references/ user/ notes
+│   ├── _archive/              # consolidated sources (never deleted)
 │   ├── fact.yml               # structured facts
 │   ├── episodic.jsonl         # episodic memory log
 │   ├── associations.jsonl     # association graph edges
@@ -153,9 +159,13 @@ my-workspace/
 │   ├── runtime_profiles.yml
 │   └── memory_manifest.yml    # engine run state
 └── .gish/
-    ├── config.yml
+    ├── config.yml             # workspace-relative paths only
+    ├── proposals/             # consolidation proposals + verdicts
     └── logs/
 ```
+
+The machine role (`primary` / `secondary`) is device-local and is never stored in
+the workspace — see [ch.20](docs/ch.20-write-discipline.md).
 
 ---
 
@@ -183,6 +193,8 @@ gish <command> [options]
 | `gish heartbeat run/install` | Heartbeat + cron/launchd snippets |
 | `gish region declare/list` | Declare extension brain regions |
 | `gish memory-dir register/list/enforce` | Subdir white-list |
+| `gish index budget` | Measure `MEMORY.md` in characters (exit 0 ok · 1 over budget · 2 truncating) |
+| `gish knowledge new/lint` | Create notes with the frontmatter contract; lint notes, links, orphans |
 
 All commands accept `--workspace <path>` to target a specific workspace.
 
@@ -196,13 +208,18 @@ All commands accept `--workspace <path>` to target a specific workspace.
 | [01 — Quick Start](docs/ch.01-quick-start.md) | From zero to `gish recall` in 5 minutes |
 | [02 — Identity Trinity](docs/ch.02-identity-trinity.md) | IDENTITY + SOUL + USER |
 | [03 — Memory Architecture](docs/ch.03-memory-architecture.md) | 6 stores + strength formula |
-| [04 — Engine Internals](docs/ch.04-engine-internals.md) | All 7 maintenance engines |
+| [04 — Engine Internals](docs/ch.04-engine-internals.md) | Maintenance engines, incl. the propose → judge → apply pipeline |
 | [05 — Multi-CLI Adapters](docs/ch.05-multi-cli-adapters.md) | Claude / Gemini / Codex / Copilot |
 | [06 — Governance & Sanctum](docs/ch.06-governance-sanctum.md) | 3-tier access control |
 | [07 — Brain Regions](docs/ch.07-brain-regions.md) | 5-zone memory routing |
 | [08 — Cron & Hooks](docs/ch.08-cron-hooks.md) | Trigger guide for all CLIs |
 | [09 — Customization](docs/ch.09-customization.md) | Extending adapters and engines |
 | [10 — Migration](docs/ch.10-migration.md) | Upgrading from v4.1 workspaces |
+| [11–17 — Capabilities](docs/ch.11-sop-dispatch.md) | SOP dispatch, archive routing, carryover, frozen enums, heartbeat, region extensions, subdir registry |
+| [18 — LabGrimoire Bridge](docs/ch.18-lgd-bridge.md) | Optional desktop GUI contract |
+| [19 — Knowledge Index](docs/ch.19-knowledge-index.md) | Trigger phrases, Tier 1 vs shelves, note contract, index budget |
+| [20 — Write Discipline](docs/ch.20-write-discipline.md) | Single writer, locked write path, judge-gated consolidation, archive-not-delete, promotion |
+| [21 — Field Lessons](docs/ch.21-field-lessons.md) | Ten lessons from a year of daily multi-agent use |
 
 ---
 

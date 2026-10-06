@@ -24,6 +24,13 @@ def dream_cmd(workspace: str, deep: bool | None, dry_run: bool) -> None:
     Deep sleep (Sundays or --deep) adds: audit → carryover expiry.
     """
     from gshell_memory.engines import dream
+    from gshell_memory.memory._role import SecondaryWriteRefused, require_primary
+
+    if not dry_run:
+        try:
+            require_primary("gish dream")
+        except SecondaryWriteRefused as exc:
+            raise click.ClickException(str(exc)) from exc
 
     result = dream.run(Path(workspace), dry_run=dry_run, deep=deep)
 

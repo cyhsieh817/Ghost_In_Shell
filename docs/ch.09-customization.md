@@ -9,12 +9,12 @@ points: adding a new CLI adapter and writing a custom engine.
 
 ### Create a New Adapter
 
-All adapters inherit from `CLIAdapter` in `ghost_in_shell.adapters.base`:
+All adapters inherit from `CLIAdapter` in `gshell_memory.adapters.base`:
 
 ```python
-# ghost_in_shell/adapters/my_cli.py
+# gshell_memory/adapters/my_cli.py
 import shutil
-from ghost_in_shell.adapters.base import CLIAdapter
+from gshell_memory.adapters.base import CLIAdapter
 
 
 class MyCLIAdapter(CLIAdapter):
@@ -54,10 +54,10 @@ class MyCLIAdapter(CLIAdapter):
 
 ### Register the Adapter
 
-Edit `ghost_in_shell/adapters/__init__.py` to include your adapter:
+Edit `gshell_memory/adapters/__init__.py` to include your adapter:
 
 ```python
-from ghost_in_shell.adapters.my_cli import MyCLIAdapter
+from gshell_memory.adapters.my_cli import MyCLIAdapter
 
 _ADAPTERS: dict[str, type[CLIAdapter]] = {
     "claude": ClaudeAdapter,
@@ -73,7 +73,7 @@ After registration, `gish init` will detect your CLI and print hook snippets.
 ### Testing Your Adapter
 
 ```python
-from ghost_in_shell.adapters import get_adapter
+from gshell_memory.adapters import get_adapter
 
 adapter = get_adapter("my-cli")
 assert adapter.name == "my-cli"
@@ -96,8 +96,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ghost_in_shell.memory._paths import WorkspacePaths, resolve_workspace
-from ghost_in_shell.memory._safe_io import read_jsonl
+from gshell_memory.memory._paths import WorkspacePaths, resolve_workspace
+from gshell_memory.memory._safe_io import read_jsonl
 
 
 def run(workspace: Path, *, dry_run: bool = False) -> dict:
@@ -119,7 +119,7 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
 ### Integrating with `run-maintenance`
 
 To include your engine in `gish run-maintenance`, edit
-`ghost_in_shell/cli/run.py` to call your engine in the maintenance sequence:
+`gshell_memory/cli/run.py` to call your engine in the maintenance sequence:
 
 ```python
 import my_engine
@@ -132,7 +132,7 @@ my_engine.run(ws, dry_run=dry_run)
 All file writes should use the safe I/O helpers to ensure atomicity:
 
 ```python
-from ghost_in_shell.memory._safe_io import append_jsonl, write_yaml
+from gshell_memory.memory._safe_io import append_jsonl, write_yaml
 
 # Append to a JSONL file (atomic)
 append_jsonl(paths.episodic, [{"key": "value"}])
@@ -145,11 +145,11 @@ write_yaml(paths.fact_yml, {"identity": {"name": "Agent"}})
 
 ## Customising Templates
 
-Templates live in `ghost_in_shell/templates/`. Edit them to change the defaults seeded
+Templates live in `gshell_memory/templates/`. Edit them to change the defaults seeded
 by `gish init`:
 
 ```
-ghost_in_shell/templates/
+gshell_memory/templates/
   identity/
     IDENTITY.md.template
     SOUL.md.template

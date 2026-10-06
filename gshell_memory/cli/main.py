@@ -10,6 +10,7 @@ from gshell_memory.cli.dream import dream_cmd
 from gshell_memory.cli.enum import enum_group
 from gshell_memory.cli.heartbeat import heartbeat_group
 from gshell_memory.cli.init import init_cmd
+from gshell_memory.cli.knowledge import index_group, knowledge_group
 from gshell_memory.cli.log import log_cmd
 from gshell_memory.cli.memdir import memdir_group
 from gshell_memory.cli.migrate import migrate_cmd
@@ -45,3 +46,5 @@ gish.add_command(enum_group)
 gish.add_command(heartbeat_group)
 gish.add_command(region_group)
 gish.add_command(memdir_group)
+gish.add_command(index_group)
+gish.add_command(knowledge_group)

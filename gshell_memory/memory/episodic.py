@@ -7,7 +7,9 @@ import hashlib
 from collections.abc import Iterator
 from difflib import SequenceMatcher
 
+from gshell_memory.memory._lock import file_lock
 from gshell_memory.memory._paths import WorkspacePaths
+from gshell_memory.memory._role import require_primary
 from gshell_memory.memory._safe_io import append_jsonl, read_jsonl
 from gshell_memory.memory.schemas import EpisodicEntry
 
@@ -26,7 +28,17 @@ class EpisodicStore:
 
     # ------------------------------------------------------------------
     def append(self, entry: dict) -> str:
-        """Validate, dedup, and persist an episodic entry. Returns the entry id."""
+        """Validate, dedup, and persist an episodic entry. Returns the entry id.
+
+        This is the only supported write path for episodes. The dedup checks
+        and the append run under one lock, so a concurrent writer can never
+        slip a duplicate in between the check and the write.
+        """
+        require_primary("episodic append")
+        with file_lock(self._paths.episodic_lock):
+            return self._append_locked(entry)
+
+    def _append_locked(self, entry: dict) -> str:
         validated = EpisodicEntry(**entry)
         fp = validated.fingerprint
         now = datetime.datetime.now(datetime.UTC)
@@ -40,6 +52,7 @@ class EpisodicStore:
 
         # Soft dedup — mark suspect if very similar content
         from gshell_memory.memory.schemas import Quality
+
         for existing in self._iter_raw():
             ratio = SequenceMatcher(
                 None,
@@ -47,7 +60,8 @@ class EpisodicStore:
                 validated.content,
             ).ratio()
             if ratio >= _SOFT_RATIO:
-                new_q = Quality(**{**validated.quality.model_dump(), "duplicate_suspect": True})
+                base = validated.quality or Quality()  # quality is optional in the schema
+                new_q = base.model_copy(update={"duplicate_suspect": True})
                 validated = validated.model_copy(update={"quality": new_q})
                 break
 
@@ -86,6 +100,7 @@ class EpisodicStore:
 
 
 # ---------------------------------------------------------------------------
+
 
 def _parse_ts(ts: str) -> datetime.datetime:
     dt = datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))

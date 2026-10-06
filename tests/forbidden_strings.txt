@@ -1,44 +1,25 @@
-# Personal-data deny list for Ghost_In_Shell v5.
+# Personal-data deny list for Ghost_In_Shell — PUBLIC part.
 # Each line is a literal substring that must NOT appear anywhere in the repo
-# (excluding the `legacy/` directory and this file itself).
+# (excluding the `legacy/` directory and the deny-list files themselves).
 # Comments start with `#`. Blank lines ignored.
 #
-# ⚠️ This file is PUBLIC. Never list private identifiers (emails, usernames,
-# home paths) here — that would publish the very strings you want to hide.
-# Put those in `tests/forbidden_strings.local.txt` (gitignored) or inject
-# them in CI via the GISH_FORBIDDEN_EXTRA environment variable (newline-
-# separated, e.g. from a repository secret).
+# ⚠️ This file is PUBLIC. List only generic patterns here. Anything that
+# identifies a person, an organisation, a product line, a private tool, or a
+# private workspace convention must NOT be listed: publishing the deny list
+# publishes the very association you want to hide.
+#
+# Put private entries in one of:
+#   - tests/forbidden_strings.local.txt   (gitignored; one entry per line)
+#   - $GISH_FORBIDDEN_EXTRA               (newline-separated; e.g. a CI secret)
 #
 # Structural checks that need no literals at all (e.g. flagging any real
 # `/Users/<name>` home path that is not a documented example persona) are
 # built into scripts/ci/check_no_personal.py itself.
-#
-# Forks are encouraged to adapt this setup to their own private content.
 
-# === Trademarks / company names (publicly known; safe to list) ===
-Cellergy
-icNAD+
-icNAD+®
-宇君生技
-YUCHUNBIO
-yc-biotech.net
-yc-biotech
-元培醫事科技
-
-# === Personal automation tools (not part of v5 scope) ===
-remindctl
-gogcli
-molty
-
-# === Vault template tokens (private workspace conventions) ===
-{{VAULT}}
-
-# === Domain-specific skills not part of v5 scope ===
-bazi
-ziwei
-meihua-yishu
-ziwei-doushu
-
-# === IRB / regulatory templates ===
-IRB_Template
-MOST_proposal
+# === Credential prefixes (a hit means a secret was pasted into the repo) ===
+-----BEGIN RSA PRIVATE KEY-----
+-----BEGIN OPENSSH PRIVATE KEY-----
+-----BEGIN PRIVATE KEY-----
+sk-ant-api
+xoxb-
+AKIA

@@ -114,7 +114,7 @@ Recommendations:
 ## Generating from `gish init`
 
 `gish init <workspace>` seeds template versions of all three files from
-`ghost_in_shell/templates/identity/`. Edit the templates before running `gish init` to
+`gshell_memory/templates/identity/`. Edit the templates before running `gish init` to
 customise defaults for your organisation.
 
 ---

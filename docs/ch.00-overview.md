@@ -19,7 +19,9 @@ Key problems it addresses:
 | No memory across sessions | Episodic store with persistent `.jsonl` log |
 | Inconsistent identity across CLIs | Identity Trinity files loaded by all adapters |
 | Uncontrolled file access | 3-tier sanctum governance |
-| Stale or noisy memories | Decay + consolidation engines |
+| Stale or noisy memories | Decay + judge-gated consolidation engines |
+| Lessons that are never found again | Knowledge notes behind a trigger-phrase index |
+| Two machines overwriting each other | Single-writer role + locked write path |
 | Single-CLI lock-in | Adapter architecture supports 4 CLIs simultaneously |
 
 ---
@@ -29,7 +31,7 @@ Key problems it addresses:
 - A **workspace** of structured YAML/JSONL files that live next to your code or project.
 - A **CLI tool** (`gish`) for initialising workspaces, recalling memories, running
   maintenance, auditing governance, and migrating legacy workspaces.
-- A **Python library** (`ghost_in_shell`) exposing engines and adapters you can call
+- A **Python library** (`gshell_memory`) exposing engines and adapters you can call
   programmatically.
 - A **hook system** that integrates with each CLI's native session start/end mechanism.
 
@@ -53,8 +55,9 @@ my-workspace/
   IDENTITY.md          # Who the agent is
   SOUL.md              # Persona and style
   USER.md              # User preferences (optional)
-  MEMORY.md            # Memory index loaded at session start
+  MEMORY.md            # Startup index: one trigger + link per line (ch.19)
   memory/
+    knowledge/         # One note per fact: feedback/ projects/ references/ user/
     fact.yml           # Structured facts
     episodic.jsonl     # Episodic memory log
     associations.jsonl # Association graph edges
@@ -102,13 +105,17 @@ limbic, cerebellum, default). See [Chapter 07](ch.07-brain-regions.md).
 
 ## Project Status
 
-Ghost In Shell v5 is in alpha (`5.0.0a4`). The API and file formats may change before
-the stable 5.0.0 release. Milestone completion:
+Ghost In Shell 5.2 is the current release line. Since 5.0 the file formats are
+stable; 5.x releases add capabilities without breaking existing workspaces.
 
-- M1 ✓ — Foundation: memory stores, engines, schemas
-- M2 ✓ — CLI + doctor + recall + audit
-- M3 ✓ — Adapters + init + run-maintenance + log + cron
-- M4 ✓ — migrate + docs + examples
+- 5.0 — stores, engines, CLI, adapters, migration, schema package
+- 5.1 — capability engines (SOP, archive routing, carryover, frozen enums,
+  heartbeat, region extensions, subdir registry) and the LabGrimoire bridge
+- 5.2 — lessons from a year of daily use: the knowledge index and its budget
+  ([ch.19](ch.19-knowledge-index.md)), write discipline — single writer,
+  locked write path, judge-gated consolidation, archive instead of delete
+  ([ch.20](ch.20-write-discipline.md)) — and field lessons
+  ([ch.21](ch.21-field-lessons.md))
 
 ---
 

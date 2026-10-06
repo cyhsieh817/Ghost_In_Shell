@@ -87,7 +87,7 @@ Every write and delete action against a sanctum-registered file is appended to
 View the audit trail:
 
 ```bash
-gish audit --workspace ~/my-workspace
+gish audit --workspace ./my-workspace
 ```
 
 Audit output shows tier violations, missing registrations, and recent write events.
@@ -98,13 +98,13 @@ Audit output shows tier violations, missing registrations, and recent write even
 
 ```bash
 # CLI
-gish audit --workspace ~/my-workspace
+gish audit --workspace ./my-workspace
 
 # Programmatic
-from ghost_in_shell.engines import audit
+from gshell_memory.engines import audit
 from pathlib import Path
 
-report = audit.run(Path("~/my-workspace"))
+report = audit.run(Path("./my-workspace"))
 print(report["violations"])   # List of violation dicts
 print(report["status"])       # "ok" | "violations_found"
 ```

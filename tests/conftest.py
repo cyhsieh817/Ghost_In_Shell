@@ -19,6 +19,13 @@ def pytest_configure(config: pytest.Config) -> None:
         )
 
 
+@pytest.fixture(autouse=True)
+def _device_local_role(monkeypatch, tmp_path_factory):
+    """Keep tests independent of the developer machine's gish role file."""
+    monkeypatch.delenv("GISH_MACHINE_ROLE", raising=False)
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path_factory.mktemp("xdg")))
+
+
 @pytest.fixture
 def tmp_workspace(tmp_path: Path) -> Path:
     """A blank workspace directory under pytest's tmp_path."""

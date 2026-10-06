@@ -1,11 +1,10 @@
 version: 5
-workspace_path: "{{workspace_path}}"
+# Paths in this file are relative to the workspace root. Never store an
+# absolute path here: the workspace may be synced to another machine.
+workspace_path: "."
 adapters_enabled: []
-cron:
-  decay: "0 3 * * 0"
-  health: "0 4 * * *"
-  audit: "0 5 * * *"
-  consolidate_check: "0 6 * * 0"
+# Scheduling is not configured here: `gish init --schedule` installs one
+# nightly `gish dream` entry (03:30) that runs every maintenance stage.
 retrieval:
   decay_per_week: 0.03
   retrieval_weight: 0.08
@@ -14,6 +13,14 @@ consolidate:
   trigger:
     type: count
     threshold: 20
+  # Optional external judge, run as `<command> <proposal.json>`. Its last
+  # stdout line must start with a grade A-F; only A-C lets a consolidation
+  # apply. Use a different model from the one that writes memory.
+  judge_command: null
+index:
+  # Startup index (MEMORY.md) budget, in characters. See docs ch.19.
+  max_chars: 20000
+  truncate_edge_chars: 24400
 sanctum:
   enforce: warn
 brain_regions:

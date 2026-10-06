@@ -206,12 +206,12 @@ gish region declare amygdala \
     --display "amygdala (security / vigilance)" \
     --on-demand POLICY.md \
     --aliases security \
-    --workspace ~/my-workspace
+    --workspace ./my-workspace
 
 gish region declare parietal \
     --display "parietal (paths / spatial)" \
     --on-demand PATHS.md \
-    --workspace ~/my-workspace
+    --workspace ./my-workspace
 ```
 
 After declaration, the manifest's `extensions:` block holds these regions.

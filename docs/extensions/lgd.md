@@ -57,7 +57,8 @@ LGD policies are enforced at two levels:
    existing audit log entries violate the declared policies.
 
 2. **Runtime enforcement** — Custom engines or wrapper scripts can call
-   `ghost_in_shell.memory.sanctum.check_lgd(path, action)` to validate before acting.
+   `SanctumRegistry(paths).verdict(path, action)` (in `gshell_memory.memory.sanctum`)
+   to validate before acting.
 
 ---
 
