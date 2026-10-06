@@ -66,9 +66,10 @@ step that rewrites memory never grades its own work (details in
    `knowledge_digest` entry whose `linked_to` lists every source. The proposal is
    written to `.gish/proposals/consolidation_<stamp>.json`.
 2. **judge** — `judge.grade_proposal` runs deterministic pre-checks (sources exist,
-   no source with importance ≥ 8, unique id, links back) and, if
-   `consolidate.judge_command` is configured, an external judge. Only grades A–C
-   pass; a configured judge that fails to produce a grade blocks the apply.
+   no source with importance ≥ 8, unique id, links back) and, if a judge is set
+   device-locally (`GISH_JUDGE_COMMAND` or `~/.config/gish/judge_command`), an
+   external judge. Only grades A–C pass; a configured judge that fails to produce
+   a grade blocks the apply, and a workspace config that names a judge is refused.
 3. **apply** — under the episodic lock, re-check that the sources are unchanged,
    append them to `memory/_archive/episodic_consolidated.jsonl`, then replace them
    in `episodic.jsonl` with the merged entry. Nothing is deleted.
