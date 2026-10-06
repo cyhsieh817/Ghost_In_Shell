@@ -3,6 +3,7 @@
 import datetime
 import hashlib
 import json
+import shlex
 import sys
 
 import pytest
@@ -156,9 +157,9 @@ def _judge_script(tmp_path, body):
         ("print('looks fine')\n", False, "F"),  # no grade on last line fails closed
     ],
 )
-def test_external_judge_gates_apply(tmp_path, tmp_paths, script, applied, grade):
+def test_external_judge_gates_apply(monkeypatch, tmp_path, tmp_paths, script, applied, grade):
     cmd = _judge_script(tmp_path, script)
-    tmp_paths.config.write_text(json.dumps({"consolidate": {"judge_command": cmd}}))
+    monkeypatch.setenv("GISH_JUDGE_COMMAND", shlex.join(cmd))
     _write(tmp_paths, [_ep(f"low-{i}", 3) for i in range(3)])
     before = tmp_paths.episodic.read_text()
     result = consolidate.run(tmp_paths.root)
@@ -193,3 +194,29 @@ def test_soft_dedup_without_quality_field(tmp_paths):
 
 def test_judge_tolerates_null_quality():
     assert judge.evaluate({"importance": 5, "quality": None, "decay_status": "active"})["keep"]
+
+
+def test_workspace_config_cannot_name_a_judge_command(tmp_path, tmp_paths):
+    """A synced or cloned workspace must not be able to run code via the judge."""
+    marker = tmp_path / "executed"
+    cmd = _judge_script(tmp_path, f"open({str(marker)!r}, 'w').write('x')\nprint('A')\n")
+    tmp_paths.config.write_text(json.dumps({"consolidate": {"judge_command": cmd}}))
+    _write(tmp_paths, [_ep(f"low-{i}", 3) for i in range(3)])
+    before = tmp_paths.episodic.read_text()
+    result = consolidate.run(tmp_paths.root)
+    assert not marker.exists(), "workspace-configured judge command was executed"
+    assert result["applied"] is False
+    assert result["verdict"]["grade"] == "F"
+    assert "device-local" in result["verdict"]["external"]["error"]
+    assert tmp_paths.episodic.read_text() == before
+
+
+def test_judge_command_from_device_config_file(tmp_path, tmp_paths):
+    from gshell_memory.memory._role import device_config_dir
+
+    cmd = _judge_script(tmp_path, "print('B')\n")
+    device_config_dir().mkdir(parents=True, exist_ok=True)
+    (device_config_dir() / "judge_command").write_text(shlex.join(cmd) + "\n")
+    _write(tmp_paths, [_ep(f"low-{i}", 3) for i in range(3)])
+    result = consolidate.run(tmp_paths.root)
+    assert (result["verdict"]["grade"], result["applied"]) == ("B", True)

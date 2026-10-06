@@ -5,7 +5,8 @@ Consolidation rewrites memory, so it never grades its own work:
 1. **propose** — collect low-importance active episodes and build one merged
    entry that links back to every source (``linked_to``).
 2. **judge**  — :func:`gshell_memory.engines.judge.grade_proposal` runs
-   deterministic pre-checks and, when configured, an external judge command.
+   deterministic pre-checks and, when configured device-locally, an external
+   judge command (``GISH_JUDGE_COMMAND`` / ``~/.config/gish/judge_command``).
    Only grades A-C pass. A missing or crashing external judge fails closed.
 3. **apply**  — only after a passing grade, under the episodic lock: sources
    are appended to ``memory/_archive/episodic_consolidated.jsonl`` first,
@@ -20,6 +21,8 @@ from __future__ import annotations
 import datetime
 import hashlib
 import json
+import os
+import shlex
 from pathlib import Path
 
 import yaml
@@ -27,12 +30,17 @@ import yaml
 from gshell_memory.engines._manifest import load_manifest, save_manifest
 from gshell_memory.memory._lock import file_lock
 from gshell_memory.memory._paths import WorkspacePaths, resolve_workspace
-from gshell_memory.memory._role import require_primary
+from gshell_memory.memory._role import device_config_dir, require_primary
 from gshell_memory.memory._safe_io import append_jsonl, atomic_write_text, read_jsonl
 
 LOW_IMPORTANCE_THRESHOLD = 4
 MIN_CONSOLIDATE_COUNT = 3
 ARCHIVE_NAME = "episodic_consolidated.jsonl"
+JUDGE_ENV = "GISH_JUDGE_COMMAND"
+
+
+def judge_command_file() -> Path:
+    return device_config_dir() / "judge_command"
 
 
 def run(workspace: Path, *, dry_run: bool = False) -> dict:
@@ -67,12 +75,20 @@ def run(workspace: Path, *, dry_run: bool = False) -> dict:
     proposal_path = _write_proposal(paths, proposal)
     result["proposal"] = str(proposal_path.relative_to(paths.root))
 
+    judge_cmd, refusal = _judge_command(paths)
     verdict = judge.grade_proposal(
         proposal,
         entries,
-        judge_command=_judge_command(paths),
+        judge_command=judge_cmd,
         proposal_path=proposal_path,
     )
+    if refusal:
+        verdict = {
+            **verdict,
+            "grade": "F",
+            "passed": False,
+            "external": {"grade": None, "error": refusal},
+        }
     result["verdict"] = verdict
     _record_verdict(proposal_path, proposal, verdict)
     if not verdict["passed"]:
@@ -171,17 +187,29 @@ def _record_verdict(path: Path, proposal: dict, verdict: dict) -> None:
     )
 
 
-def _judge_command(paths: WorkspacePaths) -> list[str] | None:
-    """``consolidate.judge_command`` from .gish/config.yml, as an argv list."""
-    if not paths.config.exists():
-        return None
-    data = yaml.safe_load(paths.config.read_text(encoding="utf-8")) or {}
-    cmd = (data.get("consolidate") or {}).get("judge_command")
-    if isinstance(cmd, str) and cmd.strip():
-        return cmd.split()
-    if isinstance(cmd, list) and cmd:
-        return [str(part) for part in cmd]
-    return None
+def _judge_command(paths: WorkspacePaths) -> tuple[list[str] | None, str | None]:
+    """Return ``(argv, refusal)`` for the external judge.
+
+    The judge is an executable, so it is configured device-locally only:
+    ``GISH_JUDGE_COMMAND`` or ``$XDG_CONFIG_HOME/gish/judge_command``. A
+    workspace may be synced or cloned from elsewhere; if its config could name
+    a command, anyone able to write the workspace could run code on every
+    machine during the nightly dream. A workspace that still sets
+    ``consolidate.judge_command`` is refused (fail closed) with a message.
+    """
+    if paths.config.exists():
+        data = yaml.safe_load(paths.config.read_text(encoding="utf-8")) or {}
+        if (data.get("consolidate") or {}).get("judge_command"):
+            return None, (
+                "refused: .gish/config.yml sets consolidate.judge_command; judge commands "
+                f"are read only from {JUDGE_ENV} or {judge_command_file()} (device-local)"
+            )
+    raw = os.environ.get(JUDGE_ENV)
+    if raw is None:
+        path = judge_command_file()
+        raw = path.read_text(encoding="utf-8") if path.is_file() else ""
+    argv = shlex.split(raw.strip())
+    return (argv or None), None
 
 
 def schedule_cron() -> str:

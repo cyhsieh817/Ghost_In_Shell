@@ -96,11 +96,19 @@ The deterministic pre-checks:
 An optional external judge adds a second opinion — typically a script that asks
 a *different* model from the one that writes memory:
 
-```yaml
-# .gish/config.yml
-consolidate:
-  judge_command: ["python3", "scripts/my_judge.py"]   # run as: <cmd> <proposal.json>
+```bash
+# device-local only — run as: <command> <proposal.json>
+export GISH_JUDGE_COMMAND="python3 /path/to/my_judge.py"
+# or, persistently for this machine:
+echo "python3 /path/to/my_judge.py" > ~/.config/gish/judge_command
 ```
+
+The judge command is an executable, so it is **never** read from the
+workspace. A workspace may be synced or cloned from someone else; if its
+config could name a command, anyone able to write the workspace could run code
+on every machine during the nightly dream. A `.gish/config.yml` that still sets
+`consolidate.judge_command` is refused: nothing is executed, the proposal is
+graded F, and the verdict says where to configure the judge instead.
 
 The judge's last line of output must start with a grade `A`–`F`. The final
 grade is the worse of the two. **The judge fails closed:** if it is configured

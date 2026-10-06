@@ -28,7 +28,10 @@ Lessons from a year of daily multi-agent use, moved from convention into code.
   machines are refused by `gish dream`, `consolidate`, `decay`, and
   `EpisodicStore.append` (dry runs still allowed). Unknown roles fail closed.
 - `judge.grade_proposal` — deterministic pre-checks plus an optional external
-  judge (`consolidate.judge_command`) that fails closed.
+  judge that fails closed. The judge command is device-local only
+  (`GISH_JUDGE_COMMAND` or `$XDG_CONFIG_HOME/gish/judge_command`); a
+  workspace config that names one is refused without executing it, so a
+  synced or cloned workspace cannot run code on the machines that open it.
 - Docs: ch.19 Knowledge Index, ch.20 Write Discipline, ch.21 Field Lessons.
 
 ### Changed

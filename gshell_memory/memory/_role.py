@@ -31,10 +31,15 @@ class SecondaryWriteRefused(RuntimeError):
     """Raised when a secondary machine attempts a memory write."""
 
 
-def role_file() -> Path:
+def device_config_dir() -> Path:
+    """Per-machine gish config: ``$XDG_CONFIG_HOME/gish`` (default ``~/.config/gish``)."""
     base = os.environ.get("XDG_CONFIG_HOME")
     root = Path(base) if base else Path.home() / ".config"
-    return root / "gish" / "machine_role"
+    return root / "gish"
+
+
+def role_file() -> Path:
+    return device_config_dir() / "machine_role"
 
 
 def machine_role() -> str:

@@ -23,6 +23,7 @@ def pytest_configure(config: pytest.Config) -> None:
 def _device_local_role(monkeypatch, tmp_path_factory):
     """Keep tests independent of the developer machine's gish role file."""
     monkeypatch.delenv("GISH_MACHINE_ROLE", raising=False)
+    monkeypatch.delenv("GISH_JUDGE_COMMAND", raising=False)
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path_factory.mktemp("xdg")))
 
 
