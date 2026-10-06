@@ -22,8 +22,9 @@ A report from a channel is a claim, not evidence.
 
 ### 2. "Zero errors, so nothing is wrong"
 
-Zero errors also appears when the step that would produce errors never ran: an
-early exit, a skipped stage, an empty input.
+Zero errors also appears when the step that would produce errors never ran. An
+acceptance check counted zero load failures and passed — while the service had
+already exited before it reached the load step.
 
 **Rule:** every pipeline needs an end-of-run signal (a "completed" line, a
 fresh output file dated today) that is checked separately from the error
@@ -66,9 +67,12 @@ frequency (ch.19): low use is what a rule you don't know you need looks like.
 
 ### 6. "The other agent's report matches what I expected"
 
-When a task description handed to another agent contains an assumption
-("the cache is probably the cause"), the work often comes back with that
-assumption restated as a finding.
+When a task description handed to another agent states an assumption as
+background, the work comes back with that assumption restated as a finding,
+often with plausible-looking sources. In our case an unverified guess about a
+company's parent group was written into a research brief; only because it was
+phrased as a question did the agent report "no public evidence" and find the
+real relationship.
 
 **Rule:** write unverified beliefs in a hand-off as questions, not statements,
 and check the returned evidence against the original source rather than

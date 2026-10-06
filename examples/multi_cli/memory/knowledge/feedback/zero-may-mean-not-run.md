@@ -10,8 +10,8 @@ metadata:
 Treat "0 errors" as meaningful only together with a separate end-of-run
 signal: a completion line, or an output file dated today.
 
-**Why:** a nightly job reported zero failures for a week because an early
-exit skipped the stage that produces failures.
+**Why:** an acceptance check counted zero load failures and passed, while the
+service had already exited before it reached the load step.
 
 **How to apply:** when a check reports zero, confirm the check reached its
 last step before trusting the zero.
